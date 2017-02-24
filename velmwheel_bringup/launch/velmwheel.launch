@@ -1,0 +1,15 @@
+
+<launch>
+
+  <include file="$(find rtt_ros)/launch/deployer.launch">
+    <arg name="NAME" value="VELMWHEEL_OROCOS_ROBOT"/>
+    <arg name="DEPLOYER_ARGS" value="-s $(find velmwheel_bringup)/config/velmwheel.ops"/>
+    <arg name="LOG_LEVEL" value="Warning"/>
+    <arg name="DEBUG" value="false"/>
+  </include>
+
+  <group ns="VELMWHEEL_OROCOS_ROBOT">
+    <param name="VelmWheelInterface_EC/master_config" command="cat $(find velmwheel_bringup)/config/master_config.yaml"/>
+  </group>
+
+</launch>

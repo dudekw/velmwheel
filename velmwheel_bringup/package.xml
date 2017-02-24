@@ -1,0 +1,24 @@
+<package>
+  <name>velmwheel_bringup</name>
+  <version>0.0.4</version>
+  <description>VelmWheel bringup.</description>
+  <maintainer email="wojciechdudek.mail@gmail.com">Wojciech Dudek</maintainer>
+  
+  <license>BSD</license>
+  
+  <author>Wojciech Dudek</author>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>xacro</run_depend>
+  <run_depend>oro_joint_state_publisher</run_depend>
+  <run_depend>rtt_sensor_msgs</run_depend>
+  <run_depend>rtt_geometry_msgs</run_depend>
+  <run_depend>rtt_diagnostics_msgs</run_depend>
+  <run_depend>rtt_control_msgs</run_depend>
+  <run_depend>rtt</run_depend>
+  <run_depend>rtt_ros</run_depend>
+  <run_depend>rtt_rosnode</run_depend>
+  <run_depend>rtt_rostopic</run_depend>
+  <run_depend>rtt_rosparam</run_depend> 
+</package>

@@ -1,0 +1,68 @@
+import("rtt_ros")
+ros.import("rtt_rosparam")
+ros.import("rtt_rospack")
+
+ros.import("ec_hardware")
+ros.import("ec_drivers")
+
+ros.import("velmwheel_core")
+
+ros.import("rtt_geometry_msgs")
+//require("print")
+
+loadComponent("VelmWheelInterface_EC","ECHardware")
+setActivity("VelmWheelInterface_EC", 0.001, 6, ORO_SCHED_RT)
+VelmWheelInterface_EC.loadService("rosparam")
+VelmWheelInterface_EC.loadService("elmo_driver")
+VelmWheelInterface_EC.rosparam.getAll()
+VelmWheelInterface_EC.configure();
+
+
+loadComponent("VelmWheel_Core","VelmWheelCore")
+setActivity("VelmWheel_Core", 0.001, 5, ORO_SCHED_RT)
+VelmWheel_Core.configure();
+
+connect("VelmWheel_Core.wrl_port","VelmWheelInterface_EC.wheel_rl.motor_velocity_command", ConnPolicy())
+connect("VelmWheel_Core.wfl_port","VelmWheelInterface_EC.wheel_fl.motor_velocity_command", ConnPolicy())
+connect("VelmWheel_Core.wfr_port","VelmWheelInterface_EC.wheel_fr.motor_velocity_command", ConnPolicy())
+connect("VelmWheel_Core.wrr_port","VelmWheelInterface_EC.wheel_rr.motor_velocity_command", ConnPolicy())
+
+stream("VelmWheel_Core.input_twist", ros.comm.topic("cmd_vel"));
+
+
+VelmWheelInterface_EC.start();
+//print.ln("rl_state = "+ VelmWheelInterface_EC.wheel_rl.state);
+
+while (VelmWheelInterface_EC.wheel_rl.state == 1 || VelmWheelInterface_EC.wheel_rr.state == 1 || VelmWheelInterface_EC.wheel_fl.state == 1 || VelmWheelInterface_EC.wheel_fr.state == 1) {
+}
+
+if (VelmWheelInterface_EC.wheel_rl.state == 8) then VelmWheelInterface_EC.wheel_rl.resetFault()
+
+if (VelmWheelInterface_EC.wheel_rr.state == 8) then VelmWheelInterface_EC.wheel_rr.resetFault()
+
+if (VelmWheelInterface_EC.wheel_fl.state == 8) then VelmWheelInterface_EC.wheel_fl.resetFault()
+
+if (VelmWheelInterface_EC.wheel_fr.state == 8) then VelmWheelInterface_EC.wheel_fr.resetFault()
+
+//print.ln("rl_state = "+ VelmWheelInterface_EC.wheel_rl.state);
+
+while (VelmWheelInterface_EC.wheel_rl.state != 4 || VelmWheelInterface_EC.wheel_rr.state != 4 || VelmWheelInterface_EC.wheel_fl.state != 4 || VelmWheelInterface_EC.wheel_fr.state != 4) {
+//print.ln("waiting");
+}
+
+//print.ln("rl_state = "+ VelmWheelInterface_EC.wheel_rl.state);
+//print.ln("fl_state = "+ VelmWheelInterface_EC.wheel_fl.state);
+//print.ln("fr_state = "+ VelmWheelInterface_EC.wheel_fr.state);
+//print.ln("rr_state = "+ VelmWheelInterface_EC.wheel_rr.state);
+
+VelmWheelInterface_EC.wheel_fl.enable()
+VelmWheelInterface_EC.wheel_fr.enable()
+VelmWheelInterface_EC.wheel_rl.enable()
+VelmWheelInterface_EC.wheel_rr.enable()
+
+//print.ln("rl_state = "+ VelmWheelInterface_EC.wheel_rl.state);
+//print.ln("fl_state = "+ VelmWheelInterface_EC.wheel_fl.state);
+//print.ln("fr_state = "+ VelmWheelInterface_EC.wheel_fr.state);
+//print.ln("rr_state = "+ VelmWheelInterface_EC.wheel_rr.state);
+
+VelmWheel_Core.start()

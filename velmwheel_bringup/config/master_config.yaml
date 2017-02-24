@@ -1,0 +1,214 @@
+master_idx: 0
+terminals:
+ - name: wheel_rl
+   vendor_id: 0x0000009a
+   device_id: 0x00030924
+   station_alias: 0
+   station_offset: 0
+   TPDO:
+    - index: 0x1a03
+      entries:
+       - index: 0x6064
+         subindex: 0
+         bit_length: 32
+       - index: 0x60fd
+         subindex: 0
+         bit_length: 32
+       - index: 0x606c
+         subindex: 0
+         bit_length: 32
+       - index: 0x6041
+         subindex: 0
+         bit_length: 16
+    - index: 0x1a13
+      entries:
+       - index: 0x6077
+         subindex: 0
+         bit_length: 16
+   RPDO:
+    - index: 0x1601
+      entries:
+       - index: 0x60FF
+         subindex: 0
+         bit_length: 32
+       - index: 0x6040
+         subindex: 0
+         bit_length: 16
+    - index: 0x160b
+      entries:
+       - index: 0x6060
+         subindex: 0
+         bit_length: 8
+ - name: wheel_fl
+   vendor_id: 0x0000009a
+   device_id: 0x00030924
+   station_alias: 0
+   station_offset: 1
+   TPDO:
+    - index: 0x1a03
+      entries:
+       - index: 0x6064
+         subindex: 0
+         bit_length: 32
+       - index: 0x60fd
+         subindex: 0
+         bit_length: 32
+       - index: 0x606c
+         subindex: 0
+         bit_length: 32
+       - index: 0x6041
+         subindex: 0
+         bit_length: 16
+    - index: 0x1a13
+      entries:
+       - index: 0x6077
+         subindex: 0
+         bit_length: 16
+   RPDO:
+    - index: 0x1601
+      entries:
+       - index: 0x60FF
+         subindex: 0
+         bit_length: 32
+       - index: 0x6040
+         subindex: 0
+         bit_length: 16
+    - index: 0x160b
+      entries:
+       - index: 0x6060
+         subindex: 0
+         bit_length: 8
+ - name: wheel_fr
+   vendor_id: 0x0000009a
+   device_id: 0x00030924
+   station_alias: 0
+   station_offset: 2
+   TPDO:
+    - index: 0x1a03
+      entries:
+       - index: 0x6064
+         subindex: 0
+         bit_length: 32
+       - index: 0x60fd
+         subindex: 0
+         bit_length: 32
+       - index: 0x606c
+         subindex: 0
+         bit_length: 32
+       - index: 0x6041
+         subindex: 0
+         bit_length: 16
+    - index: 0x1a13
+      entries:
+       - index: 0x6077
+         subindex: 0
+         bit_length: 16
+   RPDO:
+    - index: 0x1601
+      entries:
+       - index: 0x60FF
+         subindex: 0
+         bit_length: 32
+       - index: 0x6040
+         subindex: 0
+         bit_length: 16
+    - index: 0x160b
+      entries:
+       - index: 0x6060
+         subindex: 0
+         bit_length: 8
+ - name: wheel_rr
+   vendor_id: 0x0000009a
+   device_id: 0x00030924
+   station_alias: 0
+   station_offset: 3
+   TPDO:
+    - index: 0x1a03
+      entries:
+       - index: 0x6064
+         subindex: 0
+         bit_length: 32
+       - index: 0x60fd
+         subindex: 0
+         bit_length: 32
+       - index: 0x606c
+         subindex: 0
+         bit_length: 32
+       - index: 0x6041
+         subindex: 0
+         bit_length: 16
+    - index: 0x1a13
+      entries:
+       - index: 0x6077
+         subindex: 0
+         bit_length: 16
+   RPDO:
+    - index: 0x1601
+      entries:
+       - index: 0x60FF
+         subindex: 0
+         bit_length: 32
+       - index: 0x6040
+         subindex: 0
+         bit_length: 16
+    - index: 0x160b
+      entries:
+       - index: 0x6060
+         subindex: 0
+         bit_length: 8
+domains:
+ - name: main
+   period: 1
+   drivers:
+    - name: wheel_rl
+      type: elmo_driver
+      terminal: wheel_rl
+      interpolation_period:
+        value: 1
+        index: -3
+      homing:
+        mode: 0
+        speed_high: 2000
+        speed_low: 2000
+        acceleration: 10000
+      control_mode: velocity
+      dio_type: elmo
+    - name: wheel_fl
+      type: elmo_driver
+      terminal: wheel_fl
+      interpolation_period:
+        value: 1
+        index: -3
+      homing:
+        mode: 0
+        speed_high: 2000
+        speed_low: 2000
+        acceleration: 10000
+      control_mode: velocity
+      dio_type: elmo
+    - name: wheel_fr
+      type: elmo_driver
+      terminal: wheel_fr
+      interpolation_period:
+        value: 1
+        index: -3
+      homing:
+        mode: 0
+        speed_high: 2000
+        speed_low: 2000
+        acceleration: 10000
+      control_mode: velocity
+      dio_type: elmo
+    - name: wheel_rr
+      type: elmo_driver
+      terminal: wheel_rr
+      interpolation_period:
+        value: 1
+        index: -3
+      homing:
+        mode: 0
+        speed_high: 2000
+        speed_low: 2000
+        acceleration: 10000
+      control_mode: velocity
+      dio_type: elmo
