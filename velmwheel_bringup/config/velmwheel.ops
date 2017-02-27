@@ -6,6 +6,7 @@ ros.import("ec_hardware")
 ros.import("ec_drivers")
 
 ros.import("velmwheel_core")
+ros.import("rtt_nav_msgs")
 
 ros.import("rtt_geometry_msgs")
 //require("print")
@@ -27,7 +28,13 @@ connect("VelmWheel_Core.wfl_port","VelmWheelInterface_EC.wheel_fl.motor_velocity
 connect("VelmWheel_Core.wfr_port","VelmWheelInterface_EC.wheel_fr.motor_velocity_command", ConnPolicy())
 connect("VelmWheel_Core.wrr_port","VelmWheelInterface_EC.wheel_rr.motor_velocity_command", ConnPolicy())
 
-stream("VelmWheel_Core.input_twist", ros.comm.topic("cmd_vel"));
+connect("VelmWheel_Core.in_wrl_enc","VelmWheelInterface_EC.wheel_rl.motor_position", ConnPolicy())
+connect("VelmWheel_Core.in_wfl_enc","VelmWheelInterface_EC.wheel_fl.motor_position", ConnPolicy())
+connect("VelmWheel_Core.in_wfr_enc","VelmWheelInterface_EC.wheel_fr.motor_position", ConnPolicy())
+connect("VelmWheel_Core.in_wrr_enc","VelmWheelInterface_EC.wheel_rr.motor_position", ConnPolicy())
+
+stream("VelmWheel_Core.in_twist", ros.comm.topic("cmd_vel"));
+stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 
 
 VelmWheelInterface_EC.start();

@@ -13,6 +13,8 @@ catkin_package(
 )
 
 orocos_component(${PROJECT_NAME} src/VelmWheel_core.cpp)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_range_for)
+
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
 orocos_generate_package()
