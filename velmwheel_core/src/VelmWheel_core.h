@@ -20,10 +20,15 @@ class VelmWheelCore : public RTT::TaskContext
 		bool startHook();
 
  		RTT::InputPort<geometry_msgs::Twist> in_twist_;
- 		RTT::InputPort<double> in_wrr_enc_;
- 		RTT::InputPort<double> in_wrl_enc_;
- 		RTT::InputPort<double> in_wfr_enc_;
- 		RTT::InputPort<double> in_wfl_enc_;
+ 		RTT::InputPort<double> in_wrr_enc_pos_;
+ 		RTT::InputPort<double> in_wrl_enc_pos_;
+ 		RTT::InputPort<double> in_wfr_enc_pos_;
+ 		RTT::InputPort<double> in_wfl_enc_pos_;
+  		RTT::InputPort<double> in_wrr_enc_vel_;
+ 		RTT::InputPort<double> in_wrl_enc_vel_;
+ 		RTT::InputPort<double> in_wfr_enc_vel_;
+ 		RTT::InputPort<double> in_wfl_enc_vel_;
+
  		RTT::InputPort<sensor_msgs::Imu> in_imu_;
 
  		RTT::OutputPort<nav_msgs::Odometry> out_odometry_;

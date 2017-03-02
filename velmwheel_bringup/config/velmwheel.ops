@@ -28,10 +28,15 @@ connect("VelmWheel_Core.wfl_port","VelmWheelInterface_EC.wheel_fl.motor_velocity
 connect("VelmWheel_Core.wfr_port","VelmWheelInterface_EC.wheel_fr.motor_velocity_command", ConnPolicy())
 connect("VelmWheel_Core.wrr_port","VelmWheelInterface_EC.wheel_rr.motor_velocity_command", ConnPolicy())
 
-connect("VelmWheel_Core.in_wrl_enc","VelmWheelInterface_EC.wheel_rl.motor_position", ConnPolicy())
-connect("VelmWheel_Core.in_wfl_enc","VelmWheelInterface_EC.wheel_fl.motor_position", ConnPolicy())
-connect("VelmWheel_Core.in_wfr_enc","VelmWheelInterface_EC.wheel_fr.motor_position", ConnPolicy())
-connect("VelmWheel_Core.in_wrr_enc","VelmWheelInterface_EC.wheel_rr.motor_position", ConnPolicy())
+connect("VelmWheel_Core.in_wrl_enc_pos","VelmWheelInterface_EC.wheel_rl.motor_position", ConnPolicy())
+connect("VelmWheel_Core.in_wfl_enc_pos","VelmWheelInterface_EC.wheel_fl.motor_position", ConnPolicy())
+connect("VelmWheel_Core.in_wfr_enc_pos","VelmWheelInterface_EC.wheel_fr.motor_position", ConnPolicy())
+connect("VelmWheel_Core.in_wrr_enc_pos","VelmWheelInterface_EC.wheel_rr.motor_position", ConnPolicy())
+
+connect("VelmWheel_Core.in_wrl_enc_vel","VelmWheelInterface_EC.wheel_rl.motor_velocity", ConnPolicy())
+connect("VelmWheel_Core.in_wfl_enc_vel","VelmWheelInterface_EC.wheel_fl.motor_velocity", ConnPolicy())
+connect("VelmWheel_Core.in_wfr_enc_vel","VelmWheelInterface_EC.wheel_fr.motor_velocity", ConnPolicy())
+connect("VelmWheel_Core.in_wrr_enc_vel","VelmWheelInterface_EC.wheel_rr.motor_velocity", ConnPolicy())
 
 stream("VelmWheel_Core.in_twist", ros.comm.topic("cmd_vel"));
 stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
