@@ -15,6 +15,7 @@ loadComponent("VelmWheelInterface_EC","ECHardware")
 setActivity("VelmWheelInterface_EC", 0.001, 6, ORO_SCHED_RT)
 VelmWheelInterface_EC.loadService("rosparam")
 VelmWheelInterface_EC.loadService("elmo_driver")
+VelmWheelInterface_EC.loadService("imu_driver")
 VelmWheelInterface_EC.rosparam.getAll()
 VelmWheelInterface_EC.configure();
 
@@ -38,6 +39,7 @@ connect("VelmWheel_Core.in_wfl_enc_vel","VelmWheelInterface_EC.wheel_fl.motor_ve
 connect("VelmWheel_Core.in_wfr_enc_vel","VelmWheelInterface_EC.wheel_fr.motor_velocity", ConnPolicy())
 connect("VelmWheel_Core.in_wrr_enc_vel","VelmWheelInterface_EC.wheel_rr.motor_velocity", ConnPolicy())
 
+stream("VelmWheel_Core.IMU_Msr_OUTPORT", ros.comm.topic("imu"))
 stream("VelmWheel_Core.in_twist", ros.comm.topic("cmd_vel"));
 stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 

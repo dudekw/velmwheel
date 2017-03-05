@@ -53,9 +53,6 @@ uint32_t sequence_enc;
 uint32_t vel_loop_time;
 
 
-sensor_msgs::Imu msg_ros_imu;
-tf::Quaternion imu_quat;
-sensor_msgs::Imu msg_imu;
 const boost::array<double, 9> orientation_covariance = {0, 0, 0,
 								   0, 0, 0,
 								   0, 0, 0};
@@ -92,16 +89,12 @@ VelmWheelCore::VelmWheelCore(const std::string& name) : TaskContext(name)
 	this->addPort("in_wfr_enc_vel",in_wfr_enc_vel_);
 	this->addPort("in_wfl_enc_vel",in_wfl_enc_vel_);
 
-	this->addPort("in_imu",in_imu_);
-
-
 	this->addPort("wrl_port",wrl_port_);
 	this->addPort("wrr_port",wrr_port_);
 	this->addPort("wfr_port",wfr_port_);
 	this->addPort("wfl_port",wfl_port_);
 
 	this->addPort("out_odometry",out_odometry_);
-	this->addPort("out_imu",out_imu_);
 
 }
 
@@ -143,9 +136,7 @@ bool VelmWheelCore::configureHook()
 	std::chrono::seconds sec;
 	uint32_t sequence_enc;
 	uint32_t vel_loop_time;
-	sensor_msgs::Imu msg_imu;
-	sensor_msgs::Imu msg_ros_imu;
-	tf::Quaternion imu_quat;
+
 	const boost::array<double, 9> orientation_covariance = {0, 0, 0,
 								   0, 0, 0,
 								   0, 0, 0};;
@@ -363,28 +354,7 @@ void VelmWheelCore::updateHook()
 
 		// wfr_dist_diff = ( (msg_wfr_enc_vel_ - wfr_enc_vel_old) / (50*5000) ) * ( (2 * 3.1415 * r) / 360 );
 		// wfr_enc_vel_old = msg_wfr_enc_vel_;
-	}
-	// Read IMU data 
-	if (RTT::NewData == in_imu_.read(msg_imu))
-	{
-		imu_quat.setRPY(0, 0, 0);
-		msg_ros_imu.orientation.x = imu_quat.x();
-		msg_ros_imu.orientation.y = imu_quat.y();
-		msg_ros_imu.orientation.z = imu_quat.z();
-		msg_ros_imu.orientation.w = imu_quat.w();
 
-		msg_ros_imu.orientation_covariance = orientation_covariance;
-
-		msg_ros_imu.angular_velocity.x = 0;
-		msg_ros_imu.angular_velocity.y = 0;
-		msg_ros_imu.angular_velocity.z = 0;
-		msg_ros_imu.angular_velocity_covariance = angular_velocity_covariance;
-
-		msg_ros_imu.linear_acceleration.x = 0;
-		msg_ros_imu.linear_acceleration.y = 0;
-		msg_ros_imu.linear_acceleration.z = 0;
-		msg_ros_imu.linear_acceleration_covariance = linear_acceleration_covariance;
-	}
 	// set odometry msg header
 	setHeader(msg_odometry.header, "odom", sequence_enc);
 	// get speed of wheels [m/s]
@@ -393,9 +363,6 @@ void VelmWheelCore::updateHook()
 	getOdom();
 	// write odometry msg to output port
 	out_odometry_.write(msg_odometry);
-	// write imu msg to output port
-	out_imu_.write(msg_ros_imu);
-
 
 	nsec_old = nsec;
 

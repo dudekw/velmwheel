@@ -156,6 +156,35 @@ terminals:
        - index: 0x6060
          subindex: 0
          bit_length: 8
+ - name: imu
+   vendor_id: 0x00000021
+   device_id: 0x00000001
+   station_alias: 0
+   station_offset: 4
+   TPDO:
+    - index: 0x1a00
+      entries:
+       - index: 0x2065
+         subindex: 0
+         bit_length: 16
+       - index: 0x2066
+         subindex: 0
+         bit_length: 16
+       - index: 0x2067
+         subindex: 0
+         bit_length: 16
+       - index: 0x2068
+         subindex: 0
+         bit_length: 16
+       - index: 0x2069
+         subindex: 0
+         bit_length: 16
+       - index: 0x206a
+         subindex: 0
+         bit_length: 16
+       - index: 0x206b
+         subindex: 0
+bit_length: 16
 domains:
  - name: main
    period: 1
@@ -212,3 +241,7 @@ domains:
         acceleration: 10000
       control_mode: velocity
       dio_type: elmo
+    - name: Imu
+      type: imu_driver
+      terminal: imu
+      range: 2
