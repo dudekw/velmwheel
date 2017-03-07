@@ -50,8 +50,6 @@ std::chrono::nanoseconds nsec_rest;
 std::chrono::nanoseconds nsec_old;
 std::chrono::seconds sec;
 uint32_t sequence_enc;
-uint32_t vel_loop_time;
-
 
 const boost::array<double, 9> orientation_covariance = {0, 0, 0,
 								   0, 0, 0,
@@ -95,7 +93,6 @@ VelmWheelCore::VelmWheelCore(const std::string& name) : TaskContext(name)
 	this->addPort("wfl_port",wfl_port_);
 
 	this->addPort("out_odometry",out_odometry_);
-
 }
 
 VelmWheelCore::~VelmWheelCore() 
@@ -119,7 +116,7 @@ bool VelmWheelCore::configureHook()
 	double wrr_speed;
 	const double a = 0.3775;
 	const double b = 0.36;
-	const double r = 0.2032;
+	const double r = 0.1016;
 	int rad_to_encoder_scalar = 50 * 5000 / 3.1415; 
 	uint32_t wrl_enc_old;
 	uint32_t wrr_enc_old;
@@ -135,7 +132,6 @@ bool VelmWheelCore::configureHook()
 	std::chrono::nanoseconds nsec_old;
 	std::chrono::seconds sec;
 	uint32_t sequence_enc;
-	uint32_t vel_loop_time;
 
 	const boost::array<double, 9> orientation_covariance = {0, 0, 0,
 								   0, 0, 0,
@@ -159,6 +155,7 @@ bool VelmWheelCore::configureHook()
 													 0, 0, 0, 1, 0, 0,
 													 0, 0, 0, 0, 1, 0,
 													 0, 0, 0, 0, 0, 1};;
+
 	return true;
 }
 
@@ -326,35 +323,35 @@ void VelmWheelCore::updateHook()
 
 		// RTT::Logger::log() << RTT::Logger::Warning << "msg_wrl_enc_vel_: "<<msg_wrl_enc_vel_ / (2* rad_to_encoder_scalar) <<RTT::Logger::nl;
 
-		nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
-		vel_loop_time = nsec.count() - nsec_old.count();
+		// nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
+		// vel_loop_time = nsec.count() - nsec_old.count();
 
-		wheels_speed_enc[0] = msg_wrl_enc_vel_/ (2* rad_to_encoder_scalar);
+		wheels_speed_enc[0] = msg_wrl_enc_vel_/ (rad_to_encoder_scalar);
 		// wrl_dist_diff = (double) ((msg_wrl_enc_vel_ - wrl_enc_vel_old) / (double)((50*5000))) * 3.1415; 
 		// RTT::Logger::log() << RTT::Logger::Warning << "wrl_dist_diff: "<<wrl_dist_diff<<RTT::Logger::nl;
 		// wrl_enc_vel_old = msg_wrl_enc_vel_;
 	}
 	if (RTT::NewData == in_wrr_enc_vel_.read(msg_wrr_enc_vel_))
 	{
-		wheels_speed_enc[3] = msg_wrr_enc_vel_/ (2* rad_to_encoder_scalar);
+		wheels_speed_enc[3] = msg_wrr_enc_vel_/ (rad_to_encoder_scalar);
 
 		// wrr_dist_diff = ( (msg_wrr_enc_vel_ - wrr_enc_vel_old) / (50*5000) ) * ( (2 * 3.1415 * r) / 360 );
 		// wrr_enc_vel_old = msg_wrr_enc_vel_;
 	}
 	if (RTT::NewData == in_wfl_enc_vel_.read(msg_wfl_enc_vel_))
 	{
-		wheels_speed_enc[1] = msg_wfl_enc_vel_/ (2* rad_to_encoder_scalar);
+		wheels_speed_enc[1] = msg_wfl_enc_vel_/ (rad_to_encoder_scalar);
 
 		// // wfl_dist_diff = ( (msg_wfl_enc_vel_ - wfl_enc_vel_old) / (50*5000) ) * ( (2 * 3.1415 * r) / 360 );
 		// wfl_enc_vel_old = msg_wfl_enc_vel_;
 	}
 	if (RTT::NewData == in_wfr_enc_vel_.read(msg_wfr_enc_vel_))
 	{
-		wheels_speed_enc[2] = msg_wfr_enc_vel_/ (2* rad_to_encoder_scalar);
+		wheels_speed_enc[2] = msg_wfr_enc_vel_/ (rad_to_encoder_scalar);
 
 		// wfr_dist_diff = ( (msg_wfr_enc_vel_ - wfr_enc_vel_old) / (50*5000) ) * ( (2 * 3.1415 * r) / 360 );
 		// wfr_enc_vel_old = msg_wfr_enc_vel_;
-
+}
 	// set odometry msg header
 	setHeader(msg_odometry.header, "odom", sequence_enc);
 	// get speed of wheels [m/s]
@@ -364,9 +361,10 @@ void VelmWheelCore::updateHook()
 	// write odometry msg to output port
 	out_odometry_.write(msg_odometry);
 
-	nsec_old = nsec;
+	// nsec_old = nsec;
 
 }
+
 
 
 ORO_CREATE_COMPONENT(VelmWheelCore)

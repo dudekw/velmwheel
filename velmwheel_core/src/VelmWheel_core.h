@@ -32,7 +32,6 @@ class VelmWheelCore : public RTT::TaskContext
  		RTT::InputPort<sensor_msgs::Imu> in_imu_;
 
  		RTT::OutputPort<nav_msgs::Odometry> out_odometry_;
- 		RTT::OutputPort<sensor_msgs::Imu> out_imu_;
 		RTT::OutputPort<double> wrl_port_;
 		RTT::OutputPort<double> wrr_port_;
 		RTT::OutputPort<double> wfl_port_;
