@@ -4,9 +4,12 @@ ros.import("rtt_rospack")
 
 ros.import("ec_hardware")
 ros.import("ec_drivers")
+ros.import("ec_drivers")
 
 ros.import("velmwheel_core")
+ros.import("velmwheel_fusion")
 ros.import("rtt_nav_msgs")
+ros.import("rtt_sensor_msgs")
 
 ros.import("rtt_geometry_msgs")
 //require("print")
@@ -39,7 +42,7 @@ connect("VelmWheel_Core.in_wfl_enc_vel","VelmWheelInterface_EC.wheel_fl.motor_ve
 connect("VelmWheel_Core.in_wfr_enc_vel","VelmWheelInterface_EC.wheel_fr.motor_velocity", ConnPolicy())
 connect("VelmWheel_Core.in_wrr_enc_vel","VelmWheelInterface_EC.wheel_rr.motor_velocity", ConnPolicy())
 
-stream("VelmWheel_Core.IMU_Msr_OUTPORT", ros.comm.topic("imu"))
+stream("VelmWheelInterface_EC.Imu.IMU_Msr_OUTPORT", ros.comm.topic("imu"))
 stream("VelmWheel_Core.in_twist", ros.comm.topic("cmd_vel"));
 stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 
@@ -80,3 +83,12 @@ VelmWheelInterface_EC.wheel_rr.enable()
 //print.ln("rr_state = "+ VelmWheelInterface_EC.wheel_rr.state);
 
 VelmWheel_Core.start()
+
+loadComponent("VelmWheel_Fusion","VelmWheelFusion")
+setActivity("VelmWheel_Fusion", 0.001, 5, ORO_SCHED_RT)
+VelmWheel_Fusion.configure();
+
+stream("VelmWheel_Fusion.in_twist", ros.comm.topic("cmd_vel"));
+connect("VelmWheel_Fusion.in_odometry","VelmWheel_Core.out_odometry", ConnPolicy())
+
+VelmWheel_Fusion.start()
