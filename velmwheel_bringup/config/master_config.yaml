@@ -184,7 +184,7 @@ terminals:
          bit_length: 16
        - index: 0x206b
          subindex: 0
-bit_length: 16
+         bit_length: 16
 domains:
  - name: main
    period: 1
