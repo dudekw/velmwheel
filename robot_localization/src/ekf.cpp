@@ -309,11 +309,13 @@ namespace RobotLocalization
     {
       // (3) Apply the gain to the difference between the state and measurement: x = x + K(z - Hx)
       state_.noalias() += (*kalmanGainSubset) * (*innovationSubset);
-
       FB_DEBUG("PHT:\n" << (*pht) <<
              "\nhphrInv:\n" << (*hphrInv) <<
              "\nestimateErrorCovariance_:\n" << estimateErrorCovariance_ <<
-             "\n(*measurementCovarianceSubset)).inverse():\n" << (*measurementCovarianceSubset).inverse() << "\n");
+             "\n(*stateToMeasurementSubset) * (*pht):\n" << (*stateToMeasurementSubset) * (*pht) << "\n"<<
+             "\n(*measurementCovarianceSubset):\n" << (*measurementCovarianceSubset) << "\n"<<
+             "\n(*stateToMeasurementSubset) * (*pht) + (*measurementCovarianceSubset):\n" << (*stateToMeasurementSubset) * (*pht) + (*measurementCovarianceSubset) << "\n"<<
+             "\nSUM RANK:\n" << ((*stateToMeasurementSubset) * (*pht) + (*measurementCovarianceSubset)).eigenvalues() << "\n");
       // (4) Update the estimate error covariance using the Joseph form: (I - KH)P(I - KH)' + KRK'
       *gainResidual = identity_;
       gainResidual->noalias() -= (*kalmanGainSubset) * (*stateToMeasurementSubset);
