@@ -51,29 +51,29 @@ std::chrono::nanoseconds nsec_old;
 std::chrono::seconds sec;
 uint32_t sequence_enc;
 
-const boost::array<double, 9> orientation_covariance = {0, 0, 0,
-								   0, 0, 0,
-								   0, 0, 0};
-const boost::array<double, 9> angular_velocity_covariance = {0, 0, 0,
-								   0, 0, 0,
-								   0, 0, 0};
-const boost::array<double, 9> linear_acceleration_covariance = {0, 0, 0,
-								   0, 0, 0,
-								   0, 0, 0};
+const boost::array<double, 9> orientation_covariance = {0.001, 0, 0,
+								   0, 0.001, 0,
+								   0, 0, 0.001};
+const boost::array<double, 9> angular_velocity_covariance = {0.001, 0, 0,
+								   0, 0.001, 0,
+								   0, 0, 0.001};
+const boost::array<double, 9> linear_acceleration_covariance = {0.001, 0, 0,
+								   0, 0.001, 0,
+								   0, 0, 0.001};
 
-const boost::array<double, 36> odom_pose_covariace = {1, 0, 0, 0, 0, 0,
-													 0, 1, 0, 0, 0, 0,
-													 0, 0, 1, 0, 0, 0,
-													 0, 0, 0, 1, 0, 0,
-													 0, 0, 0, 0, 1, 0,
-													 0, 0, 0, 0, 0, 1}; 
+const boost::array<double, 36> odom_pose_covariace = {0.0001, 0, 0, 0, 0, 0,
+													 0, 0.0001, 0, 0, 0, 0,
+													 0, 0, 0.0001, 0, 0, 0,
+													 0, 0, 0, 0.0001, 0, 0,
+													 0, 0, 0, 0, 0.0001, 0,
+													 0, 0, 0, 0, 0, 0.0001}; 
 
-const boost::array<double, 36> odom_twist_covariace = {1, 0, 0, 0, 0, 0,
-													 0, 1, 0, 0, 0, 0,
-													 0, 0, 1, 0, 0, 0,
-													 0, 0, 0, 1, 0, 0,
-													 0, 0, 0, 0, 1, 0,
-													 0, 0, 0, 0, 0, 1};
+const boost::array<double, 36> odom_twist_covariace = {0.0001, 0, 0, 0, 0, 0,
+													 0, 0.0001, 0, 0, 0, 0,
+													 0, 0, 0.0001, 0, 0, 0,
+													 0, 0, 0, 0.0001, 0, 0,
+													 0, 0, 0, 0, 0.0001, 0,
+													 0, 0, 0, 0, 0, 0.0001};
 VelmWheelCore::VelmWheelCore(const std::string& name) : TaskContext(name)
 {
 
@@ -143,18 +143,19 @@ bool VelmWheelCore::configureHook()
 								   0, 0, 0,
 								   0, 0, 0};;
 
-	const boost::array<double, 36> odom_pose_covariace = {1, 0, 0, 0, 0, 0,
-													 0, 1, 0, 0, 0, 0,
-													 0, 0, 1, 0, 0, 0,
-													 0, 0, 0, 1, 0, 0,
-													 0, 0, 0, 0, 1, 0,
-													 0, 0, 0, 0, 0, 1};;
-	const boost::array<double, 36> odom_twist_covariace = {1, 0, 0, 0, 0, 0,
-													 0, 1, 0, 0, 0, 0,
-													 0, 0, 1, 0, 0, 0,
-													 0, 0, 0, 1, 0, 0,
-													 0, 0, 0, 0, 1, 0,
-													 0, 0, 0, 0, 0, 1};;
+	const boost::array<double, 36> odom_pose_covariace = {0.0001, 0, 0, 0, 0, 0,
+														 0, 0.0001, 0, 0, 0, 0,
+														 0, 0, 0.0001, 0, 0, 0,
+														 0, 0, 0, 0.0001, 0, 0,
+														 0, 0, 0, 0, 0.0001, 0,
+														 0, 0, 0, 0, 0, 0.0001}; 
+
+	const boost::array<double, 36> odom_twist_covariace = {0.0001, 0, 0, 0, 0, 0,
+													 0, 0.0001, 0, 0, 0, 0,
+													 0, 0, 0.0001, 0, 0, 0,
+													 0, 0, 0, 0.0001, 0, 0,
+													 0, 0, 0, 0, 0.0001, 0,
+													 0, 0, 0, 0, 0, 0.0001};
 
 	return true;
 }
@@ -353,6 +354,7 @@ void VelmWheelCore::updateHook()
 		// wfr_enc_vel_old = msg_wfr_enc_vel_;
 }
 	// set odometry msg header
+	nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
 	setHeader(msg_odometry.header, "odom", sequence_enc);
 	// get speed of wheels [m/s]
 	// getWheelsSpeed();
