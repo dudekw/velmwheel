@@ -12,7 +12,7 @@ ros.import("rtt_nav_msgs")
 ros.import("rtt_sensor_msgs")
 
 ros.import("rtt_geometry_msgs")
-//require("print")
+require("print")
 
 loadComponent("VelmWheelInterface_EC","ECHardware")
 setActivity("VelmWheelInterface_EC", 0.001, 6, ORO_SCHED_RT)
@@ -46,12 +46,12 @@ stream("VelmWheelInterface_EC.Imu.IMU_Msr_OUTPORT", ros.comm.topic("imu"))
 stream("VelmWheel_Core.in_twist", ros.comm.topic("cmd_vel"));
 stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 
-
 VelmWheelInterface_EC.start();
-//print.ln("rl_state = "+ VelmWheelInterface_EC.wheel_rl.state);
 
 while (VelmWheelInterface_EC.wheel_rl.state == 1 || VelmWheelInterface_EC.wheel_rr.state == 1 || VelmWheelInterface_EC.wheel_fl.state == 1 || VelmWheelInterface_EC.wheel_fr.state == 1) {
+	print.ln("At least one motor controller in state 1");
 }
+
 
 if (VelmWheelInterface_EC.wheel_rl.state == 8) then VelmWheelInterface_EC.wheel_rl.resetFault()
 
@@ -61,34 +61,24 @@ if (VelmWheelInterface_EC.wheel_fl.state == 8) then VelmWheelInterface_EC.wheel_
 
 if (VelmWheelInterface_EC.wheel_fr.state == 8) then VelmWheelInterface_EC.wheel_fr.resetFault()
 
-//print.ln("rl_state = "+ VelmWheelInterface_EC.wheel_rl.state);
-
 while (VelmWheelInterface_EC.wheel_rl.state != 4 || VelmWheelInterface_EC.wheel_rr.state != 4 || VelmWheelInterface_EC.wheel_fl.state != 4 || VelmWheelInterface_EC.wheel_fr.state != 4) {
-//print.ln("waiting");
+	print.ln("At least one motor controller NOT in state 4");
 }
-
-//print.ln("rl_state = "+ VelmWheelInterface_EC.wheel_rl.state);
-//print.ln("fl_state = "+ VelmWheelInterface_EC.wheel_fl.state);
-//print.ln("fr_state = "+ VelmWheelInterface_EC.wheel_fr.state);
-//print.ln("rr_state = "+ VelmWheelInterface_EC.wheel_rr.state);
 
 VelmWheelInterface_EC.wheel_fl.enable()
 VelmWheelInterface_EC.wheel_fr.enable()
 VelmWheelInterface_EC.wheel_rl.enable()
 VelmWheelInterface_EC.wheel_rr.enable()
 
-//print.ln("rl_state = "+ VelmWheelInterface_EC.wheel_rl.state);
-//print.ln("fl_state = "+ VelmWheelInterface_EC.wheel_fl.state);
-//print.ln("fr_state = "+ VelmWheelInterface_EC.wheel_fr.state);
-//print.ln("rr_state = "+ VelmWheelInterface_EC.wheel_rr.state);
+print.ln("all motors enabled");
 
 VelmWheel_Core.start()
 
-loadComponent("VelmWheel_Fusion","VelmWheelFusion")
-setActivity("VelmWheel_Fusion", 0.001, 5, ORO_SCHED_RT)
-VelmWheel_Fusion.configure();
+#loadComponent("VelmWheel_Fusion","VelmWheelFusion")
+#setActivity("VelmWheel_Fusion", 0.001, 5, ORO_SCHED_RT)
+#VelmWheel_Fusion.configure();
 
-stream("VelmWheel_Fusion.in_twist", ros.comm.topic("cmd_vel"));
-connect("VelmWheel_Fusion.in_odometry","VelmWheel_Core.out_odometry", ConnPolicy())
+#stream("VelmWheel_Fusion.in_twist", ros.comm.topic("cmd_vel"));
+#connect("VelmWheel_Fusion.in_odometry","VelmWheel_Core.out_odometry", ConnPolicy())
 
-VelmWheel_Fusion.start()
+#VelmWheel_Fusion.start()

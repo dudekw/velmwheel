@@ -1,45 +1,35 @@
 master_idx: 0
 terminals:
- - name: wheel_rl
-   vendor_id: 0x0000009a
-   device_id: 0x00030924
+ - name: imu
+   vendor_id: 0x00000021
+   device_id: 0x00000001
    station_alias: 0
    station_offset: 0
    TPDO:
     - index: 0x1a03
       entries:
-       - index: 0x6064
-         subindex: 0
-         bit_length: 32
-       - index: 0x60fd
-         subindex: 0
-         bit_length: 32
-       - index: 0x606c
-         subindex: 0
-         bit_length: 32
-       - index: 0x6041
+       - index: 0x2065
          subindex: 0
          bit_length: 16
-    - index: 0x1a13
-      entries:
-       - index: 0x6077
+       - index: 0x2066
          subindex: 0
          bit_length: 16
-   RPDO:
-    - index: 0x1601
-      entries:
-       - index: 0x60FF
-         subindex: 0
-         bit_length: 32
-       - index: 0x6040
+       - index: 0x2067
          subindex: 0
          bit_length: 16
-    - index: 0x160b
-      entries:
-       - index: 0x6060
+       - index: 0x2068
          subindex: 0
-         bit_length: 8
- - name: wheel_fl
+         bit_length: 16
+       - index: 0x2069
+         subindex: 0
+         bit_length: 16
+       - index: 0x206a
+         subindex: 0
+         bit_length: 16
+       - index: 0x206b
+         subindex: 0
+         bit_length: 16
+ - name: wheel_rl
    vendor_id: 0x0000009a
    device_id: 0x00030924
    station_alias: 0
@@ -78,7 +68,7 @@ terminals:
        - index: 0x6060
          subindex: 0
          bit_length: 8
- - name: wheel_fr
+ - name: wheel_fl
    vendor_id: 0x0000009a
    device_id: 0x00030924
    station_alias: 0
@@ -117,7 +107,7 @@ terminals:
        - index: 0x6060
          subindex: 0
          bit_length: 8
- - name: wheel_rr
+ - name: wheel_fr
    vendor_id: 0x0000009a
    device_id: 0x00030924
    station_alias: 0
@@ -156,35 +146,46 @@ terminals:
        - index: 0x6060
          subindex: 0
          bit_length: 8
- - name: imu
-   vendor_id: 0x00000021
-   device_id: 0x00000001
+ - name: wheel_rr
+   vendor_id: 0x0000009a
+   device_id: 0x00030924
    station_alias: 0
    station_offset: 4
    TPDO:
-    - index: 0x1a00
+    - index: 0x1a03
       entries:
-       - index: 0x2065
+       - index: 0x6064
+         subindex: 0
+         bit_length: 32
+       - index: 0x60fd
+         subindex: 0
+         bit_length: 32
+       - index: 0x606c
+         subindex: 0
+         bit_length: 32
+       - index: 0x6041
          subindex: 0
          bit_length: 16
-       - index: 0x2066
+    - index: 0x1a13
+      entries:
+       - index: 0x6077
          subindex: 0
          bit_length: 16
-       - index: 0x2067
+   RPDO:
+    - index: 0x1601
+      entries:
+       - index: 0x60FF
+         subindex: 0
+         bit_length: 32
+       - index: 0x6040
          subindex: 0
          bit_length: 16
-       - index: 0x2068
+    - index: 0x160b
+      entries:
+       - index: 0x6060
          subindex: 0
-         bit_length: 16
-       - index: 0x2069
-         subindex: 0
-         bit_length: 16
-       - index: 0x206a
-         subindex: 0
-         bit_length: 16
-       - index: 0x206b
-         subindex: 0
-         bit_length: 16
+         bit_length: 8
+
 domains:
  - name: main
    period: 1
@@ -244,4 +245,5 @@ domains:
     - name: Imu
       type: imu_driver
       terminal: imu
-      range: 2
+      range: 4
+      frame_id: base_link
