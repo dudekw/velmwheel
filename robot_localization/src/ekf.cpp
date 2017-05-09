@@ -190,6 +190,7 @@ namespace RobotLocalization
     // attempt to maximize efficiency in Eigen.
 
     // First, determine how many state vector values we're updating
+    updateIndices->clear();
     for (i = 0; i < measurement.updateVector_.size(); ++i)
     {
       if (measurement.updateVector_[i])
