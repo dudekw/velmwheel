@@ -203,20 +203,22 @@ void getOdom()
 {
 
 /*
-	(wheels_speed_enc[0] + wheels_speed_enc[1]) * r = 2 * X + 2 * T
-	(wheels_speed_enc[2] + wheels_speed_enc[3]) * r = -2 * X + 2* T 
+    \\\\
+    \\   FORMULAS
+    \\\\
+    theta - angular velocity
+	theta = (wheels_speed_enc[0] + wheels_speed_enc[1] + wheels_speed_enc[2] + wheels_speed_enc[3]) * ( r / (4*(a + b)));
+    T = (a + b)
+    X - velocity along X axis
+	(wheels_speed_enc[0] + wheels_speed_enc[1]) * r = 2 * X + 2 * theta * T
+	(wheels_speed_enc[2] + wheels_speed_enc[3]) * r = -2 * X + 2* theta * T 
 	(wheels_speed_enc[0] + wheels_speed_enc[1]) * r + (wheels_speed_enc[2] + wheels_speed_enc[3]) * r = 4 T
 */
-
-	// 0 r       r        0 r^2
-	// ---- *  ----    = ------------
-	//  4       a + b       4 (a + b)
-
+	
 	// wheels: 0 - rl, 1 - fl, 2 - fr, 3 - rr
 	//
 
 	msg_odometry.twist.twist.angular.z = (wheels_speed_enc[0] + wheels_speed_enc[1] + wheels_speed_enc[2] + wheels_speed_enc[3]) * ( r / (4*(a + b)));
-
 	msg_odometry.twist.twist.linear.x = ((wheels_speed_enc[0] + wheels_speed_enc[1]) * r  - 2 * msg_odometry.twist.twist.angular.z * (a + b)) / 2;
 	msg_odometry.twist.twist.linear.y = wheels_speed_enc[1] * r - msg_odometry.twist.twist.linear.x - msg_odometry.twist.twist.angular.z * (a + b);
 	euler_z =  euler_z + (wfl_dist_diff + wfr_dist_diff + wrl_dist_diff + wrr_dist_diff) * (r  / (4 * (a + b)));
