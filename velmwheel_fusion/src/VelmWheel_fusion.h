@@ -24,7 +24,8 @@ class VelmWheelFusion : public RTT::TaskContext
  		RTT::InputPort<nav_msgs::Odometry> in_odometry_;
 
  		RTT::OutputPort<nav_msgs::Odometry> out_odometry_;
- 		
+ 		Eigen::VectorXd state_ ;
+const Eigen::VectorXd* state_ptr;
 
 };
 #endif  // VELMWHEELFUSION_H_

@@ -1,3 +1,4 @@
+
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
 #include <rtt/Logger.hpp>
@@ -9,184 +10,91 @@
 #include <chrono>
 #include "tf/transform_datatypes.h"
 
-#include <filter/extendedkalmanfilter.h>
-#include <model/linearanalyticsystemmodel_gaussianuncertainty.h>
-#include <model/linearanalyticmeasurementmodel_gaussianuncertainty.h>
-#include <pdf/analyticconditionalgaussian.h>
-#include <pdf/linearanalyticconditionalgaussian.h>
-#include "nonlinearanalyticconditionalgaussianmobile.h"
-#include "mobile_robot_wall_cts.h"
+#include "robot_localization/ros_filter_types.h"
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 #include "VelmWheel_fusion.h"
 #include <iostream>
 
-using namespace MatrixWrapper;
-using namespace BFL;
-
-static ExtendedKalmanFilter *filter = NULL;
-static AnalyticSystemModelGaussianUncertainty *sys_model = NULL;
-static LinearAnalyticMeasurementModelGaussianUncertainty *meas_model=NULL;
-static geometry_msgs::Twist *msg_twist = NULL;
-static nav_msgs::Odometry *msg_odometry = NULL;
-Pdf<ColumnVector> *posterior;
-static  ColumnVector *ekf_measurement=NULL;
-  tf::Quaternion tf_quaternion;
-static  ColumnVector *input=NULL;
-static ColumnVector *prior_Mu = NULL;
-
-static SymmetricMatrix *prior_Cov = NULL;
-static ColumnVector *meas_noise_Mu = NULL;
-static SymmetricMatrix *meas_noise_Cov = NULL;
-static Gaussian *measurement_Uncertainty = NULL;
-static Matrix *H = NULL;
-static ColumnVector *sys_noise_Mu = NULL;
-static SymmetricMatrix *sys_noise_Cov = NULL;
-static Gaussian *system_Uncertainty = NULL;
-static NonLinearAnalyticConditionalGaussianMobile *sys_pdf = NULL;
-static LinearAnalyticConditionalGaussian *meas_pdf = NULL;
-static Gaussian *prior_cont = NULL;
   uint32_t loop_time;
   std::chrono::nanoseconds nsec;
   std::chrono::nanoseconds nsec_old;
   double pose_x_from_input;
+std::auto_ptr<geometry_msgs::Twist> msg_twist;
+std::auto_ptr<nav_msgs::Odometry> msg_odometry;
+std::auto_ptr<RobotLocalization::Ekf> filter_;
+std::auto_ptr<Eigen::Vector3d> latestControl_;
+std::auto_ptr<Eigen::VectorXd> last_state_;
+std::auto_ptr<tf2::Quaternion> state_quat_;
+std::auto_ptr<Eigen::VectorXd> curr_measurement_ptr;
+std::auto_ptr<Eigen::VectorXd> curr_meas_cov_diag_ptr;
+    std::auto_ptr<ros::Time> current_loop_time_ptr; 
 
 VelmWheelFusion::VelmWheelFusion(const std::string& name) : TaskContext(name)
 {
 
 	this->addPort("in_twist",in_twist_);
 	this->addPort("in_odometry",in_odometry_);
-
 	this->addPort("out_odometry",out_odometry_);
 
-  msg_twist = new geometry_msgs::Twist();
-  msg_odometry = new nav_msgs::Odometry();
-
-  /****************************
-   * NonLinear system model      *
-   ***************************/
-  // create gaussian
-  sys_noise_Mu = new ColumnVector(STATE_SIZE);
-  (*sys_noise_Mu)(1) = MU_SYSTEM_NOISE_X;
-  (*sys_noise_Mu)(2) = MU_SYSTEM_NOISE_Y;
-  (*sys_noise_Mu)(3) = MU_SYSTEM_NOISE_THETA;
-  sys_noise_Cov = new SymmetricMatrix(STATE_SIZE);
-  *sys_noise_Cov = 0.0;
-  (*sys_noise_Cov)(1,1) = SIGMA_SYSTEM_NOISE_X;
-  (*sys_noise_Cov)(1,2) = 0.0;
-  (*sys_noise_Cov)(1,3) = 0.0;
-  (*sys_noise_Cov)(2,1) = 0.0;
-  (*sys_noise_Cov)(2,2) = SIGMA_SYSTEM_NOISE_Y;
-  (*sys_noise_Cov)(2,3) = 0.0;
-  (*sys_noise_Cov)(3,1) = 0.0;
-  (*sys_noise_Cov)(3,2) = 0.0;
-  (*sys_noise_Cov)(3,3) = SIGMA_SYSTEM_NOISE_THETA;
-
-  system_Uncertainty = new Gaussian(*sys_noise_Mu, *sys_noise_Cov);
-  // create the model
-  sys_pdf = new NonLinearAnalyticConditionalGaussianMobile(*system_Uncertainty);
-  sys_model = new AnalyticSystemModelGaussianUncertainty(sys_pdf);
-
-  /*********************************
-   * Initialise measurement model *
-   ********************************/
-
-  // create matrix H for linear measurement model
-  //double wall_ct = 2/(sqrt(pow(RICO_WALL,2.0) + 1));
-  H = new Matrix(MEAS_SIZE,STATE_SIZE);
-  *H = 0.0;
-  // odom position X
-  (*H)(1,1) = 1;
-  (*H)(1,2) = 0.0;
-  (*H)(1,3) = 0.0;
-  // odom position Y
-  (*H)(2,1) = 0.0;
-  (*H)(2,2) = 1;
-  (*H)(2,3) = 0.0;
-  // odom angular position
-  (*H)(3,1) = 0.0;
-  (*H)(3,2) = 0.0;
-  (*H)(3,3) = 1;
-  // Construct the measurement noise (a scalar in this case)
-meas_noise_Mu = new   ColumnVector(MEAS_SIZE);
-  (*meas_noise_Mu)(1) = MU_MEAS_NOISE;
-  (*meas_noise_Mu)(2) = MU_MEAS_NOISE;
-  (*meas_noise_Mu)(3) = MU_MEAS_NOISE;
-
- meas_noise_Cov = new SymmetricMatrix(MEAS_SIZE);
-  (*meas_noise_Cov)(1,1) = SIGMA_MEAS_NOISE;
-  (*meas_noise_Cov)(2,2) = SIGMA_MEAS_NOISE;
-  (*meas_noise_Cov)(3,3) = SIGMA_MEAS_NOISE;
-   measurement_Uncertainty = new Gaussian(*meas_noise_Mu, *meas_noise_Cov);
-
-  // create the measurement model
-  meas_pdf= new LinearAnalyticConditionalGaussian(*H, *measurement_Uncertainty);
-  meas_model = new LinearAnalyticMeasurementModelGaussianUncertainty(meas_pdf);
-   /****************************
-   * Linear prior DENSITY     *
-   ***************************/
-   // Continuous Gaussian prior (for Kalman filters)
-  prior_Mu = new ColumnVector(STATE_SIZE);
-  (*prior_Mu)(1) = PRIOR_MU_X;
-  (*prior_Mu)(2) = PRIOR_MU_Y;
-  (*prior_Mu)(3) = PRIOR_MU_THETA;
-  prior_Cov = new SymmetricMatrix(STATE_SIZE);
-  (*prior_Cov)(1,1) = PRIOR_COV_X;
-  (*prior_Cov)(1,2) = 0.0;
-  (*prior_Cov)(1,3) = 0.0;
-  (*prior_Cov)(2,1) = 0.0;
-  (*prior_Cov)(2,2) = PRIOR_COV_Y;
-  (*prior_Cov)(2,3) = 0.0;
-  (*prior_Cov)(3,1) = 0.0;
-  (*prior_Cov)(3,2) = 0.0;
-  (*prior_Cov)(3,3) = PRIOR_COV_THETA;
-  prior_cont = new Gaussian(*prior_Mu, *prior_Cov);
-  /******************************
-   * Construction of the Filter *
-   ******************************/
-  filter = new ExtendedKalmanFilter(prior_cont);
-
-Pdf<ColumnVector> *posterior;
-  ekf_measurement = new ColumnVector(3);
-  tf::Quaternion tf_quaternion();
-  input = new ColumnVector(3);
-
-  uint32_t loop_time;
-  double pose_x_from_input;
-  std::chrono::nanoseconds nsec;
-  std::chrono::nanoseconds nsec_old;
+  msg_twist.reset( new geometry_msgs::Twist());
+  msg_odometry.reset(new nav_msgs::Odometry());
+ filter_.reset(new RobotLocalization::Ekf());
+ latestControl_.reset(new Eigen::Vector3d());
+ last_state_.reset(new Eigen::VectorXd());
+ state_quat_.reset(new tf2::Quaternion());
+ //state_ = ;
+  state_ptr = &filter_->getState();//new Eigen::VectorXd();
+ curr_measurement_ptr.reset(new Eigen::VectorXd(12));
+ curr_meas_cov_diag_ptr.reset(new Eigen::VectorXd(12));
+current_loop_time_ptr.reset(new ros::Time);
 }
 
 VelmWheelFusion::~VelmWheelFusion() 
 {
-delete filter;
-delete meas_model;
-delete sys_model;
-delete msg_twist;
-delete msg_odometry;
 }
 
 bool VelmWheelFusion::configureHook() 
 {
+ //            std::cout << "input_x = "<<std::endl;
 
+filter_->setControlParams({0,0,0,0,0,01,1,0,0,0,1,0,0,0,0,0,0}, 1, {1.3, 1.3, 1.3, 1.3, 1.3, 4.5}, {0.8, 1.3, 1.3, 1.3, 1.3, 0.9}, {1.3, 1.3, 1.3, 1.3, 1.3, 4.5}, {1.0, 1.3, 1.3, 1.3, 1.3, 1.0});
+Eigen::MatrixXd process_noise_cov(15,15);
+ process_noise_cov << 0.05, 0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0.05, 0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0.06, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0.03, 0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0.03, 0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0.06, 0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0.025, 0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0.025, 0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0.04, 0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0.01, 0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0.01, 0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0.02, 0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0.01, 0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0.01, 0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0.015;
+          filter_->setProcessNoiseCovariance(process_noise_cov);      
+          filter_->setSensorTimeout(0.1);
 
+    (*latestControl_)(0) =0;
+    (*latestControl_)(1) =0;
+    (*latestControl_)(2) =0;
 	return true;
 }
 
 bool VelmWheelFusion::startHook() 
 {
+ //std::cout << "test 3"<<std::endl;
 
-    (*input)(1) = 0.0;
+    msg_twist->linear.x = 0.0;
     // velocity Y input to the robot model
-    (*input)(2) = 0.0;
+    msg_twist->linear.y = 0.0;
     // angular velocity input to the robot model
-    (*input)(3) = 0.0;
-
-    (*ekf_measurement)(1) = 0;
-    // [measurement odometry] - velocity Y
-    (*ekf_measurement)(2) = 0;
-    // [measurement odometry] - angular velocity
-    (*ekf_measurement)(3) = 0;
+    msg_twist->angular.z  = 0.0;
   nsec_old = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
+///*       */ std::cout << "test 4"<<std::endl;
 
 	return true;
 }
@@ -197,50 +105,106 @@ bool VelmWheelFusion::startHook()
 void VelmWheelFusion::updateHook() 
 {
     nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
+
     loop_time = nsec.count() - nsec_old.count();
     nsec_old = nsec;
+   current_loop_time_ptr->sec = std::chrono::duration_cast<std::chrono::seconds >(nsec).count();
+   current_loop_time_ptr->nsec = (nsec - std::chrono::duration_cast<std::chrono::seconds >(nsec)).count();
+
 
 	if (RTT::NewData == in_twist_.read(*msg_twist))
 	{
-		// velocity X input to the robot model
-		(*input)(1) = msg_twist->linear.x * double (loop_time)/1000000000;
+		/*
+    // velocity X input to the robot model
+		msg_twist->linear.x = msg_twist->linear.x * double (loop_time)/1000000000;
 
 		// velocity Y input to the robot model
-		(*input)(2) = msg_twist->linear.y * double (loop_time)/1000000000;
+		msg_twist->linear.y = msg_twist->linear.y * double (loop_time)/1000000000;
 		// angular velocity input to the robot model
-		(*input)(3) = msg_twist->angular.z * double (loop_time)/1000000000;
-
+		msg_twist->angular.z = msg_twist->angular.z * double (loop_time)/1000000000;
+    */
+//    std::cout << "input_y = "  << msg_twist->linear.y << std::endl;
+    *latestControl_ << msg_twist->linear.x, msg_twist->linear.y, msg_twist->angular.z;
 	}
-//if ((*input)(1) != 0)
-  pose_x_from_input +=(*input)(1) * double (loop_time)/1000000000;
-
-   //std::cout << "czas jazdy = "  << pose_x_from_input<< std::endl;
 
 	if (RTT::NewData == in_odometry_.read(*msg_odometry))
 	{
-
-		// [measurement odometry] - velocity X
-		(*ekf_measurement)(1) = msg_odometry->pose.pose.position.x;
-
-		// [measurement odometry] - velocity Y
-		(*ekf_measurement)(2) = msg_odometry->pose.pose.position.y;
+ 
 		// [measurement odometry] - angular velocity
-    tf::quaternionMsgToTF(msg_odometry->pose.pose.orientation, tf_quaternion);
-	  (*ekf_measurement)(3) = tf_quaternion.getAngle();
- //   std::cout << "measure = "  << (*ekf_measurement)(1) << std::endl;
+    //tf::quaternionMsgToTF(msg_odometry->pose.pose.orientation, tf_quaternion);
+ //   std::cout << "measure = "  << msg_odometry->twist.twist.linear.y << std::endl;
   }
-  //std::cout << " input = "  << (*input)(3) << std::endl;
+  //
+  //
+  //
+  //
+  filter_->setControl(*latestControl_, current_loop_time_ptr->toSec()- 0.001);
 
-    filter->Update(sys_model,*input,meas_model,*ekf_measurement);
 
-    posterior = filter->PostGet();
+RobotLocalization::Measurement new_measurement;
+new_measurement.topicName_ = "odom";
 
-  std::cout << "KALMAN:      INPUT:        MEASUREMENT:"  << std::endl;
-  std::cout<<posterior->ExpectedValueGet()[0]<<"      "<< pose_x_from_input << "                "<<(*ekf_measurement)(1)<< std::endl;
- //      << " Covariance = " << posterior->CovarianceGet() << "" << std::endl;
+
+(*curr_measurement_ptr) <<     0,0,0,0,0,0,msg_odometry->twist.twist.linear.x, msg_odometry->twist.twist.linear.y, 0,
+                        0,0,msg_odometry->twist.twist.angular.z;
+new_measurement.measurement_ = (*curr_measurement_ptr);
+
+//new_measurement.measurement_ = Eigen::VectorXd(0,0,0,0,0,0,msg_odometry->twist.twist.linear.x, msg_odometry->twist.twist.linear.y,0,0,0,msg_odometry->twist.twist.angular.z);
+(*curr_meas_cov_diag_ptr) << 1, 1, 1, 1, 1, 1, msg_odometry->twist.covariance[0], msg_odometry->twist.covariance[7], 1,1,1, msg_odometry->twist.covariance[35];
+new_measurement.covariance_ = curr_meas_cov_diag_ptr->asDiagonal();
+/*
+size_t k = 0;
+for (size_t i = 0; i< 6 ; i++){
+for (size_t j = 0; j< 6 ; j++){
+new_measurement.covariance_(i,j) = msg_odometry->twist.covariance[k];
+k++;
+}
+}
+*/
+
+
+//std::cout << "covariance : \n"<< new_measurement.covariance_ <<std::endl;
+
+new_measurement.updateVector_ = {0,0,0,0,0,0,1,1,0,0,0,1};
+new_measurement.time_ = current_loop_time_ptr->toSec();
+new_measurement.latestControl_ = *latestControl_;
+//
+//  TRZEBA USTAWIC mahalanobisThresh_ !!!!!!!!!!!!!!!!!!!!!!!
+//
+new_measurement.mahalanobisThresh_ = 2;
+new_measurement.latestControlTime_ = new_measurement.time_ - 0.001;
+
+filter_->processMeasurement(new_measurement);
+//const Eigen::VectorXd &pred_state = filter_->getPredictedState();
+//const Eigen::VectorXd &got_control = filter_->getControl();
+//std::cout << "got_control: \n"<< got_control <<std::endl;
+//std::cout << "pred_state: \n"<< pred_state <<std::endl;
+
+msg_odometry->pose.pose.position.x = (*state_ptr)(0);
+msg_odometry->pose.pose.position.y = (*state_ptr)(1);
+msg_odometry->pose.pose.position.z = 0;
+
+state_quat_->setRPY((*state_ptr)(3), (*state_ptr)(4), (*state_ptr)(5));
+
+msg_odometry->pose.pose.orientation.x = (*state_quat_).getX();
+msg_odometry->pose.pose.orientation.y = (*state_quat_).getY();
+msg_odometry->pose.pose.orientation.z = (*state_quat_).getZ();
+msg_odometry->pose.pose.orientation.w = (*state_quat_).getW();
+
+msg_odometry->twist.twist.linear.x = (*state_ptr)(6);
+msg_odometry->twist.twist.linear.y = (*state_ptr)(7);
+msg_odometry->twist.twist.linear.z = 0;
+
+msg_odometry->twist.twist.angular.x = 0;
+msg_odometry->twist.twist.angular.y = 0;
+msg_odometry->twist.twist.angular.z = (*state_ptr)(11);
+
+msg_odometry->child_frame_id = "base_link";
+msg_odometry->header.stamp = (*current_loop_time_ptr);
+msg_odometry->header.frame_id = "odom";
+
+out_odometry_.write(*msg_odometry);
 
 }
-
-
 
 ORO_CREATE_COMPONENT(VelmWheelFusion)
