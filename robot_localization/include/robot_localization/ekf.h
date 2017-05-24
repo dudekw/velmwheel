@@ -34,6 +34,7 @@
 #define ROBOT_LOCALIZATION_EKF_H
 
 #include "robot_localization/filter_base.h"
+#include <memory>
 
 #include <fstream>
 #include <vector>
@@ -52,6 +53,74 @@ namespace RobotLocalization
 //!
 class Ekf: public FilterBase
 {
+
+    private:
+        // Now set up the relevant matrices
+        static std::auto_ptr<Eigen::VectorXd> stateSubset;//= NULL;//(updateSize);                              // x (in most literature)
+        static std::auto_ptr<Eigen::VectorXd> measurementSubset;//= NULL;//(updateSize);                        // z
+        static std::auto_ptr<Eigen::MatrixXd> measurementCovarianceSubset;//= NULL;//(updateSize, updateSize);  // R
+        static std::auto_ptr<Eigen::MatrixXd> stateToMeasurementSubset;//= NULL;//(updateSize, state_.rows());  // H
+        static std::auto_ptr<Eigen::MatrixXd> kalmanGainSubset;//= NULL;//(state_.rows(), updateSize);          // K
+        static std::auto_ptr<Eigen::VectorXd> innovationSubset;//= NULL;//(updateSize);                         // z - Hx
+        // how many states are going to be updated in current loop
+        static std::auto_ptr<std::vector<size_t> > updateIndices;//= NULL;
+        size_t updateSize;
+        // (1) Compute the Kalman gain: K = (PH') / (HPH' + R)
+        static std::auto_ptr<Eigen::MatrixXd> pht;//= NULL;// = estimateErrorCovariance_ *stateToMeasurementSubset.transpose();
+        static std::auto_ptr<Eigen::MatrixXd> phrInv;//= NULL;//  = (stateToMeasurementSubset *pht + measurementCovarianceSubset).inverse();
+        static std::auto_ptr<Eigen::MatrixXd> hphrInv;
+
+        // (4) Update the estimate error covariance using the Joseph form: (I - KH)P(I - KH)' + KRK'
+        static std::auto_ptr<Eigen::MatrixXd> gainResidual;//= NULL;// = identity_;
+        static std::auto_ptr<Eigen::MatrixXd> processNoiseCovariance_ptr;//= NULL;// = &processNoiseCovariance_;
+        static std::auto_ptr<Eigen::MatrixXd> dynamicProcessNoiseCovariance_ptr;
+
+
+        size_t i;
+        size_t j;
+        //
+        //    PREDICT
+        double roll;// = state_(StateMemberRoll);
+        double pitch;// = state_(StateMemberPitch);
+        double yaw;// = state_(StateMemberYaw);
+        double xVel;// = state_(StateMemberVx);
+        double yVel;// = state_(StateMemberVy);
+        double zVel;//= state_(StateMemberVz);
+        double rollVel;// = state_(StateMemberVroll);
+        double pitchVel;// = state_(StateMemberVpitch);
+        double yawVel;// = state_(StateMemberVyaw);
+        double xAcc;// = state_(StateMemberAx);
+        double yAcc;// = state_(StateMemberAy);
+        double zAcc;// = state_(StateMemberAz);
+
+        // We'll eed these trig calculations a lot.
+        double sp;// = ::sin(pitch);
+        double cp;// = ::cos(pitch);
+        double sr;// = ::sin(roll);
+        double cr;// = ::cos(roll);
+        double sy;// = ::sin(yaw);
+        double cy;// = ::cos(yaw);
+        double xCoeff;// = 0.0;
+        double yCoeff;// = 0.0;
+        double zCoeff;// = 0.0;
+        double oneHalfATSquared;// = 0.5 * delta * delta;
+        double dFx_dR;// = (yCoeff * yVel + zCoeff * zVel) * delta +
+        double dFR_dR;// = 1 + (yCoeff * pitchVel + zCoeff * yawVel) * delta;
+        double dFx_dP;// = (xCoeff * xVel + yCoeff * yVel + zCoeff * zVel) * delta +
+        double dFR_dP;// = (xCoeff * rollVel + yCoeff * pitchVel + zCoeff * yawVel) * delta;
+        double dFx_dY;// = (xCoeff * xVel + yCoeff * yVel + zCoeff * zVel) * delta +
+        double dFR_dY;// = (xCoeff * rollVel + yCoeff * pitchVel + zCoeff * yawVel) * delta;
+        double dFy_dR;// = (yCoeff * yVel + zCoeff * zVel) * delta +
+        double dFP_dR;// = (yCoeff * pitchVel + zCoeff * yawVel) * delta;
+        double dFy_dP;// = (xCoeff * xVel + yCoeff * yVel + zCoeff * zVel) * delta +
+        double dFP_dP;// = 1 + (xCoeff * rollVel + yCoeff * pitchVel + zCoeff * yawVel) * delta;
+        double dFy_dY;// = (xCoeff * xVel + yCoeff * yVel + zCoeff * zVel) * delta +
+        double dFP_dY;// = (xCoeff * rollVel + yCoeff * pitchVel + zCoeff * yawVel) * delta;
+        double dFz_dR;// = (yCoeff * yVel + zCoeff * zVel) * delta +
+        double dFY_dR;// = (yCoeff * pitchVel + zCoeff * yawVel) * delta;
+        double dFz_dP;// = (xCoeff * xVel + yCoeff * yVel + zCoeff * zVel) * delta +
+        double dFY_dP;// = (xCoeff * rollVel + yCoeff * pitchVel + zCoeff * yawVel) * delta;
+
   public:
     //! @brief Constructor for the Ekf class
     //!
@@ -80,6 +149,7 @@ class Ekf: public FilterBase
     //! @param[in] delta - The time step over which to predict.
     //!
     void predict(const double referenceTime, const double delta);
+
 };
 
 }  // namespace RobotLocalization

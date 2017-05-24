@@ -38,6 +38,11 @@
 #include <limits>
 #include <iostream>
 
+
+    size_t iterate_i;
+    size_t iterate_j;
+std::auto_ptr<Eigen::MatrixXd> RobotLocalization::FilterBase::velocityMatrix_ptr(NULL);
+
 namespace RobotLocalization
 {
   FilterBase::FilterBase() :
@@ -118,6 +123,17 @@ namespace RobotLocalization
     processNoiseCovariance_(StateMemberAz, StateMemberAz) = 0.015;
 
     dynamicProcessNoiseCovariance_ = processNoiseCovariance_;
+    // allocate variables
+    velocityMatrix_ptr.reset(new Eigen::MatrixXd);
+    double measurementTimeDelta;
+    size_t measurementLength;
+    bool timedOut;
+    size_t controlInd;
+    double sqMahalanobis;
+    double threshold;
+    size_t iterate_i;
+    size_t iterate_j;
+
   }
 
   FilterBase::~FilterBase()
@@ -133,14 +149,14 @@ namespace RobotLocalization
     // However, this presents trouble for robots that may incur rotational error as a result of linear motion (and
     // vice-versa). Instead, we create a diagonal matrix whose diagonal values are the vector norm of the state's
     // velocity. We use that to scale the process noise covariance.
-    Eigen::MatrixXd velocityMatrix(TWIST_SIZE, TWIST_SIZE);
-    velocityMatrix.setIdentity();
-    velocityMatrix.diagonal() *= state.segment(POSITION_V_OFFSET, TWIST_SIZE).norm();
+    //Eigen::MatrixXd velocityMatrix(TWIST_SIZE, TWIST_SIZE);
+    velocityMatrix_ptr->setIdentity();
+    velocityMatrix_ptr->diagonal() *= state.segment(POSITION_V_OFFSET, TWIST_SIZE).norm();
 
     dynamicProcessNoiseCovariance_.block<TWIST_SIZE, TWIST_SIZE>(POSITION_OFFSET, POSITION_OFFSET) =
-      velocityMatrix *
+      (*velocityMatrix_ptr) *
       processNoiseCovariance_.block<TWIST_SIZE, TWIST_SIZE>(POSITION_OFFSET, POSITION_OFFSET) *
-      velocityMatrix.transpose();
+      velocityMatrix_ptr->transpose();
   }
 
   const Eigen::VectorXd& FilterBase::getControl()
@@ -202,7 +218,7 @@ namespace RobotLocalization
   {
     FB_DEBUG("------ FilterBase::processMeasurement (" << measurement.topicName_ << ") ------\n");
 
-    double delta = 0.0;
+    measurementTimeDelta = 0.0;
 
     // If we've had a previous reading, then go through the predict/update
     // cycle. Otherwise, set our state and covariance to whatever we get
@@ -210,19 +226,18 @@ namespace RobotLocalization
     if (initialized_)
     {
       // Determine how much time has passed since our last measurement
-      delta = measurement.time_ - lastMeasurementTime_;
+      measurementTimeDelta = measurement.time_ - lastMeasurementTime_;
 
       FB_DEBUG("Filter is already initialized. Carrying out predict/correct loop...\n"
                "Measurement time is " << std::setprecision(20) << measurement.time_ <<
-               ", last measurement time is " << lastMeasurementTime_ << ", delta is " << delta << "\n");
+               ", last measurement time is " << lastMeasurementTime_ << ", delta is " << measurementTimeDelta << "\n");
 
       // Only want to carry out a prediction if it's
       // forward in time. Otherwise, just correct.
-      if (delta > 0)
+      if (measurementTimeDelta > 0)
       {
-        validateDelta(delta);
-        predict(measurement.time_, delta);
-
+        validateDelta(measurementTimeDelta);
+        predict(measurement.time_, measurementTimeDelta);
         // Return this to the user
         predictedState_ = state_;
       }
@@ -234,27 +249,30 @@ namespace RobotLocalization
       FB_DEBUG("First measurement. Initializing filter.\n");
 
       // Initialize the filter, but only with the values we're using
-      size_t measurementLength = measurement.updateVector_.size();
-      for (size_t i = 0; i < measurementLength; ++i)
+      measurementLength = measurement.updateVector_.size();
+      iterate_i = 0;
+      for (iterate_i = 0; iterate_i < measurementLength; ++iterate_i)
       {
-        state_[i] = (measurement.updateVector_[i] ? measurement.measurement_[i] : state_[i]);
+        state_[iterate_i] = (measurement.updateVector_[iterate_i] ? measurement.measurement_[iterate_i] : state_[iterate_i]);
       }
 
       // Same for covariance
-      for (size_t i = 0; i < measurementLength; ++i)
+      iterate_i = 0;
+      for (iterate_i = 0; iterate_i < measurementLength; ++iterate_i)
       {
-        for (size_t j = 0; j < measurementLength; ++j)
+        iterate_j = 0;
+        for (iterate_j = 0; iterate_j < measurementLength; ++iterate_j)
         {
-          estimateErrorCovariance_(i, j) = (measurement.updateVector_[i] && measurement.updateVector_[j] ?
-                                            measurement.covariance_(i, j) :
-                                            estimateErrorCovariance_(i, j));
+          estimateErrorCovariance_(iterate_i, iterate_j) = (measurement.updateVector_[iterate_i] && measurement.updateVector_[iterate_j] ?
+                                            measurement.covariance_(iterate_i, iterate_j) :
+                                            estimateErrorCovariance_(iterate_i, iterate_j));
         }
       }
 
       initialized_ = true;
     }
 
-    if (delta >= 0.0)
+    if (measurementTimeDelta >= 0.0)
     {
       // Update the last measurement and update time.
       // The measurement time is based on the time stamp of the
@@ -361,7 +379,7 @@ namespace RobotLocalization
 
     if (useControl_)
     {
-      bool timedOut = ::fabs(referenceTime - latestControlTime_) >= controlTimeout_;
+      timedOut = ::fabs(referenceTime - latestControlTime_) >= controlTimeout_;
 
       if(timedOut)
       {
@@ -369,7 +387,7 @@ namespace RobotLocalization
           latestControlTime_ << ", control timeout was " << controlTimeout_ << "\n");
       }
 
-      for(size_t controlInd = 0; controlInd < TWIST_SIZE; ++controlInd)
+      for(controlInd = 0; controlInd < TWIST_SIZE; ++controlInd)
       {
         if(controlUpdateVector_[controlInd])
         {
@@ -392,8 +410,8 @@ namespace RobotLocalization
                                              const Eigen::MatrixXd &invCovariance,
                                              const double nsigmas)
   {
-    double sqMahalanobis = innovation.dot(invCovariance * innovation);
-    double threshold = nsigmas * nsigmas;
+    sqMahalanobis = innovation.dot(invCovariance * innovation);
+    threshold = nsigmas * nsigmas;
 
     if (sqMahalanobis >= threshold)
     {

@@ -33,7 +33,7 @@
 #include "robot_localization/ukf.h"
 #include "robot_localization/filter_common.h"
 
-#include <xmlrpcpp/XmlRpcException.h>
+#include <XmlRpcException.h>
 
 #include <sstream>
 #include <iomanip>
@@ -261,7 +261,6 @@ namespace RobotLocalization
     // (5) Check Mahalanobis distance of innovation
     if (checkMahalanobisThreshold(innovationSubset, invInnovCov, measurement.mahalanobisThresh_))
     {
-
       state_.noalias() += kalmanGainSubset * innovationSubset;
 
       // (6) Compute the new estimate error covariance P = P - (K * P_zz * K')

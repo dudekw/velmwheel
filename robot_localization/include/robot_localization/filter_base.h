@@ -149,6 +149,17 @@ typedef boost::shared_ptr<FilterState> FilterStatePtr;
 
 class FilterBase
 {
+  private:
+    // Difference between the time stamp of the most recent measurement and the currently obtained data
+    double measurementTimeDelta;
+    static std::auto_ptr<Eigen::MatrixXd> velocityMatrix_ptr;
+
+    size_t measurementLength;
+    bool timedOut;
+    size_t controlInd;
+    double sqMahalanobis;
+    double threshold;
+
   public:
     //! @brief Constructor for the FilterBase class
     //!

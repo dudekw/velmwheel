@@ -74,11 +74,12 @@ print.ln("all motors enabled");
 
 VelmWheel_Core.start()
 
-#loadComponent("VelmWheel_Fusion","VelmWheelFusion")
-#setActivity("VelmWheel_Fusion", 0.001, 5, ORO_SCHED_RT)
-#VelmWheel_Fusion.configure();
+loadComponent("VelmWheel_Fusion","VelmWheelFusion")
+setActivity("VelmWheel_Fusion", 0.001, 5, ORO_SCHED_RT)
+VelmWheel_Fusion.configure();
 
-#stream("VelmWheel_Fusion.in_twist", ros.comm.topic("cmd_vel"));
-#connect("VelmWheel_Fusion.in_odometry","VelmWheel_Core.out_odometry", ConnPolicy())
+stream("VelmWheel_Fusion.in_twist", ros.comm.topic("cmd_vel"));
+connect("VelmWheel_Fusion.in_odometry","VelmWheel_Core.out_odometry", ConnPolicy())
+stream("VelmWheel_Fusion.out_odometry", ros.comm.topic("ekf/odometry"));
 
-#VelmWheel_Fusion.start()
+VelmWheel_Fusion.start()
