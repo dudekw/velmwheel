@@ -29,7 +29,7 @@ std::auto_ptr<tf2::Quaternion> state_quat_;
 std::auto_ptr<Eigen::VectorXd> curr_measurement_ptr;
 std::auto_ptr<Eigen::VectorXd> curr_meas_cov_diag_ptr;
     std::auto_ptr<ros::Time> current_loop_time_ptr; 
-
+std::auto_ptr<RobotLocalization::Measurement> new_measurement_ptr;
 VelmWheelFusion::VelmWheelFusion(const std::string& name) : TaskContext(name)
 {
 
@@ -48,6 +48,7 @@ VelmWheelFusion::VelmWheelFusion(const std::string& name) : TaskContext(name)
  curr_measurement_ptr.reset(new Eigen::VectorXd(12));
  curr_meas_cov_diag_ptr.reset(new Eigen::VectorXd(12));
 current_loop_time_ptr.reset(new ros::Time);
+new_measurement_ptr.reset(new RobotLocalization::Measurement);
 }
 
 VelmWheelFusion::~VelmWheelFusion() 
@@ -140,41 +141,39 @@ void VelmWheelFusion::updateHook()
   //
   filter_->setControl(*latestControl_, current_loop_time_ptr->toSec()- 0.001);
 
-
-RobotLocalization::Measurement new_measurement;
-new_measurement.topicName_ = "odom";
+new_measurement_ptr->topicName_ = "odom";
 
 
 (*curr_measurement_ptr) <<     0,0,0,0,0,0,msg_odometry->twist.twist.linear.x, msg_odometry->twist.twist.linear.y, 0,
                         0,0,msg_odometry->twist.twist.angular.z;
-new_measurement.measurement_ = (*curr_measurement_ptr);
+new_measurement_ptr->measurement_ = (*curr_measurement_ptr);
 
-//new_measurement.measurement_ = Eigen::VectorXd(0,0,0,0,0,0,msg_odometry->twist.twist.linear.x, msg_odometry->twist.twist.linear.y,0,0,0,msg_odometry->twist.twist.angular.z);
+//new_measurement_ptr->measurement_ = Eigen::VectorXd(0,0,0,0,0,0,msg_odometry->twist.twist.linear.x, msg_odometry->twist.twist.linear.y,0,0,0,msg_odometry->twist.twist.angular.z);
 (*curr_meas_cov_diag_ptr) << 1, 1, 1, 1, 1, 1, msg_odometry->twist.covariance[0], msg_odometry->twist.covariance[7], 1,1,1, msg_odometry->twist.covariance[35];
-new_measurement.covariance_ = curr_meas_cov_diag_ptr->asDiagonal();
+new_measurement_ptr->covariance_ = curr_meas_cov_diag_ptr->asDiagonal();
 /*
 size_t k = 0;
 for (size_t i = 0; i< 6 ; i++){
 for (size_t j = 0; j< 6 ; j++){
-new_measurement.covariance_(i,j) = msg_odometry->twist.covariance[k];
+new_measurement_ptr->covariance_(i,j) = msg_odometry->twist.covariance[k];
 k++;
 }
 }
 */
 
 
-//std::cout << "covariance : \n"<< new_measurement.covariance_ <<std::endl;
+//std::cout << "covariance : \n"<< new_measurement_ptr->covariance_ <<std::endl;
 
-new_measurement.updateVector_ = {0,0,0,0,0,0,1,1,0,0,0,1};
-new_measurement.time_ = current_loop_time_ptr->toSec();
-new_measurement.latestControl_ = *latestControl_;
+new_measurement_ptr->updateVector_ = {0,0,0,0,0,0,1,1,0,0,0,1};
+new_measurement_ptr->time_ = current_loop_time_ptr->toSec();
+new_measurement_ptr->latestControl_ = *latestControl_;
 //
 //  TRZEBA USTAWIC mahalanobisThresh_ !!!!!!!!!!!!!!!!!!!!!!!
 //
-new_measurement.mahalanobisThresh_ = 2;
-new_measurement.latestControlTime_ = new_measurement.time_ - 0.001;
+new_measurement_ptr->mahalanobisThresh_ = 2;
+new_measurement_ptr->latestControlTime_ = current_loop_time_ptr->toSec() - 0.001;
 
-filter_->processMeasurement(new_measurement);
+filter_->processMeasurement(*new_measurement_ptr);
 //const Eigen::VectorXd &pred_state = filter_->getPredictedState();
 //const Eigen::VectorXd &got_control = filter_->getControl();
 //std::cout << "got_control: \n"<< got_control <<std::endl;
