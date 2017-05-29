@@ -3,7 +3,10 @@ cmake_minimum_required(VERSION 2.8.3)
 project(velmwheel_fusion)
 find_package(Boost COMPONENTS boost_random)
 find_package(OROCOS-RTT REQUIRED)
-find_package(robot_localization)
+find_package(catkin REQUIRED COMPONENTS
+		robot_localization
+	    )
+
 include_directories(~/biblioteki/include/bfl)
 set(BFL_LIBRARIES ~/biblioteki/lib/liborocos-bfl.so)
 

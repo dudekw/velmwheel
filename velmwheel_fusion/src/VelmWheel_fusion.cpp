@@ -30,25 +30,27 @@ std::auto_ptr<Eigen::VectorXd> curr_measurement_ptr;
 std::auto_ptr<Eigen::VectorXd> curr_meas_cov_diag_ptr;
     std::auto_ptr<ros::Time> current_loop_time_ptr; 
 std::auto_ptr<RobotLocalization::Measurement> new_measurement_ptr;
+
 VelmWheelFusion::VelmWheelFusion(const std::string& name) : TaskContext(name)
 {
 
 	this->addPort("in_twist",in_twist_);
 	this->addPort("in_odometry",in_odometry_);
 	this->addPort("out_odometry",out_odometry_);
-
-  msg_twist.reset( new geometry_msgs::Twist());
-  msg_odometry.reset(new nav_msgs::Odometry());
- filter_.reset(new RobotLocalization::Ekf());
- latestControl_.reset(new Eigen::Vector3d());
- last_state_.reset(new Eigen::VectorXd());
- state_quat_.reset(new tf2::Quaternion());
- //state_ = ;
-  state_ptr = &filter_->getState();//new Eigen::VectorXd();
- curr_measurement_ptr.reset(new Eigen::VectorXd(12));
- curr_meas_cov_diag_ptr.reset(new Eigen::VectorXd(12));
-current_loop_time_ptr.reset(new ros::Time);
-new_measurement_ptr.reset(new RobotLocalization::Measurement);
+  //
+  // FEATURE -- Dodac wczytywanie wielkosci wektorow z .yaml
+  //  
+  msg_twist.reset( new geometry_msgs::Twist());  
+  msg_odometry.reset(new nav_msgs::Odometry());  
+  filter_.reset(new RobotLocalization::Ekf());  
+  latestControl_.reset(new Eigen::Vector3d());  
+  last_state_.reset(new Eigen::VectorXd());  
+  state_quat_.reset(new tf2::Quaternion());  
+  state_ptr = &filter_->getState();  
+  curr_measurement_ptr.reset(new Eigen::VectorXd(12));  
+  curr_meas_cov_diag_ptr.reset(new Eigen::VectorXd(12));
+  current_loop_time_ptr.reset(new ros::Time);
+  new_measurement_ptr.reset(new RobotLocalization::Measurement);
 }
 
 VelmWheelFusion::~VelmWheelFusion() 
@@ -57,7 +59,9 @@ VelmWheelFusion::~VelmWheelFusion()
 
 bool VelmWheelFusion::configureHook() 
 {
- //            std::cout << "input_x = "<<std::endl;
+// configure update vector from the measurement
+  (*curr_measurement_ptr) << 0,0,0,0,0,0,1,1,0,0,0,1;
+filter_->initialize( (*curr_measurement_ptr), 15 );
 
 filter_->setControlParams({0,0,0,0,0,01,1,0,0,0,1,0,0,0,0,0,0}, 1, {1.3, 1.3, 1.3, 1.3, 1.3, 4.5}, {0.8, 1.3, 1.3, 1.3, 1.3, 0.9}, {1.3, 1.3, 1.3, 1.3, 1.3, 4.5}, {1.0, 1.3, 1.3, 1.3, 1.3, 1.0});
 Eigen::MatrixXd process_noise_cov(15,15);

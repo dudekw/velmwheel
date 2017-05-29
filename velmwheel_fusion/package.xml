@@ -16,6 +16,7 @@
   <build_depend>geometry_msgs</build_depend> 
   <build_depend>sensor_msgs</build_depend> 
   <build_depend>orocos_bfl</build_depend> 
+  <build_depend>robot_localization</build_depend> 
 
   <run_depend>rtt</run_depend> 
   <run_depend>rtt_ros</run_depend> 
@@ -25,6 +26,7 @@
   <run_depend>rtt_std_msgs</run_depend> 
   <run_depend>rtt_std_srvs</run_depend> 
   <run_depend>orocos_bfl</run_depend> 
+  <run_depend>robot_localization</run_depend> 
 
   <export>
     <rtt_ros>
