@@ -30,13 +30,16 @@ std::auto_ptr<Eigen::VectorXd> curr_measurement_ptr;
 std::auto_ptr<Eigen::VectorXd> curr_meas_cov_diag_ptr;
     std::auto_ptr<ros::Time> current_loop_time_ptr; 
 std::auto_ptr<RobotLocalization::Measurement> new_measurement_ptr;
-
+std::auto_ptr<tf2_msgs::TFMessage> msg_odom_tf_ptr;
+long long int loop_seq;
 VelmWheelFusion::VelmWheelFusion(const std::string& name) : TaskContext(name)
 {
 
 	this->addPort("in_twist",in_twist_);
 	this->addPort("in_odometry",in_odometry_);
 	this->addPort("out_odometry",out_odometry_);
+	this->addPort("out_odom_tf",out_odom_tf_);
+
   //
   // FEATURE -- Dodac wczytywanie wielkosci wektorow z .yaml
   //  
@@ -51,6 +54,7 @@ VelmWheelFusion::VelmWheelFusion(const std::string& name) : TaskContext(name)
   curr_meas_cov_diag_ptr.reset(new Eigen::VectorXd(12));
   current_loop_time_ptr.reset(new ros::Time);
   new_measurement_ptr.reset(new RobotLocalization::Measurement);
+  msg_odom_tf_ptr.reset(new tf2_msgs::TFMessage);
 }
 
 VelmWheelFusion::~VelmWheelFusion() 
@@ -59,6 +63,14 @@ VelmWheelFusion::~VelmWheelFusion()
 
 bool VelmWheelFusion::configureHook() 
 {
+
+	nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
+
+	loop_time = nsec.count() - nsec_old.count();
+	nsec_old = nsec;
+	current_loop_time_ptr->sec = std::chrono::duration_cast<std::chrono::seconds >(nsec).count();
+	current_loop_time_ptr->nsec = (nsec - std::chrono::duration_cast<std::chrono::seconds >(nsec)).count();
+
 // configure update vector from the measurement
   (*curr_measurement_ptr) << 0,0,0,0,0,0,1,1,0,0,0,1;
 filter_->initialize( (*curr_measurement_ptr), 15 );
@@ -86,13 +98,28 @@ Eigen::MatrixXd process_noise_cov(15,15);
     (*latestControl_)(0) =0;
     (*latestControl_)(1) =0;
     (*latestControl_)(2) =0;
+
+	msg_odometry->child_frame_id = "base_link";
+	msg_odometry->header.stamp = (*current_loop_time_ptr);
+	msg_odometry->header.frame_id = "odom";
+
+
+	geometry_msgs::TransformStamped init_transform;
+	msg_odom_tf_ptr->transforms.push_back(init_transform);
+
+	msg_odom_tf_ptr->transforms.at(0).header.seq = 0;
+	msg_odom_tf_ptr->transforms.at(0).header.stamp = *current_loop_time_ptr;
+	msg_odom_tf_ptr->transforms.at(0).header.frame_id = "odom";
+	msg_odom_tf_ptr->transforms.at(0).child_frame_id = "base_link";
+
+
 	return true;
 }
 
 bool VelmWheelFusion::startHook() 
 {
  //std::cout << "test 3"<<std::endl;
-
+    loop_seq = 0;
     msg_twist->linear.x = 0.0;
     // velocity Y input to the robot model
     msg_twist->linear.y = 0.0;
@@ -109,6 +136,8 @@ bool VelmWheelFusion::startHook()
 ////
 void VelmWheelFusion::updateHook() 
 {
+    loop_seq += 1;
+
     nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
 
     loop_time = nsec.count() - nsec_old.count();
@@ -119,26 +148,16 @@ void VelmWheelFusion::updateHook()
 
 	if (RTT::NewData == in_twist_.read(*msg_twist))
 	{
-		/*
-    // velocity X input to the robot model
-		msg_twist->linear.x = msg_twist->linear.x * double (loop_time)/1000000000;
-
-		// velocity Y input to the robot model
-		msg_twist->linear.y = msg_twist->linear.y * double (loop_time)/1000000000;
-		// angular velocity input to the robot model
-		msg_twist->angular.z = msg_twist->angular.z * double (loop_time)/1000000000;
-    */
-//    std::cout << "input_y = "  << msg_twist->linear.y << std::endl;
-    *latestControl_ << msg_twist->linear.x, msg_twist->linear.y, msg_twist->angular.z;
+    		*latestControl_ << msg_twist->linear.x, msg_twist->linear.y, msg_twist->angular.z;
 	}
 
 	if (RTT::NewData == in_odometry_.read(*msg_odometry))
 	{
  
 		// [measurement odometry] - angular velocity
-    //tf::quaternionMsgToTF(msg_odometry->pose.pose.orientation, tf_quaternion);
- //   std::cout << "measure = "  << msg_odometry->twist.twist.linear.y << std::endl;
-  }
+    		//tf::quaternionMsgToTF(msg_odometry->pose.pose.orientation, tf_quaternion);
+ 		//   std::cout << "measure = "  << msg_odometry->twist.twist.linear.y << std::endl;
+  	}
   //
   //
   //
@@ -202,12 +221,22 @@ msg_odometry->twist.twist.angular.x = 0;
 msg_odometry->twist.twist.angular.y = 0;
 msg_odometry->twist.twist.angular.z = (*state_ptr)(11);
 
-msg_odometry->child_frame_id = "base_link";
-msg_odometry->header.stamp = (*current_loop_time_ptr);
-msg_odometry->header.frame_id = "odom";
-
+msg_odometry->header.seq = loop_seq;
 out_odometry_.write(*msg_odometry);
 
+msg_odom_tf_ptr->transforms.at(0).header.seq = loop_seq;
+msg_odom_tf_ptr->transforms.at(0).header.stamp = *current_loop_time_ptr;
+
+msg_odom_tf_ptr->transforms.at(0).transform.translation.x = msg_odometry->pose.pose.position.x;
+msg_odom_tf_ptr->transforms.at(0).transform.translation.y = msg_odometry->pose.pose.position.y;
+msg_odom_tf_ptr->transforms.at(0).transform.translation.z = msg_odometry->pose.pose.position.z;
+
+msg_odom_tf_ptr->transforms.at(0).transform.rotation.x = msg_odometry->pose.pose.orientation.x;
+msg_odom_tf_ptr->transforms.at(0).transform.rotation.y = msg_odometry->pose.pose.orientation.y;
+msg_odom_tf_ptr->transforms.at(0).transform.rotation.z = msg_odometry->pose.pose.orientation.z;
+msg_odom_tf_ptr->transforms.at(0).transform.rotation.w = msg_odometry->pose.pose.orientation.w;
+
+out_odom_tf_.write((*msg_odom_tf_ptr));
 }
 
 ORO_CREATE_COMPONENT(VelmWheelFusion)

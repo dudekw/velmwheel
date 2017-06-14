@@ -6,6 +6,7 @@
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Imu.h>
 #include <nav_msgs/Odometry.h>
+#include <tf2_msgs/TFMessage.h>
 #include <string>
 
 class VelmWheelFusion : public RTT::TaskContext
@@ -24,6 +25,8 @@ class VelmWheelFusion : public RTT::TaskContext
  		RTT::InputPort<nav_msgs::Odometry> in_odometry_;
 
  		RTT::OutputPort<nav_msgs::Odometry> out_odometry_;
+ 		RTT::OutputPort<tf2_msgs::TFMessage> out_odom_tf_;
+
  		Eigen::VectorXd state_ ;
 const Eigen::VectorXd* state_ptr;
 
