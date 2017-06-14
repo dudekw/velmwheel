@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="velmobil">
+<xacro:property name="front_laser_origin_from_calibration"> 
+   <origin xyz="0 0 0" rpy="0 0 0" /> 
+</xacro:property> 
+<xacro:property name="rear_laser_origin_from_calibration"> 
+  <!-- <origin xyz="-0.615 0.011 0" rpy="0 0 3.09468530719" /> -->
+   <origin xyz="-0.6 0.0227072 0" rpy="0 0 3.141516" /> 
+  <!-- x = x-3cm & y = y+4cm  theta = theta + (2*pi-theta)/2 (rotate only a half of the calculated diference)-->
+</xacro:property> 
+
+</robot>

@@ -8,8 +8,10 @@ ros.import("ec_drivers")
 
 ros.import("velmwheel_core")
 ros.import("velmwheel_fusion")
+ros.import("velmwheel_laser_driver")
 ros.import("rtt_nav_msgs")
 ros.import("rtt_sensor_msgs")
+ros.import("rtt_tf2_msgs")
 
 ros.import("rtt_geometry_msgs")
 require("print")
@@ -81,5 +83,32 @@ VelmWheel_Fusion.configure();
 stream("VelmWheel_Fusion.in_twist", ros.comm.topic("cmd_vel"));
 connect("VelmWheel_Fusion.in_odometry","VelmWheel_Core.out_odometry", ConnPolicy())
 stream("VelmWheel_Fusion.out_odometry", ros.comm.topic("ekf/odometry"));
+stream("VelmWheel_Fusion.out_odom_tf", ros.comm.topic("tf"));
 
 VelmWheel_Fusion.start()
+
+loadComponent("VelmWheel_laser_driver_F","VelmWheelLaserDriver")
+setActivity("VelmWheel_laser_driver_F", 0.02, 5, ORO_SCHED_RT)
+VelmWheel_laser_driver_F.loadService("rosparam")
+VelmWheel_laser_driver_F.rosparam.getAll()
+VelmWheel_laser_driver_F.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/merged_scan_frame")
+VelmWheel_laser_driver_F.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/hosts")
+VelmWheel_laser_driver_F.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/useNTP")
+# ID of the laser in the velmwheel_laser_driver param file
+VelmWheel_laser_driver_F.laser_config = 0;
+VelmWheel_laser_driver_F.configure();
+stream("VelmWheel_laser_driver_F.out_laser_F", ros.comm.topic("/laser_front"));
+VelmWheel_laser_driver_F.start()
+
+loadComponent("VelmWheel_laser_driver_R","VelmWheelLaserDriver")
+setActivity("VelmWheel_laser_driver_R", 0.02, 5, ORO_SCHED_RT)
+VelmWheel_laser_driver_R.loadService("rosparam")
+VelmWheel_laser_driver_R.rosparam.getAll()
+VelmWheel_laser_driver_R.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/merged_scan_frame")
+VelmWheel_laser_driver_R.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/hosts")
+VelmWheel_laser_driver_R.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/useNTP")
+# ID of the laser in the velmwheel_laser_driver param file
+VelmWheel_laser_driver_R.laser_config = 1;
+VelmWheel_laser_driver_R.configure();
+stream("VelmWheel_laser_driver_R.out_laser_F", ros.comm.topic("/laser_rear"));
+VelmWheel_laser_driver_R.start()

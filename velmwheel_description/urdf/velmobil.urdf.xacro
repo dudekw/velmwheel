@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="velmobil">
+
+<!-- INCLUDE LMX100 LASER CALIBRATION DATA-->
+<xacro:include filename="$(find velmwheel_description)/urdf/velmobil_laser_poses.xacro" />
+
+  <link name="base_link" />
+  <link name="odom" />
+  <link name="laser_front_link" />
+  <link name="laser_rear_link" />
+
+
+  <joint name="joint_odom_base" type="floating">
+    <parent link="odom"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0" /> 
+  </joint>
+
+
+  <joint name="joint_base_laser_front" type="fixed">
+    <parent link="base_link"/>
+    <child link="laser_front_link"/>
+    <xacro:insert_block name="front_laser_origin_from_calibration" />
+  </joint>
+
+  <joint name="joint_base_laser_rear" type="fixed">
+    <parent link="laser_front_link"/>
+    <child link="laser_rear_link"/>
+    <xacro:insert_block name="rear_laser_origin_from_calibration" />
+  </joint>
+
+</robot>

@@ -8,8 +8,20 @@
     <arg name="DEBUG" value="false"/>
   </include>
 
+<arg name="model" default="$(find velmwheel_description)/urdf/velmobil.urdf.xacro" />
+
+<param name="robot_description" command="$(find xacro)/xacro.py $(arg model) "/>
+
+
   <group ns="VELMWHEEL_OROCOS_ROBOT">
     <param name="VelmWheelInterface_EC/master_config" command="cat $(find velmwheel_bringup)/config/master_config.yaml"/>
   </group>
+
+
+  <group ns="VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver">
+    	<rosparam command="load" file="$(find velmwheel_laser_driver)/param/laser_driver_params.yaml" />
+  </group>
+<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
 
 </launch>
