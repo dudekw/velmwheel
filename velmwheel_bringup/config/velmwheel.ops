@@ -9,6 +9,8 @@ ros.import("ec_drivers")
 ros.import("velmwheel_core")
 ros.import("velmwheel_fusion")
 ros.import("velmwheel_laser_driver")
+ros.import("velmwheel_bias_estimator")
+
 ros.import("rtt_nav_msgs")
 ros.import("rtt_sensor_msgs")
 ros.import("rtt_tf2_msgs")
@@ -23,6 +25,36 @@ VelmWheelInterface_EC.loadService("elmo_driver")
 VelmWheelInterface_EC.loadService("imu_driver")
 VelmWheelInterface_EC.rosparam.getAll()
 VelmWheelInterface_EC.configure();
+
+stream("VelmWheelInterface_EC.Imu.IMU_Msr_OUTPORT", ros.comm.topic("imu_raw"))
+
+VelmWheelInterface_EC.start();
+
+while (VelmWheelInterface_EC.wheel_rl.state == 1 || VelmWheelInterface_EC.wheel_rr.state == 1 || VelmWheelInterface_EC.wheel_fl.state == 1 || VelmWheelInterface_EC.wheel_fr.state == 1) {
+	print.ln("At least one motor controller in state 1");
+}
+
+
+if (VelmWheelInterface_EC.wheel_rl.state == 8) then VelmWheelInterface_EC.wheel_rl.resetFault()
+
+if (VelmWheelInterface_EC.wheel_rr.state == 8) then VelmWheelInterface_EC.wheel_rr.resetFault()
+
+if (VelmWheelInterface_EC.wheel_fl.state == 8) then VelmWheelInterface_EC.wheel_fl.resetFault()
+
+if (VelmWheelInterface_EC.wheel_fr.state == 8) then VelmWheelInterface_EC.wheel_fr.resetFault()
+
+while (VelmWheelInterface_EC.wheel_rl.state != 4 || VelmWheelInterface_EC.wheel_rr.state != 4 || VelmWheelInterface_EC.wheel_fl.state != 4 || VelmWheelInterface_EC.wheel_fr.state != 4) {
+	print.ln("At least one motor controller NOT in state 4");
+
+}
+
+
+	VelmWheelInterface_EC.wheel_fl.enable()
+	VelmWheelInterface_EC.wheel_fr.enable()
+	VelmWheelInterface_EC.wheel_rl.enable()
+	VelmWheelInterface_EC.wheel_rr.enable()
+
+	print.ln("all motors enabled");
 
 
 loadComponent("VelmWheel_Core","VelmWheelCore")
@@ -44,71 +76,62 @@ connect("VelmWheel_Core.in_wfl_enc_vel","VelmWheelInterface_EC.wheel_fl.motor_ve
 connect("VelmWheel_Core.in_wfr_enc_vel","VelmWheelInterface_EC.wheel_fr.motor_velocity", ConnPolicy())
 connect("VelmWheel_Core.in_wrr_enc_vel","VelmWheelInterface_EC.wheel_rr.motor_velocity", ConnPolicy())
 
-stream("VelmWheelInterface_EC.Imu.IMU_Msr_OUTPORT", ros.comm.topic("imu"))
 stream("VelmWheel_Core.in_twist", ros.comm.topic("cmd_vel"));
 stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 
-VelmWheelInterface_EC.start();
-
-while (VelmWheelInterface_EC.wheel_rl.state == 1 || VelmWheelInterface_EC.wheel_rr.state == 1 || VelmWheelInterface_EC.wheel_fl.state == 1 || VelmWheelInterface_EC.wheel_fr.state == 1) {
-	print.ln("At least one motor controller in state 1");
-}
 
 
-if (VelmWheelInterface_EC.wheel_rl.state == 8) then VelmWheelInterface_EC.wheel_rl.resetFault()
+	VelmWheel_Core.start()
 
-if (VelmWheelInterface_EC.wheel_rr.state == 8) then VelmWheelInterface_EC.wheel_rr.resetFault()
+	loadComponent("VelmWheel_laser_driver_F","VelmWheelLaserDriver")
+	setActivity("VelmWheel_laser_driver_F", 0.02, 5, ORO_SCHED_RT)
+	VelmWheel_laser_driver_F.loadService("rosparam")
+	VelmWheel_laser_driver_F.rosparam.getAll()
+	VelmWheel_laser_driver_F.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/merged_scan_frame")
+	VelmWheel_laser_driver_F.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/hosts")
+	VelmWheel_laser_driver_F.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/useNTP")
+	# ID of the laser in the velmwheel_laser_driver param file
+	VelmWheel_laser_driver_F.laser_config = 0;
+	VelmWheel_laser_driver_F.configure();
+	stream("VelmWheel_laser_driver_F.out_laser_F", ros.comm.topic("/laser_front"));
+	VelmWheel_laser_driver_F.start()
 
-if (VelmWheelInterface_EC.wheel_fl.state == 8) then VelmWheelInterface_EC.wheel_fl.resetFault()
+	loadComponent("VelmWheel_laser_driver_R","VelmWheelLaserDriver")
+	setActivity("VelmWheel_laser_driver_R", 0.02, 5, ORO_SCHED_RT)
+	VelmWheel_laser_driver_R.loadService("rosparam")
+	VelmWheel_laser_driver_R.rosparam.getAll()
+	VelmWheel_laser_driver_R.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/merged_scan_frame")
+	VelmWheel_laser_driver_R.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/hosts")
+	VelmWheel_laser_driver_R.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/useNTP")
+	# ID of the laser in the velmwheel_laser_driver param file
+	VelmWheel_laser_driver_R.laser_config = 1;
+	VelmWheel_laser_driver_R.configure();
+	stream("VelmWheel_laser_driver_R.out_laser_F", ros.comm.topic("/laser_rear"));
+	VelmWheel_laser_driver_R.start()
 
-if (VelmWheelInterface_EC.wheel_fr.state == 8) then VelmWheelInterface_EC.wheel_fr.resetFault()
+	loadComponent("VelmWheel_bias_estimator","VelmWheelBiasEstimator")
+	setActivity("VelmWheel_bias_estimator", 0.02, 5, ORO_SCHED_RT)
+	VelmWheel_bias_estimator.loadService("rosparam")
+	VelmWheel_bias_estimator.rosparam.getAll()
+	VelmWheel_bias_estimator.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_bias_estimator/P_init")
+	VelmWheel_bias_estimator.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_bias_estimator/Q")
+	VelmWheel_bias_estimator.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_bias_estimator/alpha")
+	VelmWheel_bias_estimator.configure();
+	stream("VelmWheel_bias_estimator.in_laser", ros.comm.topic("/amcl/pose2d"));
+	connect("VelmWheel_bias_estimator.in_imu","VelmWheelInterface_EC.Imu.IMU_Msr_OUTPORT", ConnPolicy())
+	stream("VelmWheel_bias_estimator.out_imu", ros.comm.topic("/imu_processed"));
+	stream("VelmWheel_bias_estimator.out_theta", ros.comm.topic("/bias_estimator/theta"));
+	VelmWheel_bias_estimator.start()
 
-while (VelmWheelInterface_EC.wheel_rl.state != 4 || VelmWheelInterface_EC.wheel_rr.state != 4 || VelmWheelInterface_EC.wheel_fl.state != 4 || VelmWheelInterface_EC.wheel_fr.state != 4) {
-	print.ln("At least one motor controller NOT in state 4");
-}
+	loadComponent("VelmWheel_Fusion","VelmWheelFusion")
+	setActivity("VelmWheel_Fusion", 0.001, 5, ORO_SCHED_RT)
+	VelmWheel_Fusion.configure();
+	stream("VelmWheel_Fusion.in_twist", ros.comm.topic("cmd_vel"));
+	connect("VelmWheel_Fusion.in_odometry","VelmWheel_Core.out_odometry", ConnPolicy())
+	stream("VelmWheel_Fusion.out_odometry", ros.comm.topic("ekf/odometry"));
+	stream("VelmWheel_Fusion.out_odom_tf", ros.comm.topic("tf"));
+	connect("VelmWheel_Fusion.in_theta","VelmWheel_bias_estimator.out_theta", ConnPolicy())
 
-VelmWheelInterface_EC.wheel_fl.enable()
-VelmWheelInterface_EC.wheel_fr.enable()
-VelmWheelInterface_EC.wheel_rl.enable()
-VelmWheelInterface_EC.wheel_rr.enable()
+	VelmWheel_Fusion.start()
 
-print.ln("all motors enabled");
 
-VelmWheel_Core.start()
-
-loadComponent("VelmWheel_Fusion","VelmWheelFusion")
-setActivity("VelmWheel_Fusion", 0.001, 5, ORO_SCHED_RT)
-VelmWheel_Fusion.configure();
-
-stream("VelmWheel_Fusion.in_twist", ros.comm.topic("cmd_vel"));
-connect("VelmWheel_Fusion.in_odometry","VelmWheel_Core.out_odometry", ConnPolicy())
-stream("VelmWheel_Fusion.out_odometry", ros.comm.topic("ekf/odometry"));
-stream("VelmWheel_Fusion.out_odom_tf", ros.comm.topic("tf"));
-
-VelmWheel_Fusion.start()
-
-loadComponent("VelmWheel_laser_driver_F","VelmWheelLaserDriver")
-setActivity("VelmWheel_laser_driver_F", 0.02, 5, ORO_SCHED_RT)
-VelmWheel_laser_driver_F.loadService("rosparam")
-VelmWheel_laser_driver_F.rosparam.getAll()
-VelmWheel_laser_driver_F.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/merged_scan_frame")
-VelmWheel_laser_driver_F.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/hosts")
-VelmWheel_laser_driver_F.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/useNTP")
-# ID of the laser in the velmwheel_laser_driver param file
-VelmWheel_laser_driver_F.laser_config = 0;
-VelmWheel_laser_driver_F.configure();
-stream("VelmWheel_laser_driver_F.out_laser_F", ros.comm.topic("/laser_front"));
-VelmWheel_laser_driver_F.start()
-
-loadComponent("VelmWheel_laser_driver_R","VelmWheelLaserDriver")
-setActivity("VelmWheel_laser_driver_R", 0.02, 5, ORO_SCHED_RT)
-VelmWheel_laser_driver_R.loadService("rosparam")
-VelmWheel_laser_driver_R.rosparam.getAll()
-VelmWheel_laser_driver_R.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/merged_scan_frame")
-VelmWheel_laser_driver_R.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/hosts")
-VelmWheel_laser_driver_R.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/useNTP")
-# ID of the laser in the velmwheel_laser_driver param file
-VelmWheel_laser_driver_R.laser_config = 1;
-VelmWheel_laser_driver_R.configure();
-stream("VelmWheel_laser_driver_R.out_laser_F", ros.comm.topic("/laser_rear"));
-VelmWheel_laser_driver_R.start()
