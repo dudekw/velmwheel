@@ -21,6 +21,7 @@ class VelmWheelFusion : public RTT::TaskContext
 		bool startHook();
 
  		RTT::InputPort<geometry_msgs::Twist> in_twist_;
+ 		RTT::InputPort<double> in_theta_;
  		RTT::InputPort<sensor_msgs::Imu> in_imu_;
  		RTT::InputPort<nav_msgs::Odometry> in_odometry_;
 

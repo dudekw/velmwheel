@@ -34,7 +34,7 @@ std::auto_ptr<tf2_msgs::TFMessage> msg_odom_tf_ptr;
 long long int loop_seq;
 VelmWheelFusion::VelmWheelFusion(const std::string& name) : TaskContext(name)
 {
-
+  this->addPort("in_theta",in_theta_);
 	this->addPort("in_twist",in_twist_);
 	this->addPort("in_odometry",in_odometry_);
 	this->addPort("out_odometry",out_odometry_);
@@ -167,8 +167,10 @@ void VelmWheelFusion::updateHook()
 new_measurement_ptr->topicName_ = "odom";
 
 
-(*curr_measurement_ptr) <<     0,0,0,0,0,0,msg_odometry->twist.twist.linear.x, msg_odometry->twist.twist.linear.y, 0,
-                        0,0,msg_odometry->twist.twist.angular.z;
+(*curr_measurement_ptr) <<     0,                                       0,                             0, 
+                               0,                                       0,                             0, 
+                               msg_odometry->twist.twist.linear.x, msg_odometry->twist.twist.linear.y, 0,
+                               0,                                       0,                             msg_odometry->twist.twist.angular.z;
 new_measurement_ptr->measurement_ = (*curr_measurement_ptr);
 
 //new_measurement_ptr->measurement_ = Eigen::VectorXd(0,0,0,0,0,0,msg_odometry->twist.twist.linear.x, msg_odometry->twist.twist.linear.y,0,0,0,msg_odometry->twist.twist.angular.z);
