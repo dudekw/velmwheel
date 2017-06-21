@@ -1,0 +1,6331 @@
+--- NEW IMU ---
+usec_imu_delta: 0
+new_bias: 0
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.01
+new_bias: 0
+imu_vel: 0.0165806
+WRITING: 0.0165806
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 2.44346e-06
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.02
+new_bias: 2.44346e-06
+imu_vel: 0.00261799
+WRITING: 0.00261555
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 4.88668e-06
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.03
+new_bias: 4.88668e-06
+imu_vel: 0.00436332
+WRITING: 0.00435844
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 7.33002e-06
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.04
+new_bias: 7.33002e-06
+imu_vel: 0.00174533
+WRITING: 0.001738
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 9.7736e-06
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.05
+new_bias: 9.7736e-06
+imu_vel: 0.00261799
+WRITING: 0.00260822
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 1.22171e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.06
+new_bias: 1.22171e-05
+imu_vel: 0.00349066
+WRITING: 0.00347844
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 1.46604e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.07
+new_bias: 1.46604e-05
+imu_vel: 0.000872665
+WRITING: 0.000858004
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 1.7104e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.08
+new_bias: 1.7104e-05
+imu_vel: 0.000872665
+WRITING: 0.000855561
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 1.95473e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.09
+new_bias: 1.95473e-05
+imu_vel: 0.0122173
+WRITING: 0.0121978
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 2.19909e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.1
+new_bias: 2.19909e-05
+imu_vel: 0.00436332
+WRITING: 0.00434133
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 2.44342e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.11
+new_bias: 2.44342e-05
+imu_vel: 0.00610865
+WRITING: 0.00608422
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 2.68778e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.12
+new_bias: 2.68778e-05
+imu_vel: 0.00785398
+WRITING: 0.0078271
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 2.93213e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.13
+new_bias: 2.93213e-05
+imu_vel: 0.010472
+WRITING: 0.0104427
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 3.17646e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.14
+new_bias: 3.17646e-05
+imu_vel: 0.0191986
+WRITING: 0.0191669
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 3.42081e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.15
+new_bias: 3.42081e-05
+imu_vel: -0.00261799
+WRITING: -0.0026522
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 3.66517e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.16
+new_bias: 3.66517e-05
+imu_vel: 0.00610865
+WRITING: 0.006072
+---- NEW LASER ---- 
+euler_laser:      -0
+      0
+1.57081
+R: 1
+P: 0.16
+S = P + R: 1.16
+K = P * 1/S : 0.137931
+P - K * S: -2.77556e-17
+eBias: 1.04862e-09
+new_bias: 3.66518e-05
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 3.90953e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.01
+new_bias: 3.90953e-05
+imu_vel: 0.0122173
+WRITING: 0.0121782
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 4.15386e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.02
+new_bias: 4.15386e-05
+imu_vel: 0.00436332
+WRITING: 0.00432178
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 4.39821e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.03
+new_bias: 4.39821e-05
+imu_vel: 0.00610865
+WRITING: 0.00606467
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 4.64255e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.04
+new_bias: 4.64255e-05
+imu_vel: -0.000872665
+WRITING: -0.00091909
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 4.8869e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.05
+new_bias: 4.8869e-05
+imu_vel: 0.00261799
+WRITING: 0.00256912
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 5.13126e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.06
+new_bias: 5.13126e-05
+imu_vel: 0.00523599
+WRITING: 0.00518468
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 5.3756e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.07
+new_bias: 5.3756e-05
+imu_vel: 0.00610865
+WRITING: 0.0060549
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 5.61995e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.08
+new_bias: 5.61995e-05
+imu_vel: 0.00436332
+WRITING: 0.00430712
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 5.86428e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.09
+new_bias: 5.86428e-05
+imu_vel: 0
+WRITING: -5.86428e-05
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 6.10864e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.1
+new_bias: 6.10864e-05
+imu_vel: 0.0122173
+WRITING: 0.0121562
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 6.35298e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.11
+new_bias: 6.35298e-05
+imu_vel: 0.00610865
+WRITING: 0.00604512
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 6.59733e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.12
+new_bias: 6.59733e-05
+imu_vel: 0.00872665
+WRITING: 0.00866067
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 6.84167e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.13
+new_bias: 6.84167e-05
+imu_vel: 0.00349066
+WRITING: 0.00342224
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 7.08603e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.14
+new_bias: 7.08603e-05
+imu_vel: 0.00959931
+WRITING: 0.00952845
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 7.33037e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.15
+new_bias: 7.33037e-05
+imu_vel: 0.0139626
+WRITING: 0.0138893
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 7.57472e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.16
+new_bias: 7.57472e-05
+imu_vel: 0.010472
+WRITING: 0.0103962
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 7.81907e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.17
+new_bias: 7.81907e-05
+imu_vel: 0.00436332
+WRITING: 0.00428513
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 8.06341e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.18
+new_bias: 8.06341e-05
+imu_vel: 0.0113446
+WRITING: 0.011264
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 8.30776e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.19
+new_bias: 8.30776e-05
+imu_vel: 0.010472
+WRITING: 0.0103889
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 8.5521e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.2
+new_bias: 8.5521e-05
+imu_vel: -0.000872665
+WRITING: -0.000958186
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 8.79645e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.21
+new_bias: 8.79645e-05
+imu_vel: 0.00610865
+WRITING: 0.00602069
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 9.0408e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.22
+new_bias: 9.0408e-05
+imu_vel: 0.00261799
+WRITING: 0.00252759
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 9.28514e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.23
+new_bias: 9.28514e-05
+imu_vel: 0.010472
+WRITING: 0.0103791
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 9.52949e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.24
+new_bias: 9.52949e-05
+imu_vel: 0.00349066
+WRITING: 0.00339536
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 9.77383e-05
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.25
+new_bias: 9.77383e-05
+imu_vel: 0.0165806
+WRITING: 0.0164829
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000100182
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.26
+new_bias: 0.000100182
+imu_vel: 0.015708
+WRITING: 0.0156078
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000102625
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.27
+new_bias: 0.000102625
+imu_vel: -0.00261799
+WRITING: -0.00272062
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.000105069
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.28
+new_bias: 0.000105069
+imu_vel: 0.00610865
+WRITING: 0.00600358
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000107512
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.29
+new_bias: 0.000107512
+imu_vel: 0.0165806
+WRITING: 0.0164731
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000109956
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.3
+new_bias: 0.000109956
+imu_vel: 0.0113446
+WRITING: 0.0112347
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000112399
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.31
+new_bias: 0.000112399
+imu_vel: 0.00610865
+WRITING: 0.00599625
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.000114843
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.32
+new_bias: 0.000114843
+imu_vel: 0.010472
+WRITING: 0.0103571
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000117286
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.33
+new_bias: 0.000117286
+imu_vel: 0.00349066
+WRITING: 0.00337337
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000119729
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.34
+new_bias: 0.000119729
+imu_vel: 0.00785398
+WRITING: 0.00773425
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000122173
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.35
+new_bias: 0.000122173
+imu_vel: 0.00261799
+WRITING: 0.00249582
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000124616
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.36
+new_bias: 0.000124616
+imu_vel: 0.00872665
+WRITING: 0.00860203
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00012706
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.37
+new_bias: 0.00012706
+imu_vel: 0.0113446
+WRITING: 0.0112176
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000129503
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.38
+new_bias: 0.000129503
+imu_vel: 0.00174533
+WRITING: 0.00161583
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000131947
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.39
+new_bias: 0.000131947
+imu_vel: 0.00959931
+WRITING: 0.00946736
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00013439
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.4
+new_bias: 0.00013439
+imu_vel: -0.00261799
+WRITING: -0.00275238
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000136834
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.41
+new_bias: 0.000136834
+imu_vel: 0.00261799
+WRITING: 0.00248116
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000139277
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.42
+new_bias: 0.000139277
+imu_vel: 0.00523599
+WRITING: 0.00509671
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000141721
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.43
+new_bias: 0.000141721
+imu_vel: 0.00436332
+WRITING: 0.0042216
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000144164
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.44
+new_bias: 0.000144164
+imu_vel: 0.00872665
+WRITING: 0.00858248
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000146608
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.45
+new_bias: 0.000146608
+imu_vel: 0.00959931
+WRITING: 0.0094527
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000149051
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.46
+new_bias: 0.000149051
+imu_vel: 0.0113446
+WRITING: 0.0111956
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000151494
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.47
+new_bias: 0.000151494
+imu_vel: 0.00436332
+WRITING: 0.00421183
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000153938
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.48
+new_bias: 0.000153938
+imu_vel: 0
+WRITING: -0.000153938
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000156381
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.49
+new_bias: 0.000156381
+imu_vel: 0.00349066
+WRITING: 0.00333428
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000158825
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.5
+new_bias: 0.000158825
+imu_vel: 0.00436332
+WRITING: 0.0042045
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000161268
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.51
+new_bias: 0.000161268
+imu_vel: 0.01309
+WRITING: 0.0129287
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000163712
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.52
+new_bias: 0.000163712
+imu_vel: 0.000872665
+WRITING: 0.000708953
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000166155
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.53
+new_bias: 0.000166155
+imu_vel: 0.00959931
+WRITING: 0.00943316
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000168599
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.54
+new_bias: 0.000168599
+imu_vel: 0.0122173
+WRITING: 0.0120487
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000171042
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.55
+new_bias: 0.000171042
+imu_vel: 0.015708
+WRITING: 0.0155369
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000173486
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.56
+new_bias: 0.000173486
+imu_vel: 0.0148353
+WRITING: 0.0146618
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000175929
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.57
+new_bias: 0.000175929
+imu_vel: 0.0122173
+WRITING: 0.0120414
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000178372
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.58
+new_bias: 0.000178372
+imu_vel: 0.00785398
+WRITING: 0.00767561
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000180816
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.59
+new_bias: 0.000180816
+imu_vel: 0.00872665
+WRITING: 0.00854583
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000183259
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.6
+new_bias: 0.000183259
+imu_vel: 0.00698132
+WRITING: 0.00679806
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000185703
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.61
+new_bias: 0.000185703
+imu_vel: 0.00436332
+WRITING: 0.00417762
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000188146
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.62
+new_bias: 0.000188146
+imu_vel: 0.00959931
+WRITING: 0.00941116
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00019059
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.63
+new_bias: 0.00019059
+imu_vel: 0.010472
+WRITING: 0.0102814
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000193033
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.64
+new_bias: 0.000193033
+imu_vel: 0.00610865
+WRITING: 0.00591562
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000195477
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.65
+new_bias: 0.000195477
+imu_vel: 0.0122173
+WRITING: 0.0120218
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.00019792
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.66
+new_bias: 0.00019792
+imu_vel: 0.00610865
+WRITING: 0.00591073
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000200364
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.67
+new_bias: 0.000200364
+imu_vel: 0.000872665
+WRITING: 0.000672301
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000202807
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.68
+new_bias: 0.000202807
+imu_vel: 0.0165806
+WRITING: 0.0163778
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000205251
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.69
+new_bias: 0.000205251
+imu_vel: 0.010472
+WRITING: 0.0102667
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000207694
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.7
+new_bias: 0.000207694
+imu_vel: 0.00785398
+WRITING: 0.00764629
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000210138
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.71
+new_bias: 0.000210138
+imu_vel: 0.00436332
+WRITING: 0.00415319
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000212581
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.72
+new_bias: 0.000212581
+imu_vel: -0.00785398
+WRITING: -0.00806656
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000215024
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.73
+new_bias: 0.000215024
+imu_vel: 0.018326
+WRITING: 0.0181109
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000217468
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.74
+new_bias: 0.000217468
+imu_vel: 0.00174533
+WRITING: 0.00152786
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000219911
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.75
+new_bias: 0.000219911
+imu_vel: 0.00959931
+WRITING: 0.0093794
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000222355
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.76
+new_bias: 0.000222355
+imu_vel: 0.00349066
+WRITING: 0.0032683
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000224798
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.77
+new_bias: 0.000224798
+imu_vel: 0.00436332
+WRITING: 0.00413852
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000227242
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.78
+new_bias: 0.000227242
+imu_vel: 0.00872665
+WRITING: 0.0084994
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000229685
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.79
+new_bias: 0.000229685
+imu_vel: 0.00959931
+WRITING: 0.00936963
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000232129
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.8
+new_bias: 0.000232129
+imu_vel: 0.00698132
+WRITING: 0.00674919
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000234572
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.81
+new_bias: 0.000234572
+imu_vel: 0.010472
+WRITING: 0.0102374
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000237016
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.82
+new_bias: 0.000237016
+imu_vel: -0.00349066
+WRITING: -0.00372767
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000239459
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.83
+new_bias: 0.000239459
+imu_vel: 0.00349066
+WRITING: 0.0032512
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000241902
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.84
+new_bias: 0.000241902
+imu_vel: 0.00610865
+WRITING: 0.00586675
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000244346
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.85
+new_bias: 0.000244346
+imu_vel: -0.000872665
+WRITING: -0.00111701
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000246789
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.86
+new_bias: 0.000246789
+imu_vel: 0.015708
+WRITING: 0.0154612
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.000249233
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.87
+new_bias: 0.000249233
+imu_vel: 0.00959931
+WRITING: 0.00935008
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000251677
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.88
+new_bias: 0.000251677
+imu_vel: 0.00610865
+WRITING: 0.00585698
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00025412
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.89
+new_bias: 0.00025412
+imu_vel: 0.00436332
+WRITING: 0.0041092
+--- NEW IMU ---
+usec_imu_delta: 19957
+new_bias: 0.000256558
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.9
+new_bias: 0.000256558
+imu_vel: 0.0113446
+WRITING: 0.0110881
+--- NEW IMU ---
+usec_imu_delta: 20008
+new_bias: 0.000259003
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.91
+new_bias: 0.000259003
+imu_vel: 0.00523599
+WRITING: 0.00497699
+--- NEW IMU ---
+usec_imu_delta: 20034
+new_bias: 0.00026145
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.92
+new_bias: 0.00026145
+imu_vel: 0.00698132
+WRITING: 0.00671987
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000263894
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.93
+new_bias: 0.000263894
+imu_vel: -0.00261799
+WRITING: -0.00288189
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000266337
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.94
+new_bias: 0.000266337
+imu_vel: -0.00261799
+WRITING: -0.00288433
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00026878
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.95
+new_bias: 0.00026878
+imu_vel: 0.00436332
+WRITING: 0.00409454
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000271224
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.96
+new_bias: 0.000271224
+imu_vel: 0.00523599
+WRITING: 0.00496476
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000273668
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.97
+new_bias: 0.000273668
+imu_vel: 0.00174533
+WRITING: 0.00147166
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000276111
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.98
+new_bias: 0.000276111
+imu_vel: -0.00436332
+WRITING: -0.00463943
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000278554
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.99
+new_bias: 0.000278554
+imu_vel: 0.01309
+WRITING: 0.0128114
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000280998
+gyro_orientation_z: 0
+Q: 0.01
+P: 1
+new_bias: 0.000280998
+imu_vel: 0.0200713
+WRITING: 0.0197903
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000283441
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.01
+new_bias: 0.000283441
+imu_vel: 0.00959931
+WRITING: 0.00931587
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000285885
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.02
+new_bias: 0.000285885
+imu_vel: 0
+WRITING: -0.000285885
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000288328
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.03
+new_bias: 0.000288328
+imu_vel: 0.00349066
+WRITING: 0.00320233
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000290772
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.04
+new_bias: 0.000290772
+imu_vel: 0.01309
+WRITING: 0.0127992
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000293215
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.05
+new_bias: 0.000293215
+imu_vel: 0.0122173
+WRITING: 0.0119241
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000295659
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.06
+new_bias: 0.000295659
+imu_vel: 0.00785398
+WRITING: 0.00755832
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000298102
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.07
+new_bias: 0.000298102
+imu_vel: 0.00436332
+WRITING: 0.00406522
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000300546
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.08
+new_bias: 0.000300546
+imu_vel: -0.00261799
+WRITING: -0.00291854
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000302989
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.09
+new_bias: 0.000302989
+imu_vel: 0.00610865
+WRITING: 0.00580566
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000305432
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.1
+new_bias: 0.000305432
+imu_vel: 0.010472
+WRITING: 0.0101665
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000307876
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.11
+new_bias: 0.000307876
+imu_vel: 0.00785398
+WRITING: 0.00754611
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000310319
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.12
+new_bias: 0.000310319
+imu_vel: -0.00610865
+WRITING: -0.00641897
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000312763
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.13
+new_bias: 0.000312763
+imu_vel: 0.010472
+WRITING: 0.0101592
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000315206
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.14
+new_bias: 0.000315206
+imu_vel: 0.00261799
+WRITING: 0.00230279
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.00031765
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.15
+new_bias: 0.00031765
+imu_vel: 0.00610865
+WRITING: 0.005791
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000320094
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.16
+new_bias: 0.000320094
+imu_vel: 0.00174533
+WRITING: 0.00142524
+--- NEW IMU ---
+usec_imu_delta: 19997
+new_bias: 0.000322537
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.17
+new_bias: 0.000322537
+imu_vel: 0.00349066
+WRITING: 0.00316812
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00032498
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.18
+new_bias: 0.00032498
+imu_vel: 0.00174533
+WRITING: 0.00142035
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000327424
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.19
+new_bias: 0.000327424
+imu_vel: 0.00872665
+WRITING: 0.00839922
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000329867
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.2
+new_bias: 0.000329867
+imu_vel: 0.00959931
+WRITING: 0.00926944
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00033231
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.21
+new_bias: 0.00033231
+imu_vel: 0.00523599
+WRITING: 0.00490368
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000334754
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.22
+new_bias: 0.000334754
+imu_vel: 0.00174533
+WRITING: 0.00141058
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000337197
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.23
+new_bias: 0.000337197
+imu_vel: 0
+WRITING: -0.000337197
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000339641
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.24
+new_bias: 0.000339641
+imu_vel: 0.0113446
+WRITING: 0.011005
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000342084
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.25
+new_bias: 0.000342084
+imu_vel: 0.00261799
+WRITING: 0.00227591
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000344528
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.26
+new_bias: 0.000344528
+imu_vel: -0.00349066
+WRITING: -0.00383519
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000346971
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.27
+new_bias: 0.000346971
+imu_vel: 0.00610865
+WRITING: 0.00576168
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000349415
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.28
+new_bias: 0.000349415
+imu_vel: 0.00261799
+WRITING: 0.00226858
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000351858
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.29
+new_bias: 0.000351858
+imu_vel: 0.0148353
+WRITING: 0.0144834
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000354302
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.3
+new_bias: 0.000354302
+imu_vel: 0.010472
+WRITING: 0.0101177
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000356745
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.31
+new_bias: 0.000356745
+imu_vel: 0.00872665
+WRITING: 0.0083699
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000359189
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.32
+new_bias: 0.000359189
+imu_vel: 0.00436332
+WRITING: 0.00400413
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000361632
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.33
+new_bias: 0.000361632
+imu_vel: 0.00959931
+WRITING: 0.00923768
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000364075
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.34
+new_bias: 0.000364075
+imu_vel: 0.00436332
+WRITING: 0.00399925
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000366519
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.35
+new_bias: 0.000366519
+imu_vel: 0.00261799
+WRITING: 0.00225147
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000368962
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.36
+new_bias: 0.000368962
+imu_vel: 0.0122173
+WRITING: 0.0118483
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000371406
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.37
+new_bias: 0.000371406
+imu_vel: 0.00261799
+WRITING: 0.00224659
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000373849
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.38
+new_bias: 0.000373849
+imu_vel: 0.0113446
+WRITING: 0.0109708
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000376293
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.39
+new_bias: 0.000376293
+imu_vel: -0.00261799
+WRITING: -0.00299429
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000378736
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.4
+new_bias: 0.000378736
+imu_vel: 0.0148353
+WRITING: 0.0144566
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.00038118
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.41
+new_bias: 0.00038118
+imu_vel: 0.01309
+WRITING: 0.0127088
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000383623
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.42
+new_bias: 0.000383623
+imu_vel: 0.0122173
+WRITING: 0.0118337
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000386067
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.43
+new_bias: 0.000386067
+imu_vel: 0.00959931
+WRITING: 0.00921324
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00038851
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.44
+new_bias: 0.00038851
+imu_vel: 0.00785398
+WRITING: 0.00746547
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000390954
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.45
+new_bias: 0.000390954
+imu_vel: -0.00959931
+WRITING: -0.00999026
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000393397
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.46
+new_bias: 0.000393397
+imu_vel: -0.000872665
+WRITING: -0.00126606
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00039584
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.47
+new_bias: 0.00039584
+imu_vel: 0.00261799
+WRITING: 0.00222215
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000398284
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.48
+new_bias: 0.000398284
+imu_vel: 0.00610865
+WRITING: 0.00571037
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000400727
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.49
+new_bias: 0.000400727
+imu_vel: 0.00436332
+WRITING: 0.0039626
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000403171
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.5
+new_bias: 0.000403171
+imu_vel: 0.0122173
+WRITING: 0.0118141
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000405614
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.51
+new_bias: 0.000405614
+imu_vel: -0.00261799
+WRITING: -0.00302361
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000408058
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.52
+new_bias: 0.000408058
+imu_vel: 0.00785398
+WRITING: 0.00744592
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000410501
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.53
+new_bias: 0.000410501
+imu_vel: 0.00698132
+WRITING: 0.00657082
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000412945
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.54
+new_bias: 0.000412945
+imu_vel: 0.00436332
+WRITING: 0.00395038
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000415388
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.55
+new_bias: 0.000415388
+imu_vel: 0.00698132
+WRITING: 0.00656593
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000417832
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.56
+new_bias: 0.000417832
+imu_vel: 0.00523599
+WRITING: 0.00481816
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000420275
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.57
+new_bias: 0.000420275
+imu_vel: -0.00436332
+WRITING: -0.0047836
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000422719
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.58
+new_bias: 0.000422719
+imu_vel: 0.00436332
+WRITING: 0.0039406
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000425162
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.59
+new_bias: 0.000425162
+imu_vel: 0.00523599
+WRITING: 0.00481083
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000427606
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.6
+new_bias: 0.000427606
+imu_vel: 0.00523599
+WRITING: 0.00480838
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000430049
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.61
+new_bias: 0.000430049
+imu_vel: 0.00785398
+WRITING: 0.00742393
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000432492
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.62
+new_bias: 0.000432492
+imu_vel: 0.01309
+WRITING: 0.0126575
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000434936
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.63
+new_bias: 0.000434936
+imu_vel: -0.000872665
+WRITING: -0.0013076
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000437379
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.64
+new_bias: 0.000437379
+imu_vel: 0.00523599
+WRITING: 0.00479861
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000439823
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.65
+new_bias: 0.000439823
+imu_vel: 0.00959931
+WRITING: 0.00915949
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000442266
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.66
+new_bias: 0.000442266
+imu_vel: 0.0174533
+WRITING: 0.017011
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00044471
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.67
+new_bias: 0.00044471
+imu_vel: 0.00261799
+WRITING: 0.00217328
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000447153
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.68
+new_bias: 0.000447153
+imu_vel: 0.00436332
+WRITING: 0.00391617
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000449597
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.69
+new_bias: 0.000449597
+imu_vel: 0.00523599
+WRITING: 0.00478639
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00045204
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.7
+new_bias: 0.00045204
+imu_vel: 0.00349066
+WRITING: 0.00303862
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000454484
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.71
+new_bias: 0.000454484
+imu_vel: 0.00610865
+WRITING: 0.00565417
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000456927
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.72
+new_bias: 0.000456927
+imu_vel: 0.00349066
+WRITING: 0.00303373
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000459371
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.73
+new_bias: 0.000459371
+imu_vel: 0.00872665
+WRITING: 0.00826728
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000461814
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.74
+new_bias: 0.000461814
+imu_vel: 0.0113446
+WRITING: 0.0108828
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000464257
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.75
+new_bias: 0.000464257
+imu_vel: 0.0113446
+WRITING: 0.0108804
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000466701
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.76
+new_bias: 0.000466701
+imu_vel: 0.00174533
+WRITING: 0.00127863
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000469144
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.77
+new_bias: 0.000469144
+imu_vel: 0.00610865
+WRITING: 0.00563951
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000471588
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.78
+new_bias: 0.000471588
+imu_vel: -0.00349066
+WRITING: -0.00396225
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000474031
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.79
+new_bias: 0.000474031
+imu_vel: 0.000872665
+WRITING: 0.000398633
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000476475
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.8
+new_bias: 0.000476475
+imu_vel: 0.00785398
+WRITING: 0.00737751
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000478918
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.81
+new_bias: 0.000478918
+imu_vel: 0.01309
+WRITING: 0.0126111
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000481362
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.82
+new_bias: 0.000481362
+imu_vel: 0.0165806
+WRITING: 0.0160993
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000483805
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.83
+new_bias: 0.000483805
+imu_vel: -0.00698132
+WRITING: -0.00746512
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000486249
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.84
+new_bias: 0.000486249
+imu_vel: 0.00523599
+WRITING: 0.00474974
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000488692
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.85
+new_bias: 0.000488692
+imu_vel: 0.0200713
+WRITING: 0.0195826
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000491136
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.86
+new_bias: 0.000491136
+imu_vel: 0.00872665
+WRITING: 0.00823551
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000493579
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.87
+new_bias: 0.000493579
+imu_vel: 0.0139626
+WRITING: 0.0134691
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000496022
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.88
+new_bias: 0.000496022
+imu_vel: 0.015708
+WRITING: 0.0152119
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000498466
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.89
+new_bias: 0.000498466
+imu_vel: 0.00349066
+WRITING: 0.00299219
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000500909
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.9
+new_bias: 0.000500909
+imu_vel: 0.01309
+WRITING: 0.0125891
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000503353
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.91
+new_bias: 0.000503353
+imu_vel: -0.00610865
+WRITING: -0.00661201
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000505796
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.92
+new_bias: 0.000505796
+imu_vel: 0.00174533
+WRITING: 0.00123953
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00050824
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.93
+new_bias: 0.00050824
+imu_vel: 0.015708
+WRITING: 0.0151997
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000510683
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.94
+new_bias: 0.000510683
+imu_vel: 0.010472
+WRITING: 0.00996129
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000513127
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.95
+new_bias: 0.000513127
+imu_vel: 0.00523599
+WRITING: 0.00472286
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00051557
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.96
+new_bias: 0.00051557
+imu_vel: 0.010472
+WRITING: 0.00995641
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000518014
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.97
+new_bias: 0.000518014
+imu_vel: 0.01309
+WRITING: 0.012572
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000520457
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.98
+new_bias: 0.000520457
+imu_vel: -0.00785398
+WRITING: -0.00837444
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000522901
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.99
+new_bias: 0.000522901
+imu_vel: -0.00436332
+WRITING: -0.00488622
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000525344
+gyro_orientation_z: 0
+Q: 0.01
+P: 2
+new_bias: 0.000525344
+imu_vel: 0.00174533
+WRITING: 0.00121999
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000527787
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.01
+new_bias: 0.000527787
+imu_vel: 0.00261799
+WRITING: 0.00209021
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000530231
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.02
+new_bias: 0.000530231
+imu_vel: 0.0113446
+WRITING: 0.0108144
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000532675
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.03
+new_bias: 0.000532675
+imu_vel: 0.0122173
+WRITING: 0.0116846
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000535118
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.04
+new_bias: 0.000535118
+imu_vel: 0.00785398
+WRITING: 0.00731886
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000537561
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.05
+new_bias: 0.000537561
+imu_vel: 0
+WRITING: -0.000537561
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000540005
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.06
+new_bias: 0.000540005
+imu_vel: 0.00698132
+WRITING: 0.00644131
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000542448
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.07
+new_bias: 0.000542448
+imu_vel: 0.00349066
+WRITING: 0.00294821
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000544892
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.08
+new_bias: 0.000544892
+imu_vel: 0.00523599
+WRITING: 0.0046911
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000547335
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.09
+new_bias: 0.000547335
+imu_vel: 0.00610865
+WRITING: 0.00556132
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000549779
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.1
+new_bias: 0.000549779
+imu_vel: 0.000872665
+WRITING: 0.000322886
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000552222
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.11
+new_bias: 0.000552222
+imu_vel: 0.01309
+WRITING: 0.0125377
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000554666
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.12
+new_bias: 0.000554666
+imu_vel: 0.00349066
+WRITING: 0.00293599
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000557109
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.13
+new_bias: 0.000557109
+imu_vel: 0.00872665
+WRITING: 0.00816954
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000559552
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.14
+new_bias: 0.000559552
+imu_vel: 0.010472
+WRITING: 0.00991242
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000561996
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.15
+new_bias: 0.000561996
+imu_vel: 0.0139626
+WRITING: 0.0134006
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000564439
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.16
+new_bias: 0.000564439
+imu_vel: 0.000872665
+WRITING: 0.000308225
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000566883
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.17
+new_bias: 0.000566883
+imu_vel: 0.015708
+WRITING: 0.0151411
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000569326
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.18
+new_bias: 0.000569326
+imu_vel: 0.015708
+WRITING: 0.0151386
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00057177
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.19
+new_bias: 0.00057177
+imu_vel: -0.00349066
+WRITING: -0.00406243
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000574213
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.2
+new_bias: 0.000574213
+imu_vel: 0.0174533
+WRITING: 0.0168791
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000576657
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.21
+new_bias: 0.000576657
+imu_vel: 0.0148353
+WRITING: 0.0142586
+--- NEW IMU ---
+usec_imu_delta: 20012
+new_bias: 0.000579102
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.22
+new_bias: 0.000579102
+imu_vel: 0.00872665
+WRITING: 0.00814754
+--- NEW IMU ---
+usec_imu_delta: 19988
+new_bias: 0.000581544
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.23
+new_bias: 0.000581544
+imu_vel: 0.00872665
+WRITING: 0.0081451
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000583987
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.24
+new_bias: 0.000583987
+imu_vel: 0.00785398
+WRITING: 0.00726999
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000586431
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.25
+new_bias: 0.000586431
+imu_vel: -0.000872665
+WRITING: -0.0014591
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000588874
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.26
+new_bias: 0.000588874
+imu_vel: 0.00261799
+WRITING: 0.00202912
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000591317
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.27
+new_bias: 0.000591317
+imu_vel: 0.0174533
+WRITING: 0.016862
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000593761
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.28
+new_bias: 0.000593761
+imu_vel: -0.000872665
+WRITING: -0.00146643
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000596204
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.29
+new_bias: 0.000596204
+imu_vel: 0.00436332
+WRITING: 0.00376712
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000598648
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.3
+new_bias: 0.000598648
+imu_vel: 0.00785398
+WRITING: 0.00725533
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000601091
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.31
+new_bias: 0.000601091
+imu_vel: 0.00698132
+WRITING: 0.00638023
+--- NEW IMU ---
+usec_imu_delta: 20006
+new_bias: 0.000603535
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.32
+new_bias: 0.000603535
+imu_vel: 0.010472
+WRITING: 0.00986844
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.000605979
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.33
+new_bias: 0.000605979
+imu_vel: 0.010472
+WRITING: 0.009866
+--- NEW IMU ---
+usec_imu_delta: 19996
+new_bias: 0.000608422
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.34
+new_bias: 0.000608422
+imu_vel: 0.0113446
+WRITING: 0.0107362
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000610865
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.35
+new_bias: 0.000610865
+imu_vel: 0.00523599
+WRITING: 0.00462512
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000613309
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.36
+new_bias: 0.000613309
+imu_vel: 0.00523599
+WRITING: 0.00462268
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000615752
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.37
+new_bias: 0.000615752
+imu_vel: 0.0113446
+WRITING: 0.0107289
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000618196
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.38
+new_bias: 0.000618196
+imu_vel: 0.00436332
+WRITING: 0.00374513
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000620639
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.39
+new_bias: 0.000620639
+imu_vel: 0.0113446
+WRITING: 0.010724
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000623082
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.4
+new_bias: 0.000623082
+imu_vel: 0.00872665
+WRITING: 0.00810356
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000625526
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.41
+new_bias: 0.000625526
+imu_vel: 0
+WRITING: -0.000625526
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000627969
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.42
+new_bias: 0.000627969
+imu_vel: 0.00349066
+WRITING: 0.00286269
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000630413
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.43
+new_bias: 0.000630413
+imu_vel: 0.00436332
+WRITING: 0.00373291
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000632856
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.44
+new_bias: 0.000632856
+imu_vel: 0.018326
+WRITING: 0.0176931
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.0006353
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.45
+new_bias: 0.0006353
+imu_vel: 0.00261799
+WRITING: 0.00198269
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000637743
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.46
+new_bias: 0.000637743
+imu_vel: 0.0122173
+WRITING: 0.0115796
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000640187
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.47
+new_bias: 0.000640187
+imu_vel: 0.00174533
+WRITING: 0.00110514
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00064263
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.48
+new_bias: 0.00064263
+imu_vel: 0.00610865
+WRITING: 0.00546602
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000645074
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.49
+new_bias: 0.000645074
+imu_vel: 0.0122173
+WRITING: 0.0115722
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000647517
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.5
+new_bias: 0.000647517
+imu_vel: 0.00610865
+WRITING: 0.00546114
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000649961
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.51
+new_bias: 0.000649961
+imu_vel: 0.0113446
+WRITING: 0.0106947
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000652404
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.52
+new_bias: 0.000652404
+imu_vel: 0.01309
+WRITING: 0.0124376
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000654847
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.53
+new_bias: 0.000654847
+imu_vel: 0.010472
+WRITING: 0.00981713
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000657291
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.54
+new_bias: 0.000657291
+imu_vel: 0.00261799
+WRITING: 0.0019607
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000659734
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.55
+new_bias: 0.000659734
+imu_vel: 0.0139626
+WRITING: 0.0133029
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000662178
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.56
+new_bias: 0.000662178
+imu_vel: 0.00698132
+WRITING: 0.00631914
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000664621
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.57
+new_bias: 0.000664621
+imu_vel: 0.0174533
+WRITING: 0.0167887
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000667065
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.58
+new_bias: 0.000667065
+imu_vel: 0.00785398
+WRITING: 0.00718692
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000669508
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.59
+new_bias: 0.000669508
+imu_vel: 0.00523599
+WRITING: 0.00456648
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000671952
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.6
+new_bias: 0.000671952
+imu_vel: 0.0139626
+WRITING: 0.0132907
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000674395
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.61
+new_bias: 0.000674395
+imu_vel: 0.0139626
+WRITING: 0.0132882
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000676838
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.62
+new_bias: 0.000676838
+imu_vel: 0.00349066
+WRITING: 0.00281382
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000679282
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.63
+new_bias: 0.000679282
+imu_vel: 0.00174533
+WRITING: 0.00106605
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000681726
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.64
+new_bias: 0.000681726
+imu_vel: 0.01309
+WRITING: 0.0124082
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000684169
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.65
+new_bias: 0.000684169
+imu_vel: 0
+WRITING: -0.000684169
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000686612
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.66
+new_bias: 0.000686612
+imu_vel: -0.00523599
+WRITING: -0.0059226
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000689056
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.67
+new_bias: 0.000689056
+imu_vel: 0.00610865
+WRITING: 0.0054196
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000691499
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.68
+new_bias: 0.000691499
+imu_vel: 0.00959931
+WRITING: 0.00890781
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000693943
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.69
+new_bias: 0.000693943
+imu_vel: 0.0122173
+WRITING: 0.0115234
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000696386
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.7
+new_bias: 0.000696386
+imu_vel: 0.015708
+WRITING: 0.0150116
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.00069883
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.71
+new_bias: 0.00069883
+imu_vel: 0.00872665
+WRITING: 0.00802782
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000701273
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.72
+new_bias: 0.000701273
+imu_vel: -0.000872665
+WRITING: -0.00157394
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000703717
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.73
+new_bias: 0.000703717
+imu_vel: 0.00349066
+WRITING: 0.00278694
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00070616
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.74
+new_bias: 0.00070616
+imu_vel: 0.010472
+WRITING: 0.00976582
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000708604
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.75
+new_bias: 0.000708604
+imu_vel: 0.00174533
+WRITING: 0.00103673
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000711047
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.76
+new_bias: 0.000711047
+imu_vel: -0.00698132
+WRITING: -0.00769236
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00071349
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.77
+new_bias: 0.00071349
+imu_vel: 0.00261799
+WRITING: 0.0019045
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000715934
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.78
+new_bias: 0.000715934
+imu_vel: 0.00523599
+WRITING: 0.00452005
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000718377
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.79
+new_bias: 0.000718377
+imu_vel: 0.0174533
+WRITING: 0.0167349
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000720821
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.8
+new_bias: 0.000720821
+imu_vel: 0.00436332
+WRITING: 0.0036425
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000723264
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.81
+new_bias: 0.000723264
+imu_vel: -0.00174533
+WRITING: -0.00246859
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000725708
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.82
+new_bias: 0.000725708
+imu_vel: 0.00872665
+WRITING: 0.00800094
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.000728151
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.83
+new_bias: 0.000728151
+imu_vel: 0.00523599
+WRITING: 0.00450784
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000730595
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.84
+new_bias: 0.000730595
+imu_vel: 0.00785398
+WRITING: 0.00712339
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000733038
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.85
+new_bias: 0.000733038
+imu_vel: 0.0113446
+WRITING: 0.0106116
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000735482
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.86
+new_bias: 0.000735482
+imu_vel: -0.00698132
+WRITING: -0.0077168
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.000737925
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.87
+new_bias: 0.000737925
+imu_vel: 0.0113446
+WRITING: 0.0106067
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000740368
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.88
+new_bias: 0.000740368
+imu_vel: 0.0113446
+WRITING: 0.0106043
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000742812
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.89
+new_bias: 0.000742812
+imu_vel: 0.00523599
+WRITING: 0.00449318
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000745255
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.9
+new_bias: 0.000745255
+imu_vel: 0.00610865
+WRITING: 0.0053634
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000747699
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.91
+new_bias: 0.000747699
+imu_vel: 0.0139626
+WRITING: 0.0132149
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000750142
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.92
+new_bias: 0.000750142
+imu_vel: 0.010472
+WRITING: 0.00972183
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000752586
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.93
+new_bias: 0.000752586
+imu_vel: 0.00523599
+WRITING: 0.0044834
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000755029
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.94
+new_bias: 0.000755029
+imu_vel: 0.00436332
+WRITING: 0.00360829
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000757473
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.95
+new_bias: 0.000757473
+imu_vel: 0.00872665
+WRITING: 0.00796917
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000759916
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.96
+new_bias: 0.000759916
+imu_vel: 0.00261799
+WRITING: 0.00185808
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00076236
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.97
+new_bias: 0.00076236
+imu_vel: 0.00174533
+WRITING: 0.00098297
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000764803
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.98
+new_bias: 0.000764803
+imu_vel: 0.0139626
+WRITING: 0.0131978
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000767247
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.99
+new_bias: 0.000767247
+imu_vel: 0.00959931
+WRITING: 0.00883206
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00076969
+gyro_orientation_z: 0
+Q: 0.01
+P: 3
+new_bias: 0.00076969
+imu_vel: 0.00610865
+WRITING: 0.00533896
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000772134
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.01
+new_bias: 0.000772134
+imu_vel: 0.00174533
+WRITING: 0.000973196
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000774577
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.02
+new_bias: 0.000774577
+imu_vel: -0.00261799
+WRITING: -0.00339257
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00077702
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.03
+new_bias: 0.00077702
+imu_vel: 0.00349066
+WRITING: 0.00271364
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000779464
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.04
+new_bias: 0.000779464
+imu_vel: -0.00698132
+WRITING: -0.00776078
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000781907
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.05
+new_bias: 0.000781907
+imu_vel: 0.0174533
+WRITING: 0.0166714
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000784351
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.06
+new_bias: 0.000784351
+imu_vel: 0.00959931
+WRITING: 0.00881496
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000786794
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.07
+new_bias: 0.000786794
+imu_vel: 0
+WRITING: -0.000786794
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000789238
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.08
+new_bias: 0.000789238
+imu_vel: 0.0122173
+WRITING: 0.0114281
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000791681
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.09
+new_bias: 0.000791681
+imu_vel: 0.0113446
+WRITING: 0.010553
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000794125
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.1
+new_bias: 0.000794125
+imu_vel: 0.00872665
+WRITING: 0.00793252
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000796568
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.11
+new_bias: 0.000796568
+imu_vel: 0.00959931
+WRITING: 0.00880274
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000799012
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.12
+new_bias: 0.000799012
+imu_vel: 0.00523599
+WRITING: 0.00443698
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000801455
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.13
+new_bias: 0.000801455
+imu_vel: 0.0165806
+WRITING: 0.0157792
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000803898
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.14
+new_bias: 0.000803898
+imu_vel: 0.000872665
+WRITING: 6.87662e-05
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000806342
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.15
+new_bias: 0.000806342
+imu_vel: 0.00610865
+WRITING: 0.00530231
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000808785
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.16
+new_bias: 0.000808785
+imu_vel: 0.01309
+WRITING: 0.0122812
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000811229
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.17
+new_bias: 0.000811229
+imu_vel: -0.00436332
+WRITING: -0.00517455
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000813672
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.18
+new_bias: 0.000813672
+imu_vel: 0.00436332
+WRITING: 0.00354965
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000816116
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.19
+new_bias: 0.000816116
+imu_vel: 0.00610865
+WRITING: 0.00529254
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000818559
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.2
+new_bias: 0.000818559
+imu_vel: 0.00959931
+WRITING: 0.00878075
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000821003
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.21
+new_bias: 0.000821003
+imu_vel: -0.00261799
+WRITING: -0.003439
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000823446
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.22
+new_bias: 0.000823446
+imu_vel: 0.0113446
+WRITING: 0.0105212
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.00082589
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.23
+new_bias: 0.00082589
+imu_vel: 0.00959931
+WRITING: 0.00877342
+--- NEW IMU ---
+usec_imu_delta: 19967
+new_bias: 0.000828329
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.24
+new_bias: 0.000828329
+imu_vel: 0.00436332
+WRITING: 0.00353499
+--- NEW IMU ---
+usec_imu_delta: 20035
+new_bias: 0.000830777
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.25
+new_bias: 0.000830777
+imu_vel: 0.01309
+WRITING: 0.0122592
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.00083322
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.26
+new_bias: 0.00083322
+imu_vel: 0.00436332
+WRITING: 0.0035301
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000835664
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.27
+new_bias: 0.000835664
+imu_vel: 0.000872665
+WRITING: 3.70008e-05
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000838107
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.28
+new_bias: 0.000838107
+imu_vel: 0.00785398
+WRITING: 0.00701587
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000840551
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.29
+new_bias: 0.000840551
+imu_vel: 0.00785398
+WRITING: 0.00701343
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000842994
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.3
+new_bias: 0.000842994
+imu_vel: 0.0200713
+WRITING: 0.0192283
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000845438
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.31
+new_bias: 0.000845438
+imu_vel: 0.0148353
+WRITING: 0.0139899
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000847881
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.32
+new_bias: 0.000847881
+imu_vel: 0.00785398
+WRITING: 0.0070061
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000850324
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.33
+new_bias: 0.000850324
+imu_vel: 0.00349066
+WRITING: 0.00264033
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000852768
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.34
+new_bias: 0.000852768
+imu_vel: 0.00610865
+WRITING: 0.00525588
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000855211
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.35
+new_bias: 0.000855211
+imu_vel: 0.020944
+WRITING: 0.0200887
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000857655
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.36
+new_bias: 0.000857655
+imu_vel: 0.00698132
+WRITING: 0.00612366
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000860098
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.37
+new_bias: 0.000860098
+imu_vel: -0.000872665
+WRITING: -0.00173276
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.000862541
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.38
+new_bias: 0.000862541
+imu_vel: -0.00698132
+WRITING: -0.00784386
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000864985
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.39
+new_bias: 0.000864985
+imu_vel: 0
+WRITING: -0.000864985
+--- NEW IMU ---
+usec_imu_delta: 19987
+new_bias: 0.000867427
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.4
+new_bias: 0.000867427
+imu_vel: 0.00698132
+WRITING: 0.00611389
+--- NEW IMU ---
+usec_imu_delta: 20015
+new_bias: 0.000869872
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.41
+new_bias: 0.000869872
+imu_vel: 0
+WRITING: -0.000869872
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000872316
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.42
+new_bias: 0.000872316
+imu_vel: 0.00872665
+WRITING: 0.00785433
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.000874759
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.43
+new_bias: 0.000874759
+imu_vel: 0.00872665
+WRITING: 0.00785189
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000877202
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.44
+new_bias: 0.000877202
+imu_vel: 0.0200713
+WRITING: 0.0191941
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000879646
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.45
+new_bias: 0.000879646
+imu_vel: 0.00610865
+WRITING: 0.00522901
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000882089
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.46
+new_bias: 0.000882089
+imu_vel: 0.00610865
+WRITING: 0.00522656
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000884533
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.47
+new_bias: 0.000884533
+imu_vel: 0.00174533
+WRITING: 0.000860797
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000886976
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.48
+new_bias: 0.000886976
+imu_vel: 0.00785398
+WRITING: 0.00696701
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00088942
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.49
+new_bias: 0.00088942
+imu_vel: 0.0122173
+WRITING: 0.0113279
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000891863
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.5
+new_bias: 0.000891863
+imu_vel: -0.00174533
+WRITING: -0.00263719
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000894306
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.51
+new_bias: 0.000894306
+imu_vel: 0.00610865
+WRITING: 0.00521435
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.00089675
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.52
+new_bias: 0.00089675
+imu_vel: 0.00436332
+WRITING: 0.00346657
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000899194
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.53
+new_bias: 0.000899194
+imu_vel: 0.00785398
+WRITING: 0.00695479
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000901637
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.54
+new_bias: 0.000901637
+imu_vel: 0.00610865
+WRITING: 0.00520702
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00090408
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.55
+new_bias: 0.00090408
+imu_vel: 0.0122173
+WRITING: 0.0113132
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000906524
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.56
+new_bias: 0.000906524
+imu_vel: 0.000872665
+WRITING: -3.38593e-05
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000908967
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.57
+new_bias: 0.000908967
+imu_vel: 0.015708
+WRITING: 0.014799
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000911411
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.58
+new_bias: 0.000911411
+imu_vel: -0.000872665
+WRITING: -0.00178408
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000913854
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.59
+new_bias: 0.000913854
+imu_vel: 0.00436332
+WRITING: 0.00344947
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000916298
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.6
+new_bias: 0.000916298
+imu_vel: 0.00174533
+WRITING: 0.000829031
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000918741
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.61
+new_bias: 0.000918741
+imu_vel: 0.00349066
+WRITING: 0.00257192
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000921185
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.62
+new_bias: 0.000921185
+imu_vel: 0.010472
+WRITING: 0.00955079
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000923628
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.63
+new_bias: 0.000923628
+imu_vel: 0.00959931
+WRITING: 0.00867568
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000926072
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.64
+new_bias: 0.000926072
+imu_vel: 0.00436332
+WRITING: 0.00343725
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000928515
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.65
+new_bias: 0.000928515
+imu_vel: 0.0139626
+WRITING: 0.0130341
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000930959
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.66
+new_bias: 0.000930959
+imu_vel: 0.0148353
+WRITING: 0.0139043
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000933402
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.67
+new_bias: 0.000933402
+imu_vel: 0.00174533
+WRITING: 0.000811927
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000935845
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.68
+new_bias: 0.000935845
+imu_vel: 0.0122173
+WRITING: 0.0112815
+--- NEW IMU ---
+usec_imu_delta: 19992
+new_bias: 0.000938288
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.69
+new_bias: 0.000938288
+imu_vel: 0.00174533
+WRITING: 0.000807041
+--- NEW IMU ---
+usec_imu_delta: 20010
+new_bias: 0.000940732
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.7
+new_bias: 0.000940732
+imu_vel: 0.0148353
+WRITING: 0.0138946
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000943176
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.71
+new_bias: 0.000943176
+imu_vel: 0.0122173
+WRITING: 0.0112741
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.000945619
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.72
+new_bias: 0.000945619
+imu_vel: 0.00959931
+WRITING: 0.00865369
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.000948063
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.73
+new_bias: 0.000948063
+imu_vel: 0.0148353
+WRITING: 0.0138872
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000950506
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.74
+new_bias: 0.000950506
+imu_vel: 0.00174533
+WRITING: 0.000794823
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00095295
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.75
+new_bias: 0.00095295
+imu_vel: 0.00959931
+WRITING: 0.00864636
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000955393
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.76
+new_bias: 0.000955393
+imu_vel: 0.00959931
+WRITING: 0.00864392
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000957837
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.77
+new_bias: 0.000957837
+imu_vel: 0.00872665
+WRITING: 0.00776881
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00096028
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.78
+new_bias: 0.00096028
+imu_vel: 0.00698132
+WRITING: 0.00602104
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000962724
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.79
+new_bias: 0.000962724
+imu_vel: -0.00436332
+WRITING: -0.00532605
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000965167
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.8
+new_bias: 0.000965167
+imu_vel: 0.00785398
+WRITING: 0.00688881
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.00096761
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.81
+new_bias: 0.00096761
+imu_vel: 0.00872665
+WRITING: 0.00775904
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000970054
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.82
+new_bias: 0.000970054
+imu_vel: 0.0200713
+WRITING: 0.0191012
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000972497
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.83
+new_bias: 0.000972497
+imu_vel: 0.0139626
+WRITING: 0.0129901
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000974941
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.84
+new_bias: 0.000974941
+imu_vel: 0.00261799
+WRITING: 0.00164305
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.000977385
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.85
+new_bias: 0.000977385
+imu_vel: 0.010472
+WRITING: 0.00949459
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000979828
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.86
+new_bias: 0.000979828
+imu_vel: 0.01309
+WRITING: 0.0121101
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.000982271
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.87
+new_bias: 0.000982271
+imu_vel: 0.000872665
+WRITING: -0.000109607
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000984715
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.88
+new_bias: 0.000984715
+imu_vel: 0.00523599
+WRITING: 0.00425127
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000987158
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.89
+new_bias: 0.000987158
+imu_vel: -0.00436332
+WRITING: -0.00535048
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000989602
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.9
+new_bias: 0.000989602
+imu_vel: 0.00261799
+WRITING: 0.00162839
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000992045
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.91
+new_bias: 0.000992045
+imu_vel: 0.00349066
+WRITING: 0.00249861
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000994489
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.92
+new_bias: 0.000994489
+imu_vel: 0.00174533
+WRITING: 0.000750841
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000996932
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.93
+new_bias: 0.000996932
+imu_vel: 0.00959931
+WRITING: 0.00860238
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.000999375
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.94
+new_bias: 0.000999375
+imu_vel: 0.00785398
+WRITING: 0.00685461
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00100182
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.95
+new_bias: 0.00100182
+imu_vel: 0.0113446
+WRITING: 0.0103428
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00100426
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.96
+new_bias: 0.00100426
+imu_vel: 0.00436332
+WRITING: 0.00335906
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.00100671
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.97
+new_bias: 0.00100671
+imu_vel: 0.0122173
+WRITING: 0.0112106
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00100915
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.98
+new_bias: 0.00100915
+imu_vel: 0.0122173
+WRITING: 0.0112082
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.00101159
+gyro_orientation_z: 0
+Q: 0.01
+P: 3.99
+new_bias: 0.00101159
+imu_vel: 0.00698132
+WRITING: 0.00596972
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.00101404
+gyro_orientation_z: 0
+Q: 0.01
+P: 4
+new_bias: 0.00101404
+imu_vel: 0.00436332
+WRITING: 0.00334929
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.00101648
+gyro_orientation_z: 0
+Q: 0.01
+P: 4.01
+new_bias: 0.00101648
+imu_vel: 0.00174533
+WRITING: 0.000728849
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.00101892
+gyro_orientation_z: 0
+Q: 0.01
+P: 4.02
+new_bias: 0.00101892
+imu_vel: 0.00959931
+WRITING: 0.00858039
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00102137
+gyro_orientation_z: 0
+Q: 0.01
+P: 4.03
+new_bias: 0.00102137
+imu_vel: 0.00698132
+WRITING: 0.00595995
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00102381
+gyro_orientation_z: 0
+Q: 0.01
+P: 4.04
+new_bias: 0.00102381
+imu_vel: 0.00174533
+WRITING: 0.000721519
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00102625
+gyro_orientation_z: 0
+Q: 0.01
+P: 4.05
+new_bias: 0.00102625
+imu_vel: 0.000872665
+WRITING: -0.000153589
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.0010287
+gyro_orientation_z: 0
+Q: 0.01
+P: 4.06
+new_bias: 0.0010287
+imu_vel: 0.01309
+WRITING: 0.0120613
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00103114
+gyro_orientation_z: 0
+Q: 0.01
+P: 4.07
+new_bias: 0.00103114
+imu_vel: 0.00436332
+WRITING: 0.00333218
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00103358
+gyro_orientation_z: 0
+Q: 0.01
+P: 4.08
+new_bias: 0.00103358
+imu_vel: -0.000872665
+WRITING: -0.00190625
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.00103603
+gyro_orientation_z: 0
+Q: 0.01
+P: 4.09
+new_bias: 0.00103603
+imu_vel: -0.00174533
+WRITING: -0.00278136
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.00103847
+gyro_orientation_z: 0
+Q: 0.01
+P: 4.1
+new_bias: 0.00103847
+imu_vel: 0.00610865
+WRITING: 0.00507018
+---- NEW LASER ---- 
+euler_laser:      -0
+      0
+1.57081
+R: 1
+P: 4.1
+S = P + R: 5.1
+K = P * 1/S : 0.803922
+P - K * S: 0
+eBias: 0.196351
+new_bias: 0.158889
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.158891
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.01
+new_bias: 0.158891
+imu_vel: 0.010472
+WRITING: -0.148419
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158894
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.02
+new_bias: 0.158894
+imu_vel: 0.015708
+WRITING: -0.143186
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158896
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.03
+new_bias: 0.158896
+imu_vel: 0.00261799
+WRITING: -0.156278
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158899
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.04
+new_bias: 0.158899
+imu_vel: -0.000872665
+WRITING: -0.159771
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158901
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.05
+new_bias: 0.158901
+imu_vel: 0.00872665
+WRITING: -0.150175
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158904
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.06
+new_bias: 0.158904
+imu_vel: 0.01309
+WRITING: -0.145814
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158906
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.07
+new_bias: 0.158906
+imu_vel: 0.00872665
+WRITING: -0.150179
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158909
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.08
+new_bias: 0.158909
+imu_vel: 0.000872665
+WRITING: -0.158036
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158911
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.09
+new_bias: 0.158911
+imu_vel: 0.00523599
+WRITING: -0.153675
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158913
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.1
+new_bias: 0.158913
+imu_vel: 0.0191986
+WRITING: -0.139715
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158916
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.11
+new_bias: 0.158916
+imu_vel: 0.0113446
+WRITING: -0.147571
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158918
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.12
+new_bias: 0.158918
+imu_vel: 0.00785398
+WRITING: -0.151064
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158921
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.13
+new_bias: 0.158921
+imu_vel: 0.00523599
+WRITING: -0.153685
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158923
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.14
+new_bias: 0.158923
+imu_vel: -0.00698132
+WRITING: -0.165905
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158926
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.15
+new_bias: 0.158926
+imu_vel: 0.010472
+WRITING: -0.148454
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158928
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.16
+new_bias: 0.158928
+imu_vel: 0.010472
+WRITING: -0.148456
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158931
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.17
+new_bias: 0.158931
+imu_vel: 0.0113446
+WRITING: -0.147586
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158933
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.18
+new_bias: 0.158933
+imu_vel: 0.00872665
+WRITING: -0.150206
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158935
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.19
+new_bias: 0.158935
+imu_vel: 0.01309
+WRITING: -0.145845
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.158938
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.2
+new_bias: 0.158938
+imu_vel: 0.00261799
+WRITING: -0.15632
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.15894
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.21
+new_bias: 0.15894
+imu_vel: 0.00261799
+WRITING: -0.156322
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158943
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.22
+new_bias: 0.158943
+imu_vel: -0.00610865
+WRITING: -0.165051
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.158945
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.23
+new_bias: 0.158945
+imu_vel: 0.00785398
+WRITING: -0.151091
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.158948
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.24
+new_bias: 0.158948
+imu_vel: 0.00785398
+WRITING: -0.151094
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.15895
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.25
+new_bias: 0.15895
+imu_vel: 0.015708
+WRITING: -0.143242
+--- NEW IMU ---
+usec_imu_delta: 19955
+new_bias: 0.158953
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.26
+new_bias: 0.158953
+imu_vel: 0.00436332
+WRITING: -0.154589
+--- NEW IMU ---
+usec_imu_delta: 20009
+new_bias: 0.158955
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.27
+new_bias: 0.158955
+imu_vel: 0.01309
+WRITING: -0.145865
+--- NEW IMU ---
+usec_imu_delta: 20036
+new_bias: 0.158957
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.28
+new_bias: 0.158957
+imu_vel: 0.00872665
+WRITING: -0.150231
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.15896
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.29
+new_bias: 0.15896
+imu_vel: 0.010472
+WRITING: -0.148488
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158962
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.3
+new_bias: 0.158962
+imu_vel: 0.000872665
+WRITING: -0.15809
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.158965
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.31
+new_bias: 0.158965
+imu_vel: 0.00872665
+WRITING: -0.150238
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158967
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.32
+new_bias: 0.158967
+imu_vel: 0.0113446
+WRITING: -0.147623
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.15897
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.33
+new_bias: 0.15897
+imu_vel: 0.00436332
+WRITING: -0.154606
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158972
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.34
+new_bias: 0.158972
+imu_vel: 0.00785398
+WRITING: -0.151118
+--- NEW IMU ---
+usec_imu_delta: 19968
+new_bias: 0.158975
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.35
+new_bias: 0.158975
+imu_vel: -0.00261799
+WRITING: -0.161593
+--- NEW IMU ---
+usec_imu_delta: 20032
+new_bias: 0.158977
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.36
+new_bias: 0.158977
+imu_vel: 0.00349066
+WRITING: -0.155486
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.158979
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.37
+new_bias: 0.158979
+imu_vel: 0.00785398
+WRITING: -0.151125
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.158982
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.38
+new_bias: 0.158982
+imu_vel: -0.00523599
+WRITING: -0.164218
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158984
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.39
+new_bias: 0.158984
+imu_vel: 0.00349066
+WRITING: -0.155494
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.158987
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.4
+new_bias: 0.158987
+imu_vel: 0.00698132
+WRITING: -0.152005
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.158989
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.41
+new_bias: 0.158989
+imu_vel: 0.00959931
+WRITING: -0.14939
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.158992
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.42
+new_bias: 0.158992
+imu_vel: 0.00785398
+WRITING: -0.151138
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.158994
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.43
+new_bias: 0.158994
+imu_vel: 0.010472
+WRITING: -0.148522
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.158997
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.44
+new_bias: 0.158997
+imu_vel: 0.000872665
+WRITING: -0.158124
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.158999
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.45
+new_bias: 0.158999
+imu_vel: 0.00698132
+WRITING: -0.152018
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159001
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.46
+new_bias: 0.159001
+imu_vel: 0.0113446
+WRITING: -0.147657
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159004
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.47
+new_bias: 0.159004
+imu_vel: -0.000872665
+WRITING: -0.159877
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159006
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.48
+new_bias: 0.159006
+imu_vel: -0.00872665
+WRITING: -0.167733
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159009
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.49
+new_bias: 0.159009
+imu_vel: 0.00349066
+WRITING: -0.155518
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159011
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.5
+new_bias: 0.159011
+imu_vel: 0.00436332
+WRITING: -0.154648
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159014
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.51
+new_bias: 0.159014
+imu_vel: 0.00174533
+WRITING: -0.157268
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159016
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.52
+new_bias: 0.159016
+imu_vel: 0.0122173
+WRITING: -0.146799
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159019
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.53
+new_bias: 0.159019
+imu_vel: 0.00523599
+WRITING: -0.153783
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159021
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.54
+new_bias: 0.159021
+imu_vel: 0.00174533
+WRITING: -0.157276
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159023
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.55
+new_bias: 0.159023
+imu_vel: 0.0139626
+WRITING: -0.145061
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159026
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.56
+new_bias: 0.159026
+imu_vel: 0.010472
+WRITING: -0.148554
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159028
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.57
+new_bias: 0.159028
+imu_vel: 0.00698132
+WRITING: -0.152047
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159031
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.58
+new_bias: 0.159031
+imu_vel: 0.00610865
+WRITING: -0.152922
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159033
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.59
+new_bias: 0.159033
+imu_vel: 0.0226893
+WRITING: -0.136344
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159036
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.6
+new_bias: 0.159036
+imu_vel: -0.000872665
+WRITING: -0.159908
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159038
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.61
+new_bias: 0.159038
+imu_vel: 0.00698132
+WRITING: -0.152057
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159041
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.62
+new_bias: 0.159041
+imu_vel: -0.00436332
+WRITING: -0.163404
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159043
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.63
+new_bias: 0.159043
+imu_vel: -0.00261799
+WRITING: -0.161661
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159045
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.64
+new_bias: 0.159045
+imu_vel: 0.0139626
+WRITING: -0.145083
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159048
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.65
+new_bias: 0.159048
+imu_vel: 0.00872665
+WRITING: -0.150321
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.15905
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.66
+new_bias: 0.15905
+imu_vel: 0.000872665
+WRITING: -0.158178
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159053
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.67
+new_bias: 0.159053
+imu_vel: 0.00261799
+WRITING: -0.156435
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159055
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.68
+new_bias: 0.159055
+imu_vel: 0.00523599
+WRITING: -0.153819
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159058
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.69
+new_bias: 0.159058
+imu_vel: 0.00610865
+WRITING: -0.152949
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.15906
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.7
+new_bias: 0.15906
+imu_vel: 0.015708
+WRITING: -0.143352
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159063
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.71
+new_bias: 0.159063
+imu_vel: -0.00174533
+WRITING: -0.160808
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159065
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.72
+new_bias: 0.159065
+imu_vel: 0.00698132
+WRITING: -0.152084
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159067
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.73
+new_bias: 0.159067
+imu_vel: 0.00174533
+WRITING: -0.157322
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.15907
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.74
+new_bias: 0.15907
+imu_vel: 0.00610865
+WRITING: -0.152961
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159072
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.75
+new_bias: 0.159072
+imu_vel: 0.0113446
+WRITING: -0.147728
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159075
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.76
+new_bias: 0.159075
+imu_vel: 0.00261799
+WRITING: -0.156457
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159077
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.77
+new_bias: 0.159077
+imu_vel: -0.00436332
+WRITING: -0.16344
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.15908
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.78
+new_bias: 0.15908
+imu_vel: 0.01309
+WRITING: -0.14599
+--- NEW IMU ---
+usec_imu_delta: 19983
+new_bias: 0.159082
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.79
+new_bias: 0.159082
+imu_vel: 0.010472
+WRITING: -0.14861
+--- NEW IMU ---
+usec_imu_delta: 20017
+new_bias: 0.159084
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.8
+new_bias: 0.159084
+imu_vel: 0.00174533
+WRITING: -0.157339
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159087
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.81
+new_bias: 0.159087
+imu_vel: 0.00698132
+WRITING: -0.152106
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159089
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.82
+new_bias: 0.159089
+imu_vel: -0.00349066
+WRITING: -0.16258
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159092
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.83
+new_bias: 0.159092
+imu_vel: 0.00610865
+WRITING: -0.152983
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159094
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.84
+new_bias: 0.159094
+imu_vel: 0.01309
+WRITING: -0.146004
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159097
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.85
+new_bias: 0.159097
+imu_vel: 0.0139626
+WRITING: -0.145134
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159099
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.86
+new_bias: 0.159099
+imu_vel: 0.00785398
+WRITING: -0.151245
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159102
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.87
+new_bias: 0.159102
+imu_vel: 0.0122173
+WRITING: -0.146884
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159104
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.88
+new_bias: 0.159104
+imu_vel: 0.00261799
+WRITING: -0.156486
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159106
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.89
+new_bias: 0.159106
+imu_vel: 0.0122173
+WRITING: -0.146889
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159109
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.9
+new_bias: 0.159109
+imu_vel: 0.00261799
+WRITING: -0.156491
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159111
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.91
+new_bias: 0.159111
+imu_vel: 0.00261799
+WRITING: -0.156493
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159114
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.92
+new_bias: 0.159114
+imu_vel: 0.00174533
+WRITING: -0.157368
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159116
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.93
+new_bias: 0.159116
+imu_vel: 0.00698132
+WRITING: -0.152135
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159119
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.94
+new_bias: 0.159119
+imu_vel: 0.00261799
+WRITING: -0.156501
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159121
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.95
+new_bias: 0.159121
+imu_vel: 0.01309
+WRITING: -0.146031
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159124
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.96
+new_bias: 0.159124
+imu_vel: 0.00785398
+WRITING: -0.15127
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159126
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.97
+new_bias: 0.159126
+imu_vel: 0.0113446
+WRITING: -0.147781
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159128
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.98
+new_bias: 0.159128
+imu_vel: -0.00436332
+WRITING: -0.163492
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159131
+gyro_orientation_z: 0
+Q: 0.01
+P: 0.99
+new_bias: 0.159131
+imu_vel: 0.0113446
+WRITING: -0.147786
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159133
+gyro_orientation_z: 0
+Q: 0.01
+P: 1
+new_bias: 0.159133
+imu_vel: 0.00872665
+WRITING: -0.150407
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159136
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.01
+new_bias: 0.159136
+imu_vel: 0.00436332
+WRITING: -0.154772
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159138
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.02
+new_bias: 0.159138
+imu_vel: 0.00959931
+WRITING: -0.149539
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159141
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.03
+new_bias: 0.159141
+imu_vel: 0.0113446
+WRITING: -0.147796
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159143
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.04
+new_bias: 0.159143
+imu_vel: 0.00523599
+WRITING: -0.153907
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159146
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.05
+new_bias: 0.159146
+imu_vel: 0.00698132
+WRITING: -0.152164
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159148
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.06
+new_bias: 0.159148
+imu_vel: -0.000872665
+WRITING: -0.160021
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.15915
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.07
+new_bias: 0.15915
+imu_vel: 0
+WRITING: -0.15915
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159153
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.08
+new_bias: 0.159153
+imu_vel: 0.00523599
+WRITING: -0.153917
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159155
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.09
+new_bias: 0.159155
+imu_vel: 0.00872665
+WRITING: -0.150429
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159158
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.1
+new_bias: 0.159158
+imu_vel: 0.00698132
+WRITING: -0.152176
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.15916
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.11
+new_bias: 0.15916
+imu_vel: 0.00610865
+WRITING: -0.153052
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159163
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.12
+new_bias: 0.159163
+imu_vel: -0.00261799
+WRITING: -0.161781
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159165
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.13
+new_bias: 0.159165
+imu_vel: 0.00436332
+WRITING: -0.154802
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159168
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.14
+new_bias: 0.159168
+imu_vel: 0.0122173
+WRITING: -0.14695
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.15917
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.15
+new_bias: 0.15917
+imu_vel: 0.01309
+WRITING: -0.14608
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159172
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.16
+new_bias: 0.159172
+imu_vel: 0.0113446
+WRITING: -0.147828
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159175
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.17
+new_bias: 0.159175
+imu_vel: 0.00698132
+WRITING: -0.152194
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159177
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.18
+new_bias: 0.159177
+imu_vel: 0
+WRITING: -0.159177
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.15918
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.19
+new_bias: 0.15918
+imu_vel: 0.01309
+WRITING: -0.14609
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159182
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.2
+new_bias: 0.159182
+imu_vel: 0
+WRITING: -0.159182
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159185
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.21
+new_bias: 0.159185
+imu_vel: 0.00698132
+WRITING: -0.152203
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159187
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.22
+new_bias: 0.159187
+imu_vel: 0.00872665
+WRITING: -0.15046
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.15919
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.23
+new_bias: 0.15919
+imu_vel: 0.00610865
+WRITING: -0.153081
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159192
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.24
+new_bias: 0.159192
+imu_vel: -0.00436332
+WRITING: -0.163555
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159194
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.25
+new_bias: 0.159194
+imu_vel: 0.01309
+WRITING: -0.146104
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159197
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.26
+new_bias: 0.159197
+imu_vel: 0.0113446
+WRITING: -0.147852
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159199
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.27
+new_bias: 0.159199
+imu_vel: 0.0139626
+WRITING: -0.145237
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159202
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.28
+new_bias: 0.159202
+imu_vel: 0.0113446
+WRITING: -0.147857
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159204
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.29
+new_bias: 0.159204
+imu_vel: 0.00785398
+WRITING: -0.15135
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159207
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.3
+new_bias: 0.159207
+imu_vel: 0.0139626
+WRITING: -0.145244
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159209
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.31
+new_bias: 0.159209
+imu_vel: 0.00349066
+WRITING: -0.155718
+--- NEW IMU ---
+usec_imu_delta: 19960
+new_bias: 0.159212
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.32
+new_bias: 0.159212
+imu_vel: 0.015708
+WRITING: -0.143504
+--- NEW IMU ---
+usec_imu_delta: 20038
+new_bias: 0.159214
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.33
+new_bias: 0.159214
+imu_vel: 0.00959931
+WRITING: -0.149615
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159216
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.34
+new_bias: 0.159216
+imu_vel: 0
+WRITING: -0.159216
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159219
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.35
+new_bias: 0.159219
+imu_vel: -0.00174533
+WRITING: -0.160964
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159221
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.36
+new_bias: 0.159221
+imu_vel: 0.0165806
+WRITING: -0.142641
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159224
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.37
+new_bias: 0.159224
+imu_vel: -0.00523599
+WRITING: -0.16446
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159226
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.38
+new_bias: 0.159226
+imu_vel: 0.00174533
+WRITING: -0.157481
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159229
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.39
+new_bias: 0.159229
+imu_vel: 0.00872665
+WRITING: -0.150502
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159231
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.4
+new_bias: 0.159231
+imu_vel: 0.00698132
+WRITING: -0.15225
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159234
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.41
+new_bias: 0.159234
+imu_vel: -0.000872665
+WRITING: -0.160106
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159236
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.42
+new_bias: 0.159236
+imu_vel: 0.00959931
+WRITING: -0.149637
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159238
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.43
+new_bias: 0.159238
+imu_vel: 0.00698132
+WRITING: -0.152257
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159241
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.44
+new_bias: 0.159241
+imu_vel: -0.00698132
+WRITING: -0.166222
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159243
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.45
+new_bias: 0.159243
+imu_vel: 0.00610865
+WRITING: -0.153135
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159246
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.46
+new_bias: 0.159246
+imu_vel: 0.00610865
+WRITING: -0.153137
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159248
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.47
+new_bias: 0.159248
+imu_vel: -0.010472
+WRITING: -0.16972
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159251
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.48
+new_bias: 0.159251
+imu_vel: -0.00174533
+WRITING: -0.160996
+--- NEW IMU ---
+usec_imu_delta: 19964
+new_bias: 0.159253
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.49
+new_bias: 0.159253
+imu_vel: 0.01309
+WRITING: -0.146163
+--- NEW IMU ---
+usec_imu_delta: 20036
+new_bias: 0.159256
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.5
+new_bias: 0.159256
+imu_vel: -0.00349066
+WRITING: -0.162746
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159258
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.51
+new_bias: 0.159258
+imu_vel: 0.000872665
+WRITING: -0.158385
+--- NEW IMU ---
+usec_imu_delta: 20007
+new_bias: 0.15926
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.52
+new_bias: 0.15926
+imu_vel: 0.00959931
+WRITING: -0.149661
+--- NEW IMU ---
+usec_imu_delta: 19992
+new_bias: 0.159263
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.53
+new_bias: 0.159263
+imu_vel: 0.00785398
+WRITING: -0.151409
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159265
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.54
+new_bias: 0.159265
+imu_vel: 0.00349066
+WRITING: -0.155775
+--- NEW IMU ---
+usec_imu_delta: 19968
+new_bias: 0.159268
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.55
+new_bias: 0.159268
+imu_vel: 0.00698132
+WRITING: -0.152286
+--- NEW IMU ---
+usec_imu_delta: 20032
+new_bias: 0.15927
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.56
+new_bias: 0.15927
+imu_vel: 0.00959931
+WRITING: -0.149671
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159273
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.57
+new_bias: 0.159273
+imu_vel: 0.00872665
+WRITING: -0.150546
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159275
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.58
+new_bias: 0.159275
+imu_vel: 0.0113446
+WRITING: -0.14793
+--- NEW IMU ---
+usec_imu_delta: 20006
+new_bias: 0.159278
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.59
+new_bias: 0.159278
+imu_vel: 0.015708
+WRITING: -0.14357
+--- NEW IMU ---
+usec_imu_delta: 19994
+new_bias: 0.15928
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.6
+new_bias: 0.15928
+imu_vel: 0.00785398
+WRITING: -0.151426
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159282
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.61
+new_bias: 0.159282
+imu_vel: 0
+WRITING: -0.159282
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159285
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.62
+new_bias: 0.159285
+imu_vel: 0.000872665
+WRITING: -0.158412
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159287
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.63
+new_bias: 0.159287
+imu_vel: -0.00349066
+WRITING: -0.162778
+--- NEW IMU ---
+usec_imu_delta: 19959
+new_bias: 0.15929
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.64
+new_bias: 0.15929
+imu_vel: -0.00436332
+WRITING: -0.163653
+--- NEW IMU ---
+usec_imu_delta: 20040
+new_bias: 0.159292
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.65
+new_bias: 0.159292
+imu_vel: -0.00174533
+WRITING: -0.161038
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159295
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.66
+new_bias: 0.159295
+imu_vel: 0.00872665
+WRITING: -0.150568
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159297
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.67
+new_bias: 0.159297
+imu_vel: 0.00436332
+WRITING: -0.154934
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.1593
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.68
+new_bias: 0.1593
+imu_vel: 0.00523599
+WRITING: -0.154064
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159302
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.69
+new_bias: 0.159302
+imu_vel: 0.00872665
+WRITING: -0.150575
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159304
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.7
+new_bias: 0.159304
+imu_vel: 0.00436332
+WRITING: -0.154941
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159307
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.71
+new_bias: 0.159307
+imu_vel: 0.0113446
+WRITING: -0.147962
+--- NEW IMU ---
+usec_imu_delta: 20007
+new_bias: 0.159309
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.72
+new_bias: 0.159309
+imu_vel: 0
+WRITING: -0.159309
+--- NEW IMU ---
+usec_imu_delta: 19995
+new_bias: 0.159312
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.73
+new_bias: 0.159312
+imu_vel: 0.015708
+WRITING: -0.143604
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159314
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.74
+new_bias: 0.159314
+imu_vel: 0.00261799
+WRITING: -0.156696
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159317
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.75
+new_bias: 0.159317
+imu_vel: -0.00174533
+WRITING: -0.161062
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159319
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.76
+new_bias: 0.159319
+imu_vel: 0.0200713
+WRITING: -0.139248
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159322
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.77
+new_bias: 0.159322
+imu_vel: 0.00523599
+WRITING: -0.154086
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159324
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.78
+new_bias: 0.159324
+imu_vel: 0.00785398
+WRITING: -0.15147
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159326
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.79
+new_bias: 0.159326
+imu_vel: 0.010472
+WRITING: -0.148854
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159329
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.8
+new_bias: 0.159329
+imu_vel: 0.00785398
+WRITING: -0.151475
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159331
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.81
+new_bias: 0.159331
+imu_vel: 0.0139626
+WRITING: -0.145369
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159334
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.82
+new_bias: 0.159334
+imu_vel: 0.00523599
+WRITING: -0.154098
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159336
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.83
+new_bias: 0.159336
+imu_vel: 0.00610865
+WRITING: -0.153228
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159339
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.84
+new_bias: 0.159339
+imu_vel: 0.00698132
+WRITING: -0.152357
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159341
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.85
+new_bias: 0.159341
+imu_vel: 0.00785398
+WRITING: -0.151487
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159344
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.86
+new_bias: 0.159344
+imu_vel: 0.00436332
+WRITING: -0.15498
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159346
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.87
+new_bias: 0.159346
+imu_vel: 0.00261799
+WRITING: -0.156728
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159348
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.88
+new_bias: 0.159348
+imu_vel: 0.01309
+WRITING: -0.146258
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159351
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.89
+new_bias: 0.159351
+imu_vel: -0.00261799
+WRITING: -0.161969
+--- NEW IMU ---
+usec_imu_delta: 19963
+new_bias: 0.159353
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.9
+new_bias: 0.159353
+imu_vel: 0.00959931
+WRITING: -0.149754
+--- NEW IMU ---
+usec_imu_delta: 20037
+new_bias: 0.159356
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.91
+new_bias: 0.159356
+imu_vel: 0.00872665
+WRITING: -0.150629
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159358
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.92
+new_bias: 0.159358
+imu_vel: 0.0113446
+WRITING: -0.148014
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159361
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.93
+new_bias: 0.159361
+imu_vel: 0.0139626
+WRITING: -0.145398
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159363
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.94
+new_bias: 0.159363
+imu_vel: -0.00436332
+WRITING: -0.163726
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159365
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.95
+new_bias: 0.159365
+imu_vel: 0.00872665
+WRITING: -0.150639
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159368
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.96
+new_bias: 0.159368
+imu_vel: 0.00523599
+WRITING: -0.154132
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.15937
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.97
+new_bias: 0.15937
+imu_vel: 0.00174533
+WRITING: -0.157625
+--- NEW IMU ---
+usec_imu_delta: 19960
+new_bias: 0.159373
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.98
+new_bias: 0.159373
+imu_vel: 0.0122173
+WRITING: -0.147156
+--- NEW IMU ---
+usec_imu_delta: 20041
+new_bias: 0.159375
+gyro_orientation_z: 0
+Q: 0.01
+P: 1.99
+new_bias: 0.159375
+imu_vel: 0.00959931
+WRITING: -0.149776
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159378
+gyro_orientation_z: 0
+Q: 0.01
+P: 2
+new_bias: 0.159378
+imu_vel: 0.00959931
+WRITING: -0.149778
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.15938
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.01
+new_bias: 0.15938
+imu_vel: 0
+WRITING: -0.15938
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159383
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.02
+new_bias: 0.159383
+imu_vel: -0.000872665
+WRITING: -0.160255
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159385
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.03
+new_bias: 0.159385
+imu_vel: 0.00436332
+WRITING: -0.155022
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159387
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.04
+new_bias: 0.159387
+imu_vel: 0.00523599
+WRITING: -0.154151
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.15939
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.05
+new_bias: 0.15939
+imu_vel: 0.00174533
+WRITING: -0.157645
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159392
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.06
+new_bias: 0.159392
+imu_vel: 0.00261799
+WRITING: -0.156774
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159395
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.07
+new_bias: 0.159395
+imu_vel: 0.01309
+WRITING: -0.146305
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159397
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.08
+new_bias: 0.159397
+imu_vel: -0.00436332
+WRITING: -0.163761
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.1594
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.09
+new_bias: 0.1594
+imu_vel: 0.01309
+WRITING: -0.14631
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159402
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.1
+new_bias: 0.159402
+imu_vel: 0.00872665
+WRITING: -0.150675
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159405
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.11
+new_bias: 0.159405
+imu_vel: 0.010472
+WRITING: -0.148933
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159407
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.12
+new_bias: 0.159407
+imu_vel: 0.00174533
+WRITING: -0.157662
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159409
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.13
+new_bias: 0.159409
+imu_vel: 0.00698132
+WRITING: -0.152428
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159412
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.14
+new_bias: 0.159412
+imu_vel: 0.00785398
+WRITING: -0.151558
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159414
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.15
+new_bias: 0.159414
+imu_vel: 0.018326
+WRITING: -0.141088
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159417
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.16
+new_bias: 0.159417
+imu_vel: 0.00698132
+WRITING: -0.152435
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159419
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.17
+new_bias: 0.159419
+imu_vel: 0.0113446
+WRITING: -0.148075
+--- NEW IMU ---
+usec_imu_delta: 19964
+new_bias: 0.159422
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.18
+new_bias: 0.159422
+imu_vel: 0.00523599
+WRITING: -0.154186
+--- NEW IMU ---
+usec_imu_delta: 20038
+new_bias: 0.159424
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.19
+new_bias: 0.159424
+imu_vel: 0.00785398
+WRITING: -0.15157
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159427
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.2
+new_bias: 0.159427
+imu_vel: 0.00610865
+WRITING: -0.153318
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159429
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.21
+new_bias: 0.159429
+imu_vel: 0.0200713
+WRITING: -0.139358
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159431
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.22
+new_bias: 0.159431
+imu_vel: 0.00698132
+WRITING: -0.15245
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159434
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.23
+new_bias: 0.159434
+imu_vel: 0.015708
+WRITING: -0.143726
+--- NEW IMU ---
+usec_imu_delta: 20006
+new_bias: 0.159436
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.24
+new_bias: 0.159436
+imu_vel: 0.00698132
+WRITING: -0.152455
+--- NEW IMU ---
+usec_imu_delta: 19992
+new_bias: 0.159439
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.25
+new_bias: 0.159439
+imu_vel: 0.000872665
+WRITING: -0.158566
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159441
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.26
+new_bias: 0.159441
+imu_vel: 0.00610865
+WRITING: -0.153333
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159444
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.27
+new_bias: 0.159444
+imu_vel: 0.00785398
+WRITING: -0.15159
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159446
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.28
+new_bias: 0.159446
+imu_vel: 0.00610865
+WRITING: -0.153337
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159449
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.29
+new_bias: 0.159449
+imu_vel: 0.015708
+WRITING: -0.143741
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159451
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.3
+new_bias: 0.159451
+imu_vel: 0.000872665
+WRITING: -0.158578
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159453
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.31
+new_bias: 0.159453
+imu_vel: 0.00610865
+WRITING: -0.153345
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159456
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.32
+new_bias: 0.159456
+imu_vel: -0.00174533
+WRITING: -0.161201
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159458
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.33
+new_bias: 0.159458
+imu_vel: 0.00872665
+WRITING: -0.150732
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159461
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.34
+new_bias: 0.159461
+imu_vel: -0.00174533
+WRITING: -0.161206
+--- NEW IMU ---
+usec_imu_delta: 19984
+new_bias: 0.159463
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.35
+new_bias: 0.159463
+imu_vel: 0.00349066
+WRITING: -0.155973
+--- NEW IMU ---
+usec_imu_delta: 20016
+new_bias: 0.159466
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.36
+new_bias: 0.159466
+imu_vel: 0.00698132
+WRITING: -0.152484
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159468
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.37
+new_bias: 0.159468
+imu_vel: 0.00174533
+WRITING: -0.157723
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159471
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.38
+new_bias: 0.159471
+imu_vel: -0.00436332
+WRITING: -0.163834
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159473
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.39
+new_bias: 0.159473
+imu_vel: 0.00785398
+WRITING: -0.151619
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159475
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.4
+new_bias: 0.159475
+imu_vel: 0.0122173
+WRITING: -0.147258
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159478
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.41
+new_bias: 0.159478
+imu_vel: -0.00174533
+WRITING: -0.161223
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.15948
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.42
+new_bias: 0.15948
+imu_vel: 0.00610865
+WRITING: -0.153372
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159483
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.43
+new_bias: 0.159483
+imu_vel: 0.00698132
+WRITING: -0.152501
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159485
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.44
+new_bias: 0.159485
+imu_vel: 0.00261799
+WRITING: -0.156867
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159488
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.45
+new_bias: 0.159488
+imu_vel: 0
+WRITING: -0.159488
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.15949
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.46
+new_bias: 0.15949
+imu_vel: 0.00785398
+WRITING: -0.151636
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159493
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.47
+new_bias: 0.159493
+imu_vel: 0.00523599
+WRITING: -0.154257
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159495
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.48
+new_bias: 0.159495
+imu_vel: 0.00610865
+WRITING: -0.153386
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159497
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.49
+new_bias: 0.159497
+imu_vel: 0.0113446
+WRITING: -0.148153
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.1595
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.5
+new_bias: 0.1595
+imu_vel: 0.00174533
+WRITING: -0.157755
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159502
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.51
+new_bias: 0.159502
+imu_vel: -0.00349066
+WRITING: -0.162993
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159505
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.52
+new_bias: 0.159505
+imu_vel: 0.00523599
+WRITING: -0.154269
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159507
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.53
+new_bias: 0.159507
+imu_vel: -0.00349066
+WRITING: -0.162998
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.15951
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.54
+new_bias: 0.15951
+imu_vel: 0.0113446
+WRITING: -0.148165
+--- NEW IMU ---
+usec_imu_delta: 19997
+new_bias: 0.159512
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.55
+new_bias: 0.159512
+imu_vel: 0.00698132
+WRITING: -0.152531
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159515
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.56
+new_bias: 0.159515
+imu_vel: -0.000872665
+WRITING: -0.160387
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159517
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.57
+new_bias: 0.159517
+imu_vel: 0.00174533
+WRITING: -0.157772
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159519
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.58
+new_bias: 0.159519
+imu_vel: -0.00261799
+WRITING: -0.162137
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159522
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.59
+new_bias: 0.159522
+imu_vel: 0.010472
+WRITING: -0.14905
+--- NEW IMU ---
+usec_imu_delta: 20001
+new_bias: 0.159524
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.6
+new_bias: 0.159524
+imu_vel: 0.00523599
+WRITING: -0.154288
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159527
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.61
+new_bias: 0.159527
+imu_vel: 0.0122173
+WRITING: -0.147309
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159529
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.62
+new_bias: 0.159529
+imu_vel: 0.00610865
+WRITING: -0.153421
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159532
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.63
+new_bias: 0.159532
+imu_vel: 0.00436332
+WRITING: -0.155168
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159534
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.64
+new_bias: 0.159534
+imu_vel: 0.00872665
+WRITING: -0.150807
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159537
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.65
+new_bias: 0.159537
+imu_vel: 0.000872665
+WRITING: -0.158664
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159539
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.66
+new_bias: 0.159539
+imu_vel: -0.000872665
+WRITING: -0.160412
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159541
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.67
+new_bias: 0.159541
+imu_vel: 0.020944
+WRITING: -0.138597
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159544
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.68
+new_bias: 0.159544
+imu_vel: 0.00174533
+WRITING: -0.157799
+--- NEW IMU ---
+usec_imu_delta: 19999
+new_bias: 0.159546
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.69
+new_bias: 0.159546
+imu_vel: 0.00698132
+WRITING: -0.152565
+--- NEW IMU ---
+usec_imu_delta: 20002
+new_bias: 0.159549
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.7
+new_bias: 0.159549
+imu_vel: 0.00436332
+WRITING: -0.155185
+--- NEW IMU ---
+usec_imu_delta: 19998
+new_bias: 0.159551
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.71
+new_bias: 0.159551
+imu_vel: 0.0139626
+WRITING: -0.145589
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159554
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.72
+new_bias: 0.159554
+imu_vel: 0.00698132
+WRITING: -0.152572
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159556
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.73
+new_bias: 0.159556
+imu_vel: 0.00785398
+WRITING: -0.151702
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159559
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.74
+new_bias: 0.159559
+imu_vel: -0.00174533
+WRITING: -0.161304
+--- NEW IMU ---
+usec_imu_delta: 20000
+new_bias: 0.159561
+gyro_orientation_z: 0
+Q: 0.01
+P: 2.75
+new_bias: 0.159561
+imu_vel: 0.018326
+WRITING: -0.141235
