@@ -9,7 +9,7 @@ include_directories(${catkin_INCLUDE_DIRS} )
 # add_executable(parser src/parser.cpp)
 # target_link_libraries(parser ${catkin_LIBRARIES})
 
-foreach(dir urdf maps)
+foreach(dir urdf maps meshes)
    install(DIRECTORY ${dir}/
       DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
 endforeach(dir)

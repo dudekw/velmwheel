@@ -4,7 +4,13 @@
 <!-- INCLUDE LMX100 LASER CALIBRATION DATA-->
 <xacro:include filename="$(find velmwheel_description)/urdf/velmobil_laser_poses.xacro" />
 
-  <link name="base_link" />
+  <link name="base_link">
+     	<visual>
+	  <geometry>
+	    <mesh filename="package://velmwheel_description/meshes/velmobil_scaled.dae"/>
+	  </geometry>
+	</visual>
+  </link>
   <link name="odom" />
   <link name="laser_front_link" />
   <link name="laser_rear_link" />
