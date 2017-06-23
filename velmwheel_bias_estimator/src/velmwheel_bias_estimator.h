@@ -25,8 +25,9 @@ class VelmWheelBiasEstimator : public RTT::TaskContext
 
  		RTT::OutputPort<sensor_msgs::Imu> out_imu_;
  		RTT::OutputPort<double> out_theta_;
- 		double P_init_;
- 		double Q_;
+ 		std::vector<double> P_init_;
+ 		std::vector<double>  Q_;
  		double alpha_;
+ 		RTT::InputPort<bool>  localization_initialized_;
 };
 #endif  // VELMWHEELBIASESTIMATOR_H_
