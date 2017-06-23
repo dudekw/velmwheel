@@ -109,20 +109,6 @@ stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 	stream("VelmWheel_laser_driver_R.out_laser_F", ros.comm.topic("/laser_rear"));
 	VelmWheel_laser_driver_R.start()
 
-	loadComponent("VelmWheel_bias_estimator","VelmWheelBiasEstimator")
-	setActivity("VelmWheel_bias_estimator", 0.02, 5, ORO_SCHED_RT)
-	VelmWheel_bias_estimator.loadService("rosparam")
-	VelmWheel_bias_estimator.rosparam.getAll()
-	VelmWheel_bias_estimator.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_bias_estimator/P_init")
-	VelmWheel_bias_estimator.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_bias_estimator/Q")
-	VelmWheel_bias_estimator.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_bias_estimator/alpha")
-	VelmWheel_bias_estimator.configure();
-	stream("VelmWheel_bias_estimator.in_laser", ros.comm.topic("/amcl/pose2d"));
-	connect("VelmWheel_bias_estimator.in_imu","VelmWheelInterface_EC.Imu.IMU_Msr_OUTPORT", ConnPolicy())
-	stream("VelmWheel_bias_estimator.out_imu", ros.comm.topic("/imu_processed"));
-	stream("VelmWheel_bias_estimator.out_theta", ros.comm.topic("/bias_estimator/theta"));
-	VelmWheel_bias_estimator.start()
-
 	loadComponent("VelmWheel_Fusion","VelmWheelFusion")
 	setActivity("VelmWheel_Fusion", 0.001, 5, ORO_SCHED_RT)
 	VelmWheel_Fusion.configure();
@@ -134,4 +120,17 @@ stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 
 	VelmWheel_Fusion.start()
 
+	loadComponent("VelmWheel_bias_estimator","VelmWheelBiasEstimator")
+	setActivity("VelmWheel_bias_estimator", 0.02, 5, ORO_SCHED_RT)
+	VelmWheel_bias_estimator.loadService("rosparam")
+	VelmWheel_bias_estimator.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_bias_estimator/P_init")
+	VelmWheel_bias_estimator.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_bias_estimator/Q")
+	VelmWheel_bias_estimator.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_bias_estimator/alpha")
+	VelmWheel_bias_estimator.configure();
+	stream("VelmWheel_bias_estimator.in_laser", ros.comm.topic("/amcl/pose2d"));
+	connect("VelmWheel_bias_estimator.in_imu","VelmWheelInterface_EC.Imu.IMU_Msr_OUTPORT", ConnPolicy())
+	stream("VelmWheel_bias_estimator.out_imu", ros.comm.topic("/imu_processed"));
+	stream("VelmWheel_bias_estimator.out_theta", ros.comm.topic("/bias_estimator/theta"));
+	stream("VelmWheel_bias_estimator.localization_initialized", ros.comm.topic("/localization_initialized"));
+	VelmWheel_bias_estimator.start()
 

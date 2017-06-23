@@ -7,7 +7,7 @@
   <link name="base_link">
      	<visual>
 	  <geometry>
-	    <mesh filename="package://velmwheel_description/meshes/velmobil_scaled.dae"/>
+	    <mesh filename="package://velmwheel_description/meshes/velmobil_scaled_2.stl"/>
 	  </geometry>
 	</visual>
   </link>
