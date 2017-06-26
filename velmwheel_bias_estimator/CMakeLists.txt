@@ -4,8 +4,7 @@ project(velmwheel_bias_estimator)
 
 find_package(catkin REQUIRED COMPONENTS 
 		rtt_ros 
-		cmake_modules
-		lms1xx)
+		cmake_modules)
 find_package(OROCOS-RTT REQUIRED)
 find_package(Eigen3 REQUIRED)
 set (CMAKE_CXX_FLAGS "-fPIC")
@@ -30,8 +29,8 @@ install(DIRECTORY param/
   FILES_MATCHING PATTERN "*.yaml"
   PATTERN ".svn" EXCLUDE)
 
-catkin_install_python(PROGRAMS test/imu_laser_publisher.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+#catkin_install_python(PROGRAMS test/imu_laser_publisher.py
+ # DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 
 

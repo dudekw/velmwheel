@@ -7,7 +7,6 @@ find_package(catkin REQUIRED COMPONENTS
 		cmake_modules
 		lms1xx)
 find_package(OROCOS-RTT REQUIRED)
-find_package(lms1xx)
 find_package(Eigen3)
 set(EIGEN_PACKAGE EIGEN3)
 if(NOT EIGEN3_FOUND)

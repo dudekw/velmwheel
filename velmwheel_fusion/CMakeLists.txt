@@ -7,8 +7,8 @@ find_package(catkin REQUIRED COMPONENTS
 		robot_localization
 	    )
 
-include_directories(~/biblioteki/include/bfl)
-set(BFL_LIBRARIES ~/biblioteki/lib/liborocos-bfl.so)
+#include_directories(~/biblioteki/include/bfl)
+#set(BFL_LIBRARIES ~/biblioteki/lib/liborocos-bfl.so)
 
 find_package(catkin REQUIRED COMPONENTS rtt_ros cmake_modules tf)
 
@@ -36,7 +36,9 @@ catkin_package(
 orocos_component(${PROJECT_NAME} src/VelmWheel_fusion.cpp)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_range_for)
 
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} orocos-bfl ${BOOST_LIBRARIES} ${BFL_LIBRARIES} ${robot_localization_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${BOOST_LIBRARIES} ${robot_localization_LIBRARIES} 
+			#orocos-bfl  ${BFL_LIBRARIES} 
+		     )
 
 orocos_generate_package()
 
