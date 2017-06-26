@@ -11,8 +11,8 @@
 #include <chrono>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-
-
+#include <iostream>
+#include <fstream>
   // Pointers to msgs
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_front_ptr;
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_rear_ptr;
@@ -42,6 +42,9 @@
   bool new_rising_edge_rear;
   size_t rising_marker_iterator_front;
   size_t rising_marker_iterator_rear;
+
+    std::ofstream myfile;
+
 VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) : TaskContext(name)
 {
 
@@ -49,9 +52,8 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
   this->addPort("in_laser_rear",in_laser_rear_);
   this->addPort("out_markers",out_markers_);
 
-  this->addProperty("/velmobil_gl/min_intensity",min_intensity_);
 
-
+current_loop_time_ptr.reset(new ros::Time());
   msg_laser_front_ptr.reset(new sensor_msgs::LaserScan());
   msg_laser_rear_ptr.reset(new sensor_msgs::LaserScan());
   msg_markers_ptr.reset(new visualization_msgs::Marker());
@@ -64,49 +66,52 @@ VelmobilGlobalLocalization::~VelmobilGlobalLocalization()
 {
 }
 
-bool VelmobilGlobalLocalization::removeMarkers(visualization_msgs::Marker &markers)
+bool VelmobilGlobalLocalization::removeMarkers(visualization_msgs::Marker &vis_markers)
 {
   //delete all objects
-  markers.action = 3;
+  vis_markers.action = 3;
 }
 
-bool VelmobilGlobalLocalization::markersInitialization(visualization_msgs::Marker &markers, const size_t &marker_id , const std::vector<Eigen::Vector2f> &positions)
+bool VelmobilGlobalLocalization::markersInitialization(visualization_msgs::Marker &vis_markers, const size_t &marker_id , const std::vector<Eigen::Vector2f> &positions)
 {
-markers.header.frame_id = "laser_front";
+vis_markers.header.frame_id = "laser_front";
 
-markers.ns = "localization";
-markers.id = 1;
+vis_markers.ns = "localization";
+vis_markers.id = 1;
 // type = POINTS
-markers.type = 8;
+vis_markers.type = 8;
 // action add object
-markers.action = 0;
+vis_markers.action = 0;
 for (global_iterator = 0; global_iterator < marker_id+1; global_iterator++)
 {
-  markers.points.at(global_iterator).x = positions.at(global_iterator)(0);
-  markers.points.at(global_iterator).y = positions.at(global_iterator)(1);
-  markers.points.at(global_iterator).z = 0;
-  markers.colors.at(global_iterator).r = 255;
-  markers.colors.at(global_iterator).g = 0;
-  markers.colors.at(global_iterator).b = 0;
-  markers.colors.at(global_iterator).a = 1;
+  vis_markers.points.at(global_iterator).x = positions.at(global_iterator)(0);
+  vis_markers.points.at(global_iterator).y = positions.at(global_iterator)(1);
+  vis_markers.points.at(global_iterator).z = 0;
+  vis_markers.colors.at(global_iterator).r = 255;
+  vis_markers.colors.at(global_iterator).g = 0;
+  vis_markers.colors.at(global_iterator).b = 0;
+  vis_markers.colors.at(global_iterator).a = 1;
 
 
 }
-for (global_iterator = marker_id+1; global_iterator < markers.colors.size(); global_iterator++)
+for (global_iterator = marker_id+1; global_iterator < vis_markers.colors.size(); global_iterator++)
 {
-  markers.points.at(global_iterator).x = 100;
-  markers.points.at(global_iterator).y = 100;
-  markers.points.at(global_iterator).z = 0;
-  markers.colors.at(global_iterator).r = 0;
-  markers.colors.at(global_iterator).g = 0;
-  markers.colors.at(global_iterator).b = 0;
-  markers.colors.at(global_iterator).a = 0;
+  vis_markers.points.at(global_iterator).x = 100;
+  vis_markers.points.at(global_iterator).y = 100;
+  vis_markers.points.at(global_iterator).z = 0;
+  vis_markers.colors.at(global_iterator).r = 0;
+  vis_markers.colors.at(global_iterator).g = 0;
+  vis_markers.colors.at(global_iterator).b = 0;
+  vis_markers.colors.at(global_iterator).a = 0;
 }
 
 }
 
 bool VelmobilGlobalLocalization::polarLaserToCartesianBase(const std::vector<float> &ranges, const std::vector<float> &intensities, Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic> &data, const Eigen::Matrix< float, 3, 3> &transform ) 
 {
+  myfile <<"polar to cartesian init\n"; 
+  myfile <<"ranges: "<<ranges.size()<<"\n"; 
+  myfile <<"angles: "<<angles.size()<<"\n"; 
 	for (global_iterator = 0; global_iterator < ranges.size(); global_iterator++ )
 	{
 		data(global_iterator,0) = transform(0,0) * ranges.at(global_iterator) * cos(angles.at(global_iterator)) + transform(0,1) * ranges.at(global_iterator) * sin(angles.at(global_iterator)) + transform(0,2);
@@ -118,6 +123,8 @@ bool VelmobilGlobalLocalization::polarLaserToCartesianBase(const std::vector<flo
 }
 bool VelmobilGlobalLocalization::configureHook() 
 {
+  this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_gl/min_intensity",min_intensity_);
+std::cout<< "min_intensity_: " << min_intensity_<< "\n";
 
 
 	return true;
@@ -132,10 +139,10 @@ bool VelmobilGlobalLocalization::startHook()
   new_data_vec_ptr->at(0) = false;
   new_data_vec_ptr->at(1) = false;
   //[x y intensity] * 540 (beams) * 2 (laser scanners)
-  scan_front_data_matrix->resize(540,3);
-  scan_rear_data_matrix->resize(540,3);
+  scan_front_data_matrix->resize(541,3);
+  scan_rear_data_matrix->resize(541,3);
 
-  angles.resize(540);
+  angles.resize(541);
   for (int i = 0; i< angles.size(); i++)
   {
   	angles.at(i) = -135 + 0.5 * i;
@@ -150,6 +157,9 @@ bool VelmobilGlobalLocalization::startHook()
   new_rising_edge_rear = true;
   rising_marker_iterator_front = 0;
   rising_marker_iterator_rear = 0;
+std::cout<< "marker size: " << markers.size()<< "\n";
+  myfile.open ("/tmp/gl_log_data.txt");
+
   return true;
 }
 
@@ -158,14 +168,16 @@ bool VelmobilGlobalLocalization::startHook()
 ////
 void VelmobilGlobalLocalization::updateHook() 
 {
-
     nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
 
     loop_time = nsec.count() - nsec_old.count();
     nsec_old = nsec;
+
    current_loop_time_ptr->sec = std::chrono::duration_cast<std::chrono::seconds >(nsec).count();
    current_loop_time_ptr->nsec = (nsec - std::chrono::duration_cast<std::chrono::seconds >(nsec)).count();
-  markers.clear();
+
+  //markers.clear();
+
   marker_counter = 0;
   // predict bias and calculate theta
 
@@ -174,8 +186,9 @@ void VelmobilGlobalLocalization::updateHook()
   //
 
   // predict bias and calculate theta
-  if (RTT::NewData == in_laser_front_.read(*msg_laser_front_ptr))
+  if (RTT::NewData == in_laser_front_.read((*msg_laser_front_ptr)))
   {
+
 	scan_front_data_matrix->setZero();
   laser_in_base_transform << 1, 0, 0.3,
                              0, 1, 0,
@@ -183,8 +196,10 @@ void VelmobilGlobalLocalization::updateHook()
 	polarLaserToCartesianBase(msg_laser_front_ptr->ranges, msg_laser_front_ptr->intensities, (*scan_front_data_matrix), laser_in_base_transform);
   	new_data_vec_ptr->at(0) = true;
   }
-  if (RTT::NewData == in_laser_rear_.read(*msg_laser_rear_ptr))
+
+/*  if (RTT::NewData == in_laser_rear_.read((*msg_laser_rear_ptr)))
   {
+
 	scan_rear_data_matrix->setZero();
   laser_in_base_transform << -1, 0, -0.3,
                              0, -1, 0,
@@ -192,9 +207,13 @@ void VelmobilGlobalLocalization::updateHook()
 	polarLaserToCartesianBase(msg_laser_rear_ptr->ranges, msg_laser_rear_ptr->intensities, (*scan_rear_data_matrix), laser_in_base_transform);
 	new_data_vec_ptr->at(1) = true;
   }
+*/
+  new_data_vec_ptr->at(1) = true;
 
   if (new_data_vec_ptr->at(0) && new_data_vec_ptr->at(1))
   {
+myfile << "remove markers \n";
+
     removeMarkers( (*msg_markers_ptr));
     out_markers_.write((*msg_markers_ptr));
 
@@ -204,6 +223,8 @@ void VelmobilGlobalLocalization::updateHook()
   		// [FRONT LASER] found rising edge
   		if ((*scan_front_data_matrix)(global_iterator,2)  > min_intensity_ && new_rising_edge_front)
   		{
+        myfile << "RISING\n";
+
   			//calculate distance between last rising edge and cutten 
 			rising_marker_iterator_front = global_iterator;
 			new_rising_edge_front = false;
@@ -211,11 +232,19 @@ void VelmobilGlobalLocalization::updateHook()
   		// found sloping edge
   		else if ((*scan_front_data_matrix)(global_iterator,2) < min_intensity_ && !new_rising_edge_front)
   		{
+        myfile << "SLOPING\n";
+
   			//marker = {x_in_base, y_in_base}
         marker_id = rising_marker_iterator_front + floor((global_iterator-rising_marker_iterator_front)/2);
-  			markers.at(marker_counter) = {(*scan_front_data_matrix)(marker_id,0),(*scan_front_data_matrix)(marker_id,1)};
+  			markers.at(marker_counter) = << (*scan_front_data_matrix)(marker_id,0),(*scan_front_data_matrix)(marker_id,1);
   			new_rising_edge_front = true;
         marker_counter += 1;
+        myfile << "marker_id: " << marker_id<<"\n";
+        myfile << "marker_intensity: " << (*scan_front_data_matrix)(marker_id,2)<<"\n";
+        myfile << "marker_counter: " << marker_counter<<"\n";
+        myfile << "markers: \n"<< markers.at(marker_counter)<<"\n";
+
+
   		}
 /*
    		// [REAR LASER] found rising edge
@@ -236,13 +265,18 @@ void VelmobilGlobalLocalization::updateHook()
         marker_counter += 1;
   		}
 */
-    markersInitialization( (*msg_markers_ptr), marker_counter, markers);
-    out_markers_.write((*msg_markers_ptr));
+
 
    	}
+          myfile << "min_intensity_: \n"<< min_intensity_<<"\n";
+
+    myfile << "-- initialization ---\n";
+      markersInitialization( (*msg_markers_ptr), marker_counter, markers);
+    out_markers_.write((*msg_markers_ptr));
  	new_data_vec_ptr->at(0) = false;
  	new_data_vec_ptr->at(1) = false;
   }
+
   loop_seq += 1;
 
 }

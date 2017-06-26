@@ -32,6 +32,6 @@ class VelmobilGlobalLocalization : public RTT::TaskContext
  		//RTT::InputPort<geometry_msgs::PoseWithCovarianceStamped> in_laser_;
  		RTT::OutputPort<visualization_msgs::Marker> out_markers_;
 
-  		float min_intensity_;
+  		int min_intensity_;
 };
 #endif  // VELMOBILGlobalLocalization_H_
