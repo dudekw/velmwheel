@@ -3,16 +3,21 @@
   
   <group ns="VELMWHEEL_OROCOS_ROBOT">
     <param name="VelmWheelInterface_EC/master_config" command="cat $(find velmwheel_bringup)/config/master_config.yaml"/>
+	  <group ns="velmwheel_bias_estimator">
     <rosparam command="load" file="$(find velmwheel_bias_estimator)/param/bias_estimator_params.yaml" />
+	  </group>
+	  <group ns="velmwheel_laser_driver">
     <rosparam command="load" file="$(find velmwheel_laser_driver)/param/laser_driver_params.yaml" />
-    <rosparam command="load" file="$(find velmobil_gl)/param/global_localization_params.yaml" />
+	  </group>
+	  <group ns="velmobil_gl">
+	    	<rosparam command="load" file="$(find velmobil_gl)/param/global_localization_params.yaml" />
+	  </group>
   </group>
-
   <include file="$(find rtt_ros)/launch/deployer.launch">
     <arg name="NAME" value="VELMWHEEL_OROCOS_ROBOT"/>
     <arg name="DEPLOYER_ARGS" value="-s $(find velmwheel_bringup)/config/velmwheel.ops"/>
     <arg name="LOG_LEVEL" value="Warning"/>
-    <arg name="DEBUG" value="false"/>
+    <arg name="DEBUG" value="true"/>
   </include>
 
 <arg name="model" default="$(find velmwheel_description)/urdf/velmobil.urdf.xacro" />
