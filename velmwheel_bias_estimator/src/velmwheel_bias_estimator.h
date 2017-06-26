@@ -3,7 +3,8 @@
 
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
-#include <geometry_msgs/PoseWithCovarianceStamped.h>
+//#include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <geometry_msgs/Pose2D.h>
 #include <sensor_msgs/Imu.h>
 #include <nav_msgs/Odometry.h>
 #include <tf2_msgs/TFMessage.h>
@@ -21,7 +22,8 @@ class VelmWheelBiasEstimator : public RTT::TaskContext
 		bool startHook();
 
  		RTT::InputPort<sensor_msgs::Imu> in_imu_;
- 		RTT::InputPort<geometry_msgs::PoseWithCovarianceStamped> in_laser_;
+ 		//RTT::InputPort<geometry_msgs::PoseWithCovarianceStamped> in_laser_;
+ 		RTT::InputPort<geometry_msgs::Pose2D> in_laser_;
 
  		RTT::OutputPort<sensor_msgs::Imu> out_imu_;
  		RTT::OutputPort<double> out_theta_;

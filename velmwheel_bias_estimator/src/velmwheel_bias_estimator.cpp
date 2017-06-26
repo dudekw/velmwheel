@@ -20,7 +20,8 @@
 #include <fstream>
 
   // Pointers to msgs
-  std::auto_ptr<geometry_msgs::PoseWithCovarianceStamped> msg_laser_ptr;
+//  std::auto_ptr<geometry_msgs::PoseWithCovarianceStamped> msg_laser_ptr;
+  std::auto_ptr<geometry_msgs::Pose2D> msg_laser_ptr;
   std::auto_ptr<sensor_msgs::Imu> msg_imu_ptr;
   // time variables
   uint32_t loop_time;
@@ -59,7 +60,8 @@ VelmWheelBiasEstimator::VelmWheelBiasEstimator(const std::string& name) : TaskCo
   // additive bias error [deg/s] 
 
 
-  msg_laser_ptr.reset(new geometry_msgs::PoseWithCovarianceStamped());
+  //msg_laser_ptr.reset(new geometry_msgs::PoseWithCovarianceStamped());
+  msg_laser_ptr.reset(new geometry_msgs::Pose2D());
   msg_imu_ptr.reset(new sensor_msgs::Imu());
   eigen_quaternion_ptr.reset(new Eigen::Quaternion<double>(1,0,0,0));
   current_loop_time_ptr.reset(new ros::Time());
@@ -178,7 +180,64 @@ if (is_initialized)
 
     out_imu_.write((*msg_imu_ptr));
   }
-  // correct bias
+  // correct bias pose2D
+  if (RTT::NewData == in_laser_.read(*msg_laser_ptr))
+  {
+    myfile << "---- NEW LASER ---- " <<std::endl;
+    //  msec_laser_delta = std::chrono::duration_cast<std::chrono::milliseconds>(nsec);
+    // get laser theta angle from quaternion
+
+    euler_laser[2] = msg_laser_ptr->theta;
+    myfile << "euler_laser: "<<euler_laser <<std::endl;    
+    
+    if ( (double) old_msec_laser.count() == 0 )
+    {
+      gyro_orientation_z = euler_laser[2];
+    }
+    myfile << "gyro_orientation_z: "<<gyro_orientation_z <<std::endl;
+    // get variance from msg covariance matrix [35] -> rZ,rZ
+    R = 0.001;
+    myfile << "R: "<<R <<std::endl;
+
+    // get time delta in milliseconds
+    msec_laser_delta = std::chrono::duration_cast<std::chrono::milliseconds>(nsec - old_msec_laser); 
+
+    // correct -> calculate: kalman gain, residuum (eBias) and new_bias
+    myfile << "P: "<<P <<std::endl;
+
+    S = P(0,0) + R;
+    myfile << "S = P + R: "<<S <<std::endl;
+    //
+    // P = |P[0]  0 |
+    //     |0   P[1]|
+    
+    //
+    // K = |k[0] 0| 
+    //     |K[1] 0|
+
+    K(0) = P(0,0) * 1/S ;
+    K(1) = P(1,0) * 1/S ;
+    myfile << "K = P * 1/S : "<<K <<std::endl;
+
+    P = P - K * S * K.transpose();
+
+    myfile << "P - K * S: "<<P <<std::endl;
+    myfile << "delta theta: "<<(euler_laser[2] - gyro_orientation_z) <<std::endl;
+
+    // eBias [rad/sec]
+    eBias = (euler_laser[2] - gyro_orientation_z);
+    myfile << "eBias: "<<eBias <<std::endl;
+
+    //yTheta = msg_laser_ptr->orientation.z - gyro_orientation_z;
+    gyro_orientation_z = gyro_orientation_z + K(0) * eBias;
+    new_bias = new_bias + K(1) * eBias/ ((double)(msec_laser_delta.count())/1000);
+    myfile << "new_bias: "<<new_bias <<std::endl;
+
+    old_msec_laser = std::chrono::duration_cast<std::chrono::milliseconds>(nsec);
+  }
+
+  // correct bias poseWithCovarianceStamped
+  /*
   if (RTT::NewData == in_laser_.read(*msg_laser_ptr))
   {
     myfile << "---- NEW LASER ---- " <<std::endl;
@@ -236,6 +295,7 @@ if (is_initialized)
 
     old_msec_laser = std::chrono::duration_cast<std::chrono::milliseconds>(nsec);
   }
+  */
   // wite theta
   out_theta_.write(gyro_orientation_z);
 }
