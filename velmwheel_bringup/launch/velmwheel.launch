@@ -3,13 +3,9 @@
   
   <group ns="VELMWHEEL_OROCOS_ROBOT">
     <param name="VelmWheelInterface_EC/master_config" command="cat $(find velmwheel_bringup)/config/master_config.yaml"/>
-  </group>
-  <group ns="VELMWHEEL_OROCOS_ROBOT/VelmWheel_bias_estimator">
-      <rosparam command="load" file="$(find velmwheel_bias_estimator)/param/bias_estimator_params.yaml" />
-  </group>
-
-  <group ns="VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver">
-      <rosparam command="load" file="$(find velmwheel_laser_driver)/param/laser_driver_params.yaml" />
+    <rosparam command="load" file="$(find velmwheel_bias_estimator)/param/bias_estimator_params.yaml" />
+    <rosparam command="load" file="$(find velmwheel_laser_driver)/param/laser_driver_params.yaml" />
+    <rosparam command="load" file="$(find velmobil_gl)/param/global_localization_params.yaml" />
   </group>
 
   <include file="$(find rtt_ros)/launch/deployer.launch">
@@ -28,6 +24,7 @@
 <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
 <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
 <node name="map_server" pkg="map_server" type="map_server" args="$(find velmwheel_description)/maps/map_p109.yaml"/>
+<!-- 
 <include file="$(find velmwheel_bringup)/launch/include/amcl_velmobil.launch"/>
-
+-->
 </launch>

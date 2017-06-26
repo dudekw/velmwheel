@@ -12,13 +12,8 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-// ROS msgs
-#include <sensor_msgs/Imu.h>
 
   // Pointers to msgs
-  std::auto_ptr<geometry_msgs::PoseWithCovarianceStamped> msg_computed_pose_ptr;
-  std::auto_ptr<sensor_msgs::Odometry> msg_odom;
-
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_front_ptr;
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_rear_ptr;
   // time variables
@@ -29,101 +24,116 @@
   Eigen::Vector3d euler_laser;
 
   uint64_t loop_seq;
-  std::vector<bool> new_data_vec(2, false);
-  std::auto_ptr<Eigen::Matrix<float, Dynamic , Dynamic>> scan_front_data_matrix;
-  std::auto_ptr<Eigen::Matrix<float, Dynamic , Dynamic>> scan_rear_data_matrix;
+  std::auto_ptr<std::vector<bool> > new_data_vec_ptr;
+
+  std::auto_ptr<Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>> scan_front_data_matrix;
+  std::auto_ptr<Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>> scan_rear_data_matrix;
 
   std::vector<Eigen::Vector2f> markers;
-  size_t marker_counter;
-
   std::vector<float> ranges;
   std::vector<float> angles;
   std::vector<int> intensities;
   size_t global_iterator;
-
-class polar
-{
-	public:
-		float r,th;
-		polar(){}
-		polar(int a,int b)
-		{
-			r=a;
-			th=b;
-		}
-		void show()
-		{
-			cout<<"In polar form:\nr="<<r<<" and theta="<<th;
-			
-		}
-};
-class rectangular
-{
-	float x,y;
-	public:
-		rectangular(){}
-		rectangular(polar p)
-		{
-			x=p.r*cos(p.th);
-			y=p.r*sin(p.th);
-		}
-		void show()
-		{
-			cout<<"\nIn Rectangular form:\nx="<<x<<"and y="<<y;
-			
-		}
-};
-
-VelmWheelBiasEstimator::VelmWheelBiasEstimator(const std::string& name) : TaskContext(name)
+  size_t marker_id;
+  std::auto_ptr<visualization_msgs::Marker> msg_markers_ptr;
+  size_t marker_counter;
+  Eigen::Matrix<float,3,3> laser_in_base_transform;
+  bool new_rising_edge_front;
+  bool new_rising_edge_rear;
+  size_t rising_marker_iterator_front;
+  size_t rising_marker_iterator_rear;
+VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) : TaskContext(name)
 {
 
   this->addPort("in_laser_front",in_laser_front_);
   this->addPort("in_laser_rear",in_laser_rear_);
-  this->addPort("in_odom",in_odom_);
-  this->addPort("out_pose",out_pose_);
+  this->addPort("out_markers",out_markers_);
 
   this->addProperty("/velmobil_gl/min_intensity",min_intensity_);
 
 
-  msg_computed_pose_ptr.reset(new geometry_msgs::PoseWithCovarianceStamped());
   msg_laser_front_ptr.reset(new sensor_msgs::LaserScan());
   msg_laser_rear_ptr.reset(new sensor_msgs::LaserScan());
-
-
+  msg_markers_ptr.reset(new visualization_msgs::Marker());
+  new_data_vec_ptr.reset(new std::vector<bool>(2,false));
+  scan_front_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
+  scan_rear_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
 }
 
-VelmWheelBiasEstimator::~VelmWheelBiasEstimator() 
+VelmobilGlobalLocalization::~VelmobilGlobalLocalization() 
 {
 }
-bool VelmWheelBiasEstimator::polarLaserToCartesianBase(const std::vector<float> &ranges, const std::vector<float> &intensities, Eigen::MatrixXXf &data, const Eigen::Matrix< float, 3, 3> laser_in_base_transform ) 
+
+bool VelmobilGlobalLocalization::removeMarkers(visualization_msgs::Marker &markers)
+{
+  //delete all objects
+  markers.action = 3;
+}
+
+bool VelmobilGlobalLocalization::markersInitialization(visualization_msgs::Marker &markers, const size_t &marker_id , const std::vector<Eigen::Vector2f> &positions)
+{
+markers.header.frame_id = "laser_front";
+
+markers.ns = "localization";
+markers.id = 1;
+// type = POINTS
+markers.type = 8;
+// action add object
+markers.action = 0;
+for (global_iterator = 0; global_iterator < marker_id+1; global_iterator++)
+{
+  markers.points.at(global_iterator).x = positions.at(global_iterator)(0);
+  markers.points.at(global_iterator).y = positions.at(global_iterator)(1);
+  markers.points.at(global_iterator).z = 0;
+  markers.colors.at(global_iterator).r = 255;
+  markers.colors.at(global_iterator).g = 0;
+  markers.colors.at(global_iterator).b = 0;
+  markers.colors.at(global_iterator).a = 1;
+
+
+}
+for (global_iterator = marker_id+1; global_iterator < markers.colors.size(); global_iterator++)
+{
+  markers.points.at(global_iterator).x = 100;
+  markers.points.at(global_iterator).y = 100;
+  markers.points.at(global_iterator).z = 0;
+  markers.colors.at(global_iterator).r = 0;
+  markers.colors.at(global_iterator).g = 0;
+  markers.colors.at(global_iterator).b = 0;
+  markers.colors.at(global_iterator).a = 0;
+}
+
+}
+
+bool VelmobilGlobalLocalization::polarLaserToCartesianBase(const std::vector<float> &ranges, const std::vector<float> &intensities, Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic> &data, const Eigen::Matrix< float, 3, 3> &transform ) 
 {
 	for (global_iterator = 0; global_iterator < ranges.size(); global_iterator++ )
 	{
-		data(global_iterator,0) = laser_in_base_transform(0,0) * ranges.at(global_iterator) * cos(angles.at(global_iterator)) + laser_in_base_transform(0,1) * ranges.at(global_iterator) * sin(angles.at(global_iterator)) + laser_in_base_transform(0,2);
-		data(global_iterator,1) = laser_in_base_transform(1,0) * ranges.at(global_iterator) * cos(angles.at(global_iterator)) + laser_in_base_transform(1,1) * ranges.at(global_iterator) * sin(angles.at(global_iterator)) + laser_in_base_transform(1,2);
+		data(global_iterator,0) = transform(0,0) * ranges.at(global_iterator) * cos(angles.at(global_iterator)) + transform(0,1) * ranges.at(global_iterator) * sin(angles.at(global_iterator)) + transform(0,2);
+		data(global_iterator,1) = transform(1,0) * ranges.at(global_iterator) * cos(angles.at(global_iterator)) + transform(1,1) * ranges.at(global_iterator) * sin(angles.at(global_iterator)) + transform(1,2);
 		data(global_iterator,2) = intensities.at(global_iterator);
 	}
 
 	return true;
 }
-bool VelmWheelBiasEstimator::configureHook() 
+bool VelmobilGlobalLocalization::configureHook() 
 {
 
 
 	return true;
 }
 
-bool VelmWheelBiasEstimator::startHook() 
+bool VelmobilGlobalLocalization::startHook() 
 {
 
   nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
   nsec_old = nsec;
   loop_seq = 0;
-  new_data_vec.at(0) = false;
-  new_data_vec.at(1) = false;
+  new_data_vec_ptr->at(0) = false;
+  new_data_vec_ptr->at(1) = false;
   //[x y intensity] * 540 (beams) * 2 (laser scanners)
-  scan_front_data_matrix.resize(540,3);
-  scan_rear_data_matrix.resize(540,3);
+  scan_front_data_matrix->resize(540,3);
+  scan_rear_data_matrix->resize(540,3);
 
   angles.resize(540);
   for (int i = 0; i< angles.size(); i++)
@@ -133,14 +143,20 @@ bool VelmWheelBiasEstimator::startHook()
   global_iterator = 0;
   // set max markers count 
   markers.resize(10);
-
+  marker_id = 0;
+  msg_markers_ptr->points.resize(10);
+  msg_markers_ptr->colors.resize(10);
+  new_rising_edge_front = true;
+  new_rising_edge_rear = true;
+  rising_marker_iterator_front = 0;
+  rising_marker_iterator_rear = 0;
   return true;
 }
 
 ////
 // UPDATE
 ////
-void VelmWheelBiasEstimator::updateHook() 
+void VelmobilGlobalLocalization::updateHook() 
 {
 
     nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
@@ -150,76 +166,85 @@ void VelmWheelBiasEstimator::updateHook()
    current_loop_time_ptr->sec = std::chrono::duration_cast<std::chrono::seconds >(nsec).count();
    current_loop_time_ptr->nsec = (nsec - std::chrono::duration_cast<std::chrono::seconds >(nsec)).count();
   markers.clear();
+  marker_counter = 0;
   // predict bias and calculate theta
 
   // 
   // // // ODOM ????
   //
-  if (RTT::NewData == in_laser_front_.read(*msg_laser_front_ptr))
-  {
-	scan_front_data_matrix.setZero();
-	polarToCartesian(msg_laser_front_ptr->ranges, msg_laser_front_ptr->intensities, scan_front_data_matrix);
-  	new_data_vec.at(0) = true;
-  }
 
   // predict bias and calculate theta
   if (RTT::NewData == in_laser_front_.read(*msg_laser_front_ptr))
   {
-	scan_front_data_matrix.setZero();
-	polarToCartesian(msg_laser_front_ptr->ranges, msg_laser_front_ptr->intensities, scan_front_data_matrix);
-  	new_data_vec.at(0) = true;
+	scan_front_data_matrix->setZero();
+  laser_in_base_transform << 1, 0, 0.3,
+                             0, 1, 0,
+                             0, 0, 1;
+	polarLaserToCartesianBase(msg_laser_front_ptr->ranges, msg_laser_front_ptr->intensities, (*scan_front_data_matrix), laser_in_base_transform);
+  	new_data_vec_ptr->at(0) = true;
   }
   if (RTT::NewData == in_laser_rear_.read(*msg_laser_rear_ptr))
   {
-	scan_rear_data_matrix.setZero();
-	polarToCartesian(msg_laser_rear_ptr->ranges, msg_laser_rear_ptr->intensities, scan_rear_data_matrix);
-	new_data_vec.at(1) = true;
+	scan_rear_data_matrix->setZero();
+  laser_in_base_transform << -1, 0, -0.3,
+                             0, -1, 0,
+                             0, 0, 1;
+	polarLaserToCartesianBase(msg_laser_rear_ptr->ranges, msg_laser_rear_ptr->intensities, (*scan_rear_data_matrix), laser_in_base_transform);
+	new_data_vec_ptr->at(1) = true;
   }
 
-  if (new_data_vec.at(0) && new_data_vec.at(1))
+  if (new_data_vec_ptr->at(0) && new_data_vec_ptr->at(1))
   {
-  	for (global_iterator = 0; global_iterator < scan_front_data_matrix.rows(); global_iterator++ )
+    removeMarkers( (*msg_markers_ptr));
+    out_markers_.write((*msg_markers_ptr));
+
+  	for (global_iterator = 0; global_iterator < scan_front_data_matrix->rows(); global_iterator++ )
   	{
 
   		// [FRONT LASER] found rising edge
-  		if (scan_front_data_matrix(global_iterator,2)  > intensity_tresh && new_rising_edge_front)
+  		if ((*scan_front_data_matrix)(global_iterator,2)  > min_intensity_ && new_rising_edge_front)
   		{
   			//calculate distance between last rising edge and cutten 
 			rising_marker_iterator_front = global_iterator;
 			new_rising_edge_front = false;
   		}
   		// found sloping edge
-  		else if (scan_front_data_matrix(global_iterator,2) < intensity_tresh && !new_rising_edge_front)
+  		else if ((*scan_front_data_matrix)(global_iterator,2) < min_intensity_ && !new_rising_edge_front)
   		{
   			//marker = {x_in_base, y_in_base}
-  			markers.at(marker_counter) = {scan_front_data_matrix(global_iterator-rising_marker_iterator_front,0),scan_front_data_matrix(global_iterator-rising_marker_iterator_front,1)};
+        marker_id = rising_marker_iterator_front + floor((global_iterator-rising_marker_iterator_front)/2);
+  			markers.at(marker_counter) = {(*scan_front_data_matrix)(marker_id,0),(*scan_front_data_matrix)(marker_id,1)};
   			new_rising_edge_front = true;
+        marker_counter += 1;
   		}
-
+/*
    		// [REAR LASER] found rising edge
-  		if (scan_rear_data_matrix(global_iterator,2)  > intensity_tresh && new_rising_edge_rear)
+  		if ((*scan_rear_data_matrix)(global_iterator,2)  > min_intensity_ && new_rising_edge_rear)
   		{
   			//calculate distance between last rising edge and cutten 
 			rising_marker_iterator_rear = global_iterator;
 			new_rising_edge_rear = false;
   		}
   		// found sloping edge
-  		else if (scan_rear_data_matrix(global_iterator,2) < intensity_tresh && !new_rising_edge_rear)
+  		else if ((*scan_rear_data_matrix)(global_iterator,2) < min_intensity_ && !new_rising_edge_rear)
   		{
   			//marker = {x_in_base, y_in_base}
-  			markers.at(marker_counter) = {scan_rear_data_matrix(global_iterator-rising_marker_iterator_rear,0),scan_rear_data_matrix(global_iterator-rising_marker_iterator_rear,1)};
-  			new_rising_edge_rear = true;
-  		}
+        marker_id = rising_marker_iterator_rear + floor((global_iterator-rising_marker_iterator_rear)/2);
 
+  			markers.at(marker_counter) = {(*scan_rear_data_matrix)(marker_id,0),(*scan_rear_data_matrix)(marker_id,1)};
+  			new_rising_edge_rear = true;
+        marker_counter += 1;
+  		}
+*/
+    markersInitialization( (*msg_markers_ptr), marker_counter, markers);
+    out_markers_.write((*msg_markers_ptr));
 
    	}
- 	new_data_vec.at(0) = false;
- 	new_data_vec.at(1) = false;
+ 	new_data_vec_ptr->at(0) = false;
+ 	new_data_vec_ptr->at(1) = false;
   }
-  // wite theta
-  out_theta_.write(gyro_orientation_z);
   loop_seq += 1;
 
 }
 
-ORO_CREATE_COMPONENT(VelmWheelBiasEstimator)
+ORO_CREATE_COMPONENT(VelmobilGlobalLocalization)
