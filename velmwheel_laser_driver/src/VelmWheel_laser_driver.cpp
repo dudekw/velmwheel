@@ -20,22 +20,17 @@
 VelmWheelLaserDriver::VelmWheelLaserDriver(const std::string& name) : TaskContext(name)
 {
 
-	this->addPort("in_laserF",in_laserF_);
-	this->addPort("in_laserR",in_laserR_);
-	this->addPort("out_laser_F",out_laser_F_);
-	this->addPort("out_laser_R",out_laser_R_);
+	this->addPort("out_laser",out_laser_);
 	this->addProperty("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/merged_scan_frame",merged_scan_frame_);
 	this->addProperty("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/hosts",hosts_);
 	this->addProperty("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_laser_driver/useNTP",useNTP_);
 	this->addProperty("laser_config",laser_config_);
 
 	laserF_to_base_ptr.reset(new Eigen::Transform<double,2,Eigen::Affine>);
-	laserR_to_base_ptr.reset(new Eigen::Transform<double,2,Eigen::Affine>);
 	msg_laserF_ptr.reset(new sensor_msgs::LaserScan);
-	msg_laserR_ptr.reset(new sensor_msgs::LaserScan);
+
 	msg_laserOut_ptr.reset(new sensor_msgs::LaserScan);
 	 LMS1xx laser_F;
-	 LMS1xx laser_R;
   scanCfg cfg;
   NTPcfg cfg_ntp;
   scanOutputRange outputRange;
@@ -53,9 +48,6 @@ VelmWheelLaserDriver::~VelmWheelLaserDriver()
     laser_F.scanContinous(0);
     laser_F.stopMeas();
     laser_F.disconnect();
-    laser_R.scanContinous(0);
-    laser_R.stopMeas();
-    laser_R.disconnect();
 }
 bool VelmWheelLaserDriver::checkLaserConnection(LMS1xx *laser, std::string &host)
 {
@@ -174,7 +166,7 @@ std::cout<< "host param" << host_F_ <<std::endl;
 	while (!connection_status)
 	{	
 		connection_status = checkLaserConnection(&laser_F, host_F_);
-		//connection_status &= checkLaserConnection(laser_R, host_R_);
+
 	      RTT::Logger::log() << RTT::Logger::Debug << "[Laser driver] -- retying in 1 sec"<< RTT::Logger::endl;
 	      sleep(1);
 	}
@@ -182,7 +174,6 @@ std::cout<< "host param" << host_F_ <<std::endl;
 
 
 	configLaser(&laser_F, host_F_);
-	//configLaser(laser_R, host_R_);
 
    	
 
@@ -193,8 +184,6 @@ std::cout<< "host param" << host_F_ <<std::endl;
     msg_laserOut_ptr->angle_increment = (double)outputRange.angleResolution / 10000.0 * DEG2RAD;
     msg_laserOut_ptr->angle_min = (double)outputRange.startAngle / 10000.0 * DEG2RAD - M_PI / 2;
     msg_laserOut_ptr->angle_max = (double)outputRange.stopAngle / 10000.0 * DEG2RAD - M_PI / 2;
-
-    //laser_R.setScanDataCfg(dataCfg);
 
 
 	return true;
@@ -259,44 +248,14 @@ void VelmWheelLaserDriver::updateHook()
           msg_laserOut_ptr->header.stamp.sec = data.msg_sec;
           msg_laserOut_ptr->header.stamp.nsec = data.msg_usec*1000;
         }
-		out_laser_F_.write((*msg_laserOut_ptr));
+		out_laser_.write((*msg_laserOut_ptr));
 
     }
     else
     {
       RTT::Logger::log() << RTT::Logger::Debug << "Laser timed out on delivering scan"<< RTT::Logger::endl;
     }    
-/*
-    if (laser_R.getScanData(&data))
-    {
-     RTT::Logger::log() << RTT::Logger::Debug << "dist_len1: "<< data.dist_len1<< RTT::Logger::endl;
-   	
-        for (int i = 0; i < data.dist_len1; i++)
-        {
-          msg_laserOut_ptr->ranges[i] = data.dist1[i] * 0.001;
-        }
-     RTT::Logger::log() << RTT::Logger::Debug << "rssi_len1: "<< data.rssi_len1<< RTT::Logger::endl;
 
-        for (int i = 0; i < data.rssi_len1; i++)
-        {
-          msg_laserOut_ptr->intensities[i] = data.rssi1[i];
-        }
-        // check if useNTP flag is set true
-        if (useNTP_)
-        {
-          RTT::Logger::log() << RTT::Logger::Debug << "Publishing NTP time stamp."<< RTT::Logger::endl;
-          msg_laserOut_ptr->header.stamp.sec = data.msg_sec;
-          msg_laserOut_ptr->header.stamp.nsec = data.msg_usec*1000;
-        }
-		out_laser_R_.write((*msg_laserOut_ptr));
-          std::cout<<"data send "<<std::endl;
-
-    }
-    else
-    {
-      RTT::Logger::log() << RTT::Logger::Debug << "Laser timed out on delivering scan"<< RTT::Logger::endl;
-    }    
-*/
 
 }
 

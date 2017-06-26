@@ -22,22 +22,17 @@ class VelmWheelLaserDriver : public RTT::TaskContext
 		bool checkLaserConnection(LMS1xx *laser, std::string &host);
 		void setHeader(std_msgs::Header &header, const std::string &frame, const uint32_t &seq_id);
 
- 		RTT::InputPort<sensor_msgs::LaserScan> in_laserF_;
- 		RTT::InputPort<sensor_msgs::LaserScan> in_laserR_;
 		std::vector<std::string> merged_scan_frame_;
 		std::vector<std::string> hosts_;
 		std::string host_F_;
- 		RTT::OutputPort<sensor_msgs::LaserScan> out_laser_F_;
- 		RTT::OutputPort<sensor_msgs::LaserScan> out_laser_R_;
+ 		RTT::OutputPort<sensor_msgs::LaserScan> out_laser_;
 		int laser_config_;
 
 
 		std::auto_ptr<Eigen::Transform<double,2,Eigen::Affine>> laserF_to_base_ptr;
-std::auto_ptr<Eigen::Transform<double,2,Eigen::Affine>> laserR_to_base_ptr;
+
 std::auto_ptr<sensor_msgs::LaserScan> msg_laserF_ptr;
-std::auto_ptr<sensor_msgs::LaserScan> msg_laserR_ptr;
 std::auto_ptr<sensor_msgs::LaserScan> msg_laserOut_ptr;
- LMS1xx laser_R;
  LMS1xx laser_F;
   scanCfg cfg;
   NTPcfg cfg_ntp;
