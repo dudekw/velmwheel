@@ -10,8 +10,11 @@ ros.import("velmwheel_core")
 ros.import("velmwheel_fusion")
 ros.import("velmwheel_laser_driver")
 ros.import("velmwheel_bias_estimator")
+ros.import("velmobil_gl")
 
 ros.import("rtt_nav_msgs")
+ros.import("rtt_std_msgs")
+ros.import("rtt_visualization_msgs")
 ros.import("rtt_sensor_msgs")
 ros.import("rtt_tf2_msgs")
 
@@ -116,7 +119,7 @@ stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 	connect("VelmWheel_Fusion.in_odometry","VelmWheel_Core.out_odometry", ConnPolicy())
 	stream("VelmWheel_Fusion.out_odometry", ros.comm.topic("ekf/odometry"));
 	stream("VelmWheel_Fusion.out_odom_tf", ros.comm.topic("tf"));
-	connect("VelmWheel_Fusion.in_theta","VelmWheel_bias_estimator.out_theta", ConnPolicy())
+	stream("VelmWheel_Fusion.in_global_localization",ros.comm.topic("/pose2D"))
 
 	VelmWheel_Fusion.start()
 
@@ -135,11 +138,13 @@ stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 	VelmWheel_bias_estimator.start()
 
 	loadComponent("velmobil_global_localization","VelmobilGlobalLocalization")
-	setActivity("velmobil_global_localization", 0.02, 5, ORO_SCHED_RT)
 	velmobil_global_localization.loadService("rosparam")
 	velmobil_global_localization.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/min_intensity")
+	velmobil_global_localization.rosparam.getAll()
+	setActivity("velmobil_global_localization", 0.02, 5, ORO_SCHED_RT)
 	velmobil_global_localization.configure();
-	connect("velmobil_global_localization.in_laser_front", "VelmWheel_laser_driver_F.out_laser," ConnPolicy());
-	connect("velmobil_global_localization.in_laser_rear", "VelmWheel_laser_driver_R.out_laser", ConnPolicy());
+	stream("velmobil_global_localization.in_laser_front", ros.comm.topic("/laser_front"));
+	stream("velmobil_global_localization.in_laser_rear",  ros.comm.topic("/laser_rear"));
+	stream("velmobil_global_localization.out_markers",  ros.comm.topic("/visualization_marker"));
 	velmobil_global_localization.start()
 

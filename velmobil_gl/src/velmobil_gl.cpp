@@ -13,6 +13,7 @@
 #include <Eigen/Geometry>
 #include <iostream>
 #include <fstream>
+#include <cmath>
   // Pointers to msgs
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_front_ptr;
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_rear_ptr;
@@ -51,6 +52,7 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
   this->addPort("in_laser_front",in_laser_front_);
   this->addPort("in_laser_rear",in_laser_rear_);
   this->addPort("out_markers",out_markers_);
+  this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/min_intensity",min_intensity_);
 
 
 current_loop_time_ptr.reset(new ros::Time());
@@ -66,15 +68,28 @@ VelmobilGlobalLocalization::~VelmobilGlobalLocalization()
 {
 }
 
-bool VelmobilGlobalLocalization::removeMarkers(visualization_msgs::Marker &vis_markers)
+bool VelmobilGlobalLocalization::removeMarkers(visualization_msgs::Marker &vis_markers, const size_t &marker_id)
 {
-  //delete all objects
-  vis_markers.action = 3;
+
+for (global_iterator = 0; global_iterator < marker_id; global_iterator++)
+{
+  markers.at(global_iterator) << 100,100;
+
+  vis_markers.points.at(global_iterator).x = 0;
+  vis_markers.points.at(global_iterator).y = 0;
+  vis_markers.points.at(global_iterator).z = 0;
+  vis_markers.colors.at(global_iterator).r = 0;
+  vis_markers.colors.at(global_iterator).g = 1;
+  vis_markers.colors.at(global_iterator).b = 0;
+  vis_markers.colors.at(global_iterator).a = 0;
+
+
+}
 }
 
 bool VelmobilGlobalLocalization::markersInitialization(visualization_msgs::Marker &vis_markers, const size_t &marker_id , const std::vector<Eigen::Vector2f> &positions)
 {
-vis_markers.header.frame_id = "laser_front";
+vis_markers.header.frame_id = "base_link";
 
 vis_markers.ns = "localization";
 vis_markers.id = 1;
@@ -82,13 +97,17 @@ vis_markers.id = 1;
 vis_markers.type = 8;
 // action add object
 vis_markers.action = 0;
-for (global_iterator = 0; global_iterator < marker_id+1; global_iterator++)
+vis_markers.lifetime = ros::Duration(0.5);
+vis_markers.scale.x = 0.1;
+vis_markers.scale.y = 0.1;
+vis_markers.frame_locked = true;
+for (global_iterator = 0; global_iterator < marker_id; global_iterator++)
 {
   vis_markers.points.at(global_iterator).x = positions.at(global_iterator)(0);
   vis_markers.points.at(global_iterator).y = positions.at(global_iterator)(1);
   vis_markers.points.at(global_iterator).z = 0;
-  vis_markers.colors.at(global_iterator).r = 255;
-  vis_markers.colors.at(global_iterator).g = 0;
+  vis_markers.colors.at(global_iterator).r = 0;
+  vis_markers.colors.at(global_iterator).g = 1;
   vis_markers.colors.at(global_iterator).b = 0;
   vis_markers.colors.at(global_iterator).a = 1;
 
@@ -107,7 +126,7 @@ for (global_iterator = marker_id+1; global_iterator < vis_markers.colors.size();
 
 }
 
-bool VelmobilGlobalLocalization::polarLaserToCartesianBase(const std::vector<float> &ranges, const std::vector<float> &intensities, Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic> &data, const Eigen::Matrix< float, 3, 3> &transform ) 
+bool VelmobilGlobalLocalization::polarLaserToCartesianBase(const std::vector<float> &ranges, const std::vector<float> &intensities, Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic> &data, const Eigen::Matrix< float, 3, 3> &transform ) 
 {
   myfile <<"polar to cartesian init\n"; 
   myfile <<"ranges: "<<ranges.size()<<"\n"; 
@@ -123,7 +142,7 @@ bool VelmobilGlobalLocalization::polarLaserToCartesianBase(const std::vector<flo
 }
 bool VelmobilGlobalLocalization::configureHook() 
 {
-  this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_gl/min_intensity",min_intensity_);
+
 std::cout<< "min_intensity_: " << min_intensity_<< "\n";
 
 
@@ -145,7 +164,7 @@ bool VelmobilGlobalLocalization::startHook()
   angles.resize(541);
   for (int i = 0; i< angles.size(); i++)
   {
-  	angles.at(i) = -135 + 0.5 * i;
+  	angles.at(i) = M_PI/180 * (-135 + 0.5 * i);
   }
   global_iterator = 0;
   // set max markers count 
@@ -168,6 +187,7 @@ std::cout<< "marker size: " << markers.size()<< "\n";
 ////
 void VelmobilGlobalLocalization::updateHook() 
 {
+
     nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
 
     loop_time = nsec.count() - nsec_old.count();
@@ -176,7 +196,9 @@ void VelmobilGlobalLocalization::updateHook()
    current_loop_time_ptr->sec = std::chrono::duration_cast<std::chrono::seconds >(nsec).count();
    current_loop_time_ptr->nsec = (nsec - std::chrono::duration_cast<std::chrono::seconds >(nsec)).count();
 
-  //markers.clear();
+  removeMarkers( (*msg_markers_ptr), marker_counter);
+  out_markers_.write((*msg_markers_ptr));
+
 
   marker_counter = 0;
   // predict bias and calculate theta
@@ -214,8 +236,8 @@ void VelmobilGlobalLocalization::updateHook()
   {
 myfile << "remove markers \n";
 
-    removeMarkers( (*msg_markers_ptr));
-    out_markers_.write((*msg_markers_ptr));
+    // removeMarkers( (*msg_markers_ptr));
+    // out_markers_.write((*msg_markers_ptr));
 
   	for (global_iterator = 0; global_iterator < scan_front_data_matrix->rows(); global_iterator++ )
   	{
@@ -236,14 +258,14 @@ myfile << "remove markers \n";
 
   			//marker = {x_in_base, y_in_base}
         marker_id = rising_marker_iterator_front + floor((global_iterator-rising_marker_iterator_front)/2);
-  			markers.at(marker_counter) = << (*scan_front_data_matrix)(marker_id,0),(*scan_front_data_matrix)(marker_id,1);
+  			markers.at(marker_counter) << (*scan_front_data_matrix)(marker_id,0),(*scan_front_data_matrix)(marker_id,1);
   			new_rising_edge_front = true;
-        marker_counter += 1;
         myfile << "marker_id: " << marker_id<<"\n";
         myfile << "marker_intensity: " << (*scan_front_data_matrix)(marker_id,2)<<"\n";
         myfile << "marker_counter: " << marker_counter<<"\n";
         myfile << "markers: \n"<< markers.at(marker_counter)<<"\n";
-
+        myfile << "scan data: \n"<< (*scan_front_data_matrix)(marker_id,0) << "\n"<<(*scan_front_data_matrix)(marker_id,1)<<"\n";
+        marker_counter += 1;
 
   		}
 /*

@@ -21,7 +21,7 @@ class VelmobilGlobalLocalization : public RTT::TaskContext
 		bool configureHook();
 		void updateHook();
 		bool startHook();
-		bool removeMarkers(visualization_msgs::Marker &markers);
+		bool removeMarkers(visualization_msgs::Marker &markers,const size_t &marker_id);
 		bool markersInitialization(visualization_msgs::Marker &markers, const size_t &marker_id , const std::vector<Eigen::Vector2f> &positions);
 		bool polarLaserToCartesianBase(const std::vector<float> &ranges, const std::vector<float> &intensities, Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic> &data, const Eigen::Matrix< float, 3, 3> &transform );
 
