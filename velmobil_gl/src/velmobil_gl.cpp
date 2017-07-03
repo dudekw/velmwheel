@@ -168,10 +168,10 @@ bool VelmobilGlobalLocalization::startHook()
   }
   global_iterator = 0;
   // set max markers count 
-  markers.resize(10);
+  markers.resize(20);
   marker_id = 0;
-  msg_markers_ptr->points.resize(10);
-  msg_markers_ptr->colors.resize(10);
+  msg_markers_ptr->points.resize(20);
+  msg_markers_ptr->colors.resize(20);
   new_rising_edge_front = true;
   new_rising_edge_rear = true;
   rising_marker_iterator_front = 0;
@@ -219,18 +219,16 @@ void VelmobilGlobalLocalization::updateHook()
   	new_data_vec_ptr->at(0) = true;
   }
 
-/*  if (RTT::NewData == in_laser_rear_.read((*msg_laser_rear_ptr)))
+  if (RTT::NewData == in_laser_rear_.read((*msg_laser_rear_ptr)))
   {
 
-	scan_rear_data_matrix->setZero();
+  scan_front_data_matrix->setZero();
   laser_in_base_transform << -1, 0, -0.3,
                              0, -1, 0,
                              0, 0, 1;
-	polarLaserToCartesianBase(msg_laser_rear_ptr->ranges, msg_laser_rear_ptr->intensities, (*scan_rear_data_matrix), laser_in_base_transform);
-	new_data_vec_ptr->at(1) = true;
+  polarLaserToCartesianBase(msg_laser_rear_ptr->ranges, msg_laser_rear_ptr->intensities, (*scan_rear_data_matrix), laser_in_base_transform);
+    new_data_vec_ptr->at(1) = true;
   }
-*/
-  new_data_vec_ptr->at(1) = true;
 
   if (new_data_vec_ptr->at(0) && new_data_vec_ptr->at(1))
   {
@@ -268,29 +266,36 @@ myfile << "remove markers \n";
         marker_counter += 1;
 
   		}
-/*
-   		// [REAR LASER] found rising edge
-  		if ((*scan_rear_data_matrix)(global_iterator,2)  > min_intensity_ && new_rising_edge_rear)
-  		{
-  			//calculate distance between last rising edge and cutten 
-			rising_marker_iterator_rear = global_iterator;
-			new_rising_edge_rear = false;
-  		}
-  		// found sloping edge
-  		else if ((*scan_rear_data_matrix)(global_iterator,2) < min_intensity_ && !new_rising_edge_rear)
-  		{
-  			//marker = {x_in_base, y_in_base}
-        marker_id = rising_marker_iterator_rear + floor((global_iterator-rising_marker_iterator_rear)/2);
 
-  			markers.at(marker_counter) = {(*scan_rear_data_matrix)(marker_id,0),(*scan_rear_data_matrix)(marker_id,1)};
-  			new_rising_edge_rear = true;
+      // [REAR LASER] found rising edge
+      if ((*scan_rear_data_matrix)(global_iterator,2)  > min_intensity_ && new_rising_edge_rear)
+      {
+        myfile << "REAR - RISING\n";
+
+        //calculate distance between last rising edge and cutten 
+      rising_marker_iterator_rear = global_iterator;
+      new_rising_edge_rear = false;
+      }
+      // found sloping edge
+      else if ((*scan_rear_data_matrix)(global_iterator,2) < min_intensity_ && !new_rising_edge_rear)
+      {
+        myfile << "REAR -SLOPING\n";
+
+        //marker = {x_in_base, y_in_base}
+        marker_id = rising_marker_iterator_rear + floor((global_iterator-rising_marker_iterator_rear)/2);
+        markers.at(marker_counter) << (*scan_rear_data_matrix)(marker_id,0),(*scan_rear_data_matrix)(marker_id,1);
+        new_rising_edge_rear = true;
+        myfile << "REAR -marker_id: " << marker_id<<"\n";
+        myfile << "REAR -marker_intensity: " << (*scan_rear_data_matrix)(marker_id,2)<<"\n";
+        myfile << "REAR -marker_counter: " << marker_counter<<"\n";
+        myfile << "REAR -markers: \n"<< markers.at(marker_counter)<<"\n";
+        myfile << "REAR -scan data: \n"<< (*scan_rear_data_matrix)(marker_id,0) << "\n"<<(*scan_rear_data_matrix)(marker_id,1)<<"\n";
         marker_counter += 1;
-  		}
-*/
+
+      }
 
 
    	}
-          myfile << "min_intensity_: \n"<< min_intensity_<<"\n";
 
     myfile << "-- initialization ---\n";
       markersInitialization( (*msg_markers_ptr), marker_counter, markers);
