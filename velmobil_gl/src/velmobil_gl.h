@@ -4,7 +4,7 @@
 
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
-//#include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <tf2_msgs/TFMessage.h>
 #include <sensor_msgs/LaserScan.h>
 #include <visualization_msgs/Marker.h>
 #include <string>
@@ -27,6 +27,7 @@ class VelmobilGlobalLocalization : public RTT::TaskContext
 
 
 
+ 		RTT::InputPort<tf2_msgs::TFMessage> in_odom_transform_;
  		RTT::InputPort<sensor_msgs::LaserScan> in_laser_front_;
  		RTT::InputPort<sensor_msgs::LaserScan> in_laser_rear_;
  		//RTT::InputPort<geometry_msgs::PoseWithCovarianceStamped> in_laser_;

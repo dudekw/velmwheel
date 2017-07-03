@@ -17,12 +17,19 @@
   // Pointers to msgs
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_front_ptr;
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_rear_ptr;
+  std::auto_ptr<tf2_msgs::TFMessage> msg_odom_transform_ptr;
+  std::auto_ptr<visualization_msgs::Marker> msg_markers_ptr;
+
   // time variables
   uint32_t loop_time;
   std::chrono::nanoseconds nsec;
   std::chrono::nanoseconds nsec_old;
   std::auto_ptr<ros::Time> current_loop_time_ptr; 
   Eigen::Vector3d euler_laser;
+  Eigen::Quaternion<float> odom_quaternion;
+  Eigen::Vector3f odom_translation;
+  Eigen::Matrix<float,3,3> odom_transform;
+  Eigen::Matrix<float,3,3> laser_in_odom_transform;
 
   uint64_t loop_seq;
   std::auto_ptr<std::vector<bool> > new_data_vec_ptr;
@@ -36,7 +43,6 @@
   std::vector<int> intensities;
   size_t global_iterator;
   size_t marker_id;
-  std::auto_ptr<visualization_msgs::Marker> msg_markers_ptr;
   size_t marker_counter;
   Eigen::Matrix<float,3,3> laser_in_base_transform;
   bool new_rising_edge_front;
@@ -49,6 +55,7 @@
 VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) : TaskContext(name)
 {
 
+  this->addPort("in_odom_transform",in_odom_transform_);
   this->addPort("in_laser_front",in_laser_front_);
   this->addPort("in_laser_rear",in_laser_rear_);
   this->addPort("out_markers",out_markers_);
@@ -59,6 +66,8 @@ current_loop_time_ptr.reset(new ros::Time());
   msg_laser_front_ptr.reset(new sensor_msgs::LaserScan());
   msg_laser_rear_ptr.reset(new sensor_msgs::LaserScan());
   msg_markers_ptr.reset(new visualization_msgs::Marker());
+  msg_odom_transform_ptr.reset(new tf2_msgs::TFMessage());
+
   new_data_vec_ptr.reset(new std::vector<bool>(2,false));
   scan_front_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
   scan_rear_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
@@ -178,7 +187,8 @@ bool VelmobilGlobalLocalization::startHook()
   rising_marker_iterator_rear = 0;
 std::cout<< "marker size: " << markers.size()<< "\n";
   myfile.open ("/tmp/gl_log_data.txt");
-
+  odom_transform.setIdentity();
+  odom_quaternion.setIdentity();
   return true;
 }
 
@@ -204,8 +214,30 @@ void VelmobilGlobalLocalization::updateHook()
   // predict bias and calculate theta
 
   // 
-  // // // ODOM ????
+  // // // ODOM 
   //
+if (RTT::NewData == in_odom_transform_.read((*msg_odom_transform_ptr)))
+  {
+std::cout<< "--- ODOM --- " << "\n";
+
+    odom_quaternion.x() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.x;
+    odom_quaternion.y() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.y;
+    odom_quaternion.z() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.z;
+    odom_quaternion.w() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.w;
+
+    odom_translation(0) =  msg_odom_transform_ptr->transforms.at(0).transform.translation.x;
+    odom_translation(1) =  msg_odom_transform_ptr->transforms.at(0).transform.translation.y;
+    //odom_translation(2) =  msg_odom_transform_ptr->transforms.transform.translation.z;
+
+    odom_transform.topLeftCorner(2,2) = odom_quaternion.toRotationMatrix().topLeftCorner(2,2);
+    odom_transform.col(3) << odom_translation(0), 
+                              odom_translation(1), 
+    //                          odom_translation(2), 
+                              1;
+
+std::cout<< "Transform: \n" <<odom_transform<< "\n";
+
+  }
 
   // predict bias and calculate theta
   if (RTT::NewData == in_laser_front_.read((*msg_laser_front_ptr)))
@@ -215,7 +247,10 @@ void VelmobilGlobalLocalization::updateHook()
   laser_in_base_transform << 1, 0, 0.3,
                              0, 1, 0,
                              0, 0, 1;
-	polarLaserToCartesianBase(msg_laser_front_ptr->ranges, msg_laser_front_ptr->intensities, (*scan_front_data_matrix), laser_in_base_transform);
+	laser_in_odom_transform = laser_in_base_transform * odom_transform;
+  //polarLaserToCartesianBase(msg_laser_front_ptr->ranges, msg_laser_front_ptr->intensities, (*scan_front_data_matrix), laser_in_base_transform);
+  
+  polarLaserToCartesianBase(msg_laser_front_ptr->ranges, msg_laser_front_ptr->intensities, (*scan_front_data_matrix), laser_in_odom_transform);
   	new_data_vec_ptr->at(0) = true;
   }
 
@@ -226,7 +261,9 @@ void VelmobilGlobalLocalization::updateHook()
   laser_in_base_transform << -1, 0, -0.3,
                              0, -1, 0,
                              0, 0, 1;
-  polarLaserToCartesianBase(msg_laser_rear_ptr->ranges, msg_laser_rear_ptr->intensities, (*scan_rear_data_matrix), laser_in_base_transform);
+  laser_in_odom_transform = laser_in_base_transform * odom_transform;
+  //polarLaserToCartesianBase(msg_laser_rear_ptr->ranges, msg_laser_rear_ptr->intensities, (*scan_rear_data_matrix), laser_in_base_transform);
+  polarLaserToCartesianBase(msg_laser_rear_ptr->ranges, msg_laser_rear_ptr->intensities, (*scan_rear_data_matrix), laser_in_odom_transform);
     new_data_vec_ptr->at(1) = true;
   }
 
@@ -291,10 +328,7 @@ myfile << "remove markers \n";
         myfile << "REAR -markers: \n"<< markers.at(marker_counter)<<"\n";
         myfile << "REAR -scan data: \n"<< (*scan_rear_data_matrix)(marker_id,0) << "\n"<<(*scan_rear_data_matrix)(marker_id,1)<<"\n";
         marker_counter += 1;
-
       }
-
-
    	}
 
     myfile << "-- initialization ---\n";
@@ -303,6 +337,8 @@ myfile << "remove markers \n";
  	new_data_vec_ptr->at(0) = false;
  	new_data_vec_ptr->at(1) = false;
   }
+
+
 
   loop_seq += 1;
 

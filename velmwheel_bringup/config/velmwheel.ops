@@ -143,6 +143,7 @@ stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 	velmobil_global_localization.rosparam.getAll()
 	setActivity("velmobil_global_localization", 0.02, 5, ORO_SCHED_RT)
 	velmobil_global_localization.configure();
+	connect("VelmWheel_bias_estimator.in_odom_transform","VelmWheel_Fusion.out_odom_tf", ConnPolicy())
 	stream("velmobil_global_localization.in_laser_front", ros.comm.topic("/laser_front"));
 	stream("velmobil_global_localization.in_laser_rear",  ros.comm.topic("/laser_rear"));
 	stream("velmobil_global_localization.out_markers",  ros.comm.topic("/visualization_marker"));
