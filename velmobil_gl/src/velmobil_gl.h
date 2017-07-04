@@ -22,7 +22,7 @@ class VelmobilGlobalLocalization : public RTT::TaskContext
 		void updateHook();
 		bool startHook();
 		bool removeMarkers(visualization_msgs::Marker &markers,const size_t &marker_id);
-		bool markersInitialization(visualization_msgs::Marker &markers, const size_t &marker_id , const std::vector<Eigen::Vector2f> &positions);
+		bool visualizationInitialization(visualization_msgs::Marker &markers, const size_t &marker_id , const std::vector<Eigen::Vector2f> &positions);
 		bool polarLaserToCartesianBase(const std::vector<float> &ranges, const std::vector<float> &intensities, Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic> &data, const Eigen::Matrix< float, 3, 3> &transform );
 
 
@@ -30,6 +30,7 @@ class VelmobilGlobalLocalization : public RTT::TaskContext
  		RTT::InputPort<tf2_msgs::TFMessage> in_odom_transform_;
  		RTT::InputPort<sensor_msgs::LaserScan> in_laser_front_;
  		RTT::InputPort<sensor_msgs::LaserScan> in_laser_rear_;
+ 		RTT::InputPort<std::string> in_save_map_;
  		//RTT::InputPort<geometry_msgs::PoseWithCovarianceStamped> in_laser_;
  		RTT::OutputPort<visualization_msgs::Marker> out_markers_;
 

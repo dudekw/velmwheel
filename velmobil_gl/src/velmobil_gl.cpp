@@ -14,11 +14,17 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+
+//XML
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+
   // Pointers to msgs
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_front_ptr;
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_rear_ptr;
   std::auto_ptr<tf2_msgs::TFMessage> msg_odom_transform_ptr;
   std::auto_ptr<visualization_msgs::Marker> msg_markers_ptr;
+  std::auto_ptr<std::string> msg_save_map_ptr;
 
   // time variables
   uint32_t loop_time;
@@ -38,10 +44,13 @@
   std::auto_ptr<Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>> scan_rear_data_matrix;
 
   std::vector<Eigen::Vector2f> markers;
+  std::vector<Eigen::Vector2f> map_markers;
   std::vector<float> ranges;
   std::vector<float> angles;
   std::vector<int> intensities;
   size_t global_iterator;
+  size_t global_iterator_2;
+
   size_t marker_id;
   size_t marker_counter;
   Eigen::Matrix<float,3,3> laser_in_base_transform;
@@ -52,6 +61,9 @@
 
     std::ofstream myfile;
 
+// XML
+  boost::property_tree::ptree xml_tree;
+  boost::property_tree::ptree& marker_tree = xml_tree;
 VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) : TaskContext(name)
 {
 
@@ -67,6 +79,7 @@ current_loop_time_ptr.reset(new ros::Time());
   msg_laser_rear_ptr.reset(new sensor_msgs::LaserScan());
   msg_markers_ptr.reset(new visualization_msgs::Marker());
   msg_odom_transform_ptr.reset(new tf2_msgs::TFMessage());
+  msg_save_map_ptr.reset(new std::string());
 
   new_data_vec_ptr.reset(new std::vector<bool>(2,false));
   scan_front_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
@@ -76,27 +89,45 @@ current_loop_time_ptr.reset(new ros::Time());
 VelmobilGlobalLocalization::~VelmobilGlobalLocalization() 
 {
 }
-
+// input: markers, marker_counter, map_markers
+bool VelmobilGlobalLocalization::updateMarkers()
+{
+  for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
+  {
+    for (global_iterator_2 = 0; global_iterator_2 < map_marker_counter; global_iterator_2++)
+    {
+      if (abs(markers.at(global_iterator)(0) - map_markers.at(global_iterator_2)(0)) < marker_position_tresh(0) 
+          && abs(markers.at(global_iterator)(1) - map_markers.at(global_iterator_2)(1)) < marker_position_tresh(1))
+      {
+        map_markers.at(global_iterator_2) = map_markers.at(global_iterator_2) + (markers.at(global_iterator) - map_markers.at(global_iterator_2))/2;
+      }
+    }
+    map_markers.at(map_marker_counter + 1) = markers.at(global_iterator);
+    map_marker_counter += 1;
+  }
+  map_markers
+  return true;
+}
 bool VelmobilGlobalLocalization::removeMarkers(visualization_msgs::Marker &vis_markers, const size_t &marker_id)
 {
 
-for (global_iterator = 0; global_iterator < marker_id; global_iterator++)
-{
-  markers.at(global_iterator) << 100,100;
+  for (global_iterator = 0; global_iterator < marker_id; global_iterator++)
+  {
+    markers.at(global_iterator) << 100,100;
 
-  vis_markers.points.at(global_iterator).x = 0;
-  vis_markers.points.at(global_iterator).y = 0;
-  vis_markers.points.at(global_iterator).z = 0;
-  vis_markers.colors.at(global_iterator).r = 0;
-  vis_markers.colors.at(global_iterator).g = 1;
-  vis_markers.colors.at(global_iterator).b = 0;
-  vis_markers.colors.at(global_iterator).a = 0;
+    vis_markers.points.at(global_iterator).x = 0;
+    vis_markers.points.at(global_iterator).y = 0;
+    vis_markers.points.at(global_iterator).z = 0;
+    vis_markers.colors.at(global_iterator).r = 0;
+    vis_markers.colors.at(global_iterator).g = 1;
+    vis_markers.colors.at(global_iterator).b = 0;
+    vis_markers.colors.at(global_iterator).a = 0;
 
 
+  }
 }
-}
 
-bool VelmobilGlobalLocalization::markersInitialization(visualization_msgs::Marker &vis_markers, const size_t &marker_id , const std::vector<Eigen::Vector2f> &positions)
+bool VelmobilGlobalLocalization::visualizationInitialization(visualization_msgs::Marker &vis_markers, const size_t &marker_id , const std::vector<Eigen::Vector2f> &positions)
 {
 vis_markers.header.frame_id = "base_link";
 
@@ -178,6 +209,7 @@ bool VelmobilGlobalLocalization::startHook()
   global_iterator = 0;
   // set max markers count 
   markers.resize(20);
+  map_markers.resize(200);
   marker_id = 0;
   msg_markers_ptr->points.resize(20);
   msg_markers_ptr->colors.resize(20);
@@ -189,6 +221,9 @@ std::cout<< "marker size: " << markers.size()<< "\n";
   myfile.open ("/tmp/gl_log_data.txt");
   odom_transform.setIdentity();
   odom_quaternion.setIdentity();
+
+  xml_tree.add("map.<xmlattr>.version", "1.0");
+
   return true;
 }
 
@@ -332,14 +367,27 @@ myfile << "remove markers \n";
    	}
 
     myfile << "-- initialization ---\n";
-      markersInitialization( (*msg_markers_ptr), marker_counter, markers);
+      visualizationInitialization( (*msg_markers_ptr), marker_counter, markers);
     out_markers_.write((*msg_markers_ptr));
  	new_data_vec_ptr->at(0) = false;
  	new_data_vec_ptr->at(1) = false;
   }
 
+  updateMarkers();
 
+  if (RTT::NewData == in_save_map_.read((*msg_save_map_ptr)))
+  {
 
+    for (global_iterator = 0; global_iterator < marker_counter; global_iterator++ )
+    {
+        marker_tree = xml_tree.add("map.marker", "");
+        marker_tree.add("x", markers.at(marker_counter)(0));
+        marker_tree.add("y", markers.at(marker_counter)(1));
+    }
+    boost::property_tree::write_xml(*msg_save_map_ptr, xml_tree,
+        std::locale(),
+        boost::property_tree::xml_writer_make_settings<std::string>('\t', 1));    
+  }
   loop_seq += 1;
 
 }

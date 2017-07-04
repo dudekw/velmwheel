@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 
 project(velmobil_gl)
-find_package(Boost COMPONENTS boost_random)
+find_package(Boost COMPONENTS boost_random property_tree)
 find_package(OROCOS-RTT REQUIRED)
 find_package(catkin REQUIRED)
 find_package(Eigen3 REQUIRED)
