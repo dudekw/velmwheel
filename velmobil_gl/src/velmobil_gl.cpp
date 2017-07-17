@@ -19,13 +19,15 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
+//openCV
+#include "opencv2/opencv.hpp" 
   // Pointers to msgs
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_front_ptr;
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_rear_ptr;
   std::auto_ptr<tf2_msgs::TFMessage> msg_odom_transform_ptr;
   std::auto_ptr<visualization_msgs::Marker> msg_markers_ptr;
   std::auto_ptr<std::string> msg_save_map_ptr;
-
+  std::auto_ptr<int> msg_change_mode_ptr;
   // time variables
   uint32_t loop_time;
   std::chrono::nanoseconds nsec;
@@ -53,6 +55,7 @@
 
   size_t marker_id;
   size_t marker_counter;
+  size_t map_marker_counter;
   Eigen::Matrix<float,3,3> laser_in_base_transform;
   bool new_rising_edge_front;
   bool new_rising_edge_rear;
@@ -60,19 +63,40 @@
   size_t rising_marker_iterator_rear;
 
     std::ofstream myfile;
-
+// mode
+  int my_mode;
 // XML
   boost::property_tree::ptree xml_tree;
   boost::property_tree::ptree& marker_tree = xml_tree;
+
+// opencv
+  cv::Mat transform_cv;
+  std::vector<cv::Point2f> markers_cv;
+  std::vector<cv::Point2f> map_markers_cv;
 VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) : TaskContext(name)
 {
 
   this->addPort("in_odom_transform",in_odom_transform_);
   this->addPort("in_laser_front",in_laser_front_);
   this->addPort("in_laser_rear",in_laser_rear_);
+  this->addPort("in_change_mode",in_change_mode_);
   this->addPort("out_markers",out_markers_);
+  min_intensity_ = -1;
   this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/min_intensity",min_intensity_);
+  this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/marker_position_tresh",marker_position_tresh_);
 
+  if (marker_position_tresh_.size() < 2)
+  {
+      std::cout<< "Marker position treshold not specified. Using default: [0.1, 0.1] " << "\n";
+      marker_position_tresh_.resize(2);
+      marker_position_tresh_ << 0.1, 0.1;
+  }
+
+  if (min_intensity_ == -1)
+  {
+      std::cout<< "Minimal intensity not specified. Using default: 1500 " << "\n";
+      min_intensity_ = 1500;
+  }
 
 current_loop_time_ptr.reset(new ros::Time());
   msg_laser_front_ptr.reset(new sensor_msgs::LaserScan());
@@ -80,7 +104,8 @@ current_loop_time_ptr.reset(new ros::Time());
   msg_markers_ptr.reset(new visualization_msgs::Marker());
   msg_odom_transform_ptr.reset(new tf2_msgs::TFMessage());
   msg_save_map_ptr.reset(new std::string());
-
+  msg_change_mode_ptr.reset(new int());
+  
   new_data_vec_ptr.reset(new std::vector<bool>(2,false));
   scan_front_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
   scan_rear_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
@@ -89,6 +114,25 @@ current_loop_time_ptr.reset(new ros::Time());
 VelmobilGlobalLocalization::~VelmobilGlobalLocalization() 
 {
 }
+bool VelmobilGlobalLocalization::localize()
+{
+  myfile <<"-----   LOCALIZE   ------\n"; 
+
+  for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
+  {
+    markers_cv.at(global_iterator) = cv::Point2f(markers.at(global_iterator)(0), markers.at(global_iterator)(1));
+  }
+  for (global_iterator = 0; global_iterator < map_marker_counter; global_iterator++)
+  {
+    map_markers_cv.at(global_iterator) = cv::Point2f(map_markers.at(global_iterator)(0), map_markers.at(global_iterator)(1));
+  }
+  transform_cv = cv::findHomography(markers_cv, map_markers_cv);
+  myfile <<"CV transform: \n"; 
+  myfile <<transform_cv<<"\n"; 
+
+  return true;
+
+}
 // input: markers, marker_counter, map_markers
 bool VelmobilGlobalLocalization::updateMarkers()
 {
@@ -96,8 +140,8 @@ bool VelmobilGlobalLocalization::updateMarkers()
   {
     for (global_iterator_2 = 0; global_iterator_2 < map_marker_counter; global_iterator_2++)
     {
-      if (abs(markers.at(global_iterator)(0) - map_markers.at(global_iterator_2)(0)) < marker_position_tresh(0) 
-          && abs(markers.at(global_iterator)(1) - map_markers.at(global_iterator_2)(1)) < marker_position_tresh(1))
+      if (abs(markers.at(global_iterator)(0) - map_markers.at(global_iterator_2)(0)) < marker_position_tresh_(0) 
+          && abs(markers.at(global_iterator)(1) - map_markers.at(global_iterator_2)(1)) < marker_position_tresh_(1))
       {
         map_markers.at(global_iterator_2) = map_markers.at(global_iterator_2) + (markers.at(global_iterator) - map_markers.at(global_iterator_2))/2;
       }
@@ -105,7 +149,6 @@ bool VelmobilGlobalLocalization::updateMarkers()
     map_markers.at(map_marker_counter + 1) = markers.at(global_iterator);
     map_marker_counter += 1;
   }
-  map_markers
   return true;
 }
 bool VelmobilGlobalLocalization::removeMarkers(visualization_msgs::Marker &vis_markers, const size_t &marker_id)
@@ -184,6 +227,7 @@ bool VelmobilGlobalLocalization::configureHook()
 {
 
 std::cout<< "min_intensity_: " << min_intensity_<< "\n";
+std::cout<< "marker_position_tresh: " << marker_position_tresh_<< "\n";
 
 
 	return true;
@@ -211,6 +255,7 @@ bool VelmobilGlobalLocalization::startHook()
   markers.resize(20);
   map_markers.resize(200);
   marker_id = 0;
+  map_marker_counter = 0;
   msg_markers_ptr->points.resize(20);
   msg_markers_ptr->colors.resize(20);
   new_rising_edge_front = true;
@@ -373,7 +418,25 @@ myfile << "remove markers \n";
  	new_data_vec_ptr->at(1) = false;
   }
 
-  updateMarkers();
+  
+  // check component mode
+  // state: 0 - mapping
+  // state: 1 - SLAM
+
+  if (RTT::NewData == in_change_mode_.read((*msg_change_mode_ptr)))
+  {
+    my_mode = (*msg_change_mode_ptr);
+  }
+
+  if (my_mode == 1)
+  {
+    localize();
+    updateMarkers();
+  }
+  else
+  {
+    updateMarkers();
+  }
 
   if (RTT::NewData == in_save_map_.read((*msg_save_map_ptr)))
   {
