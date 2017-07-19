@@ -46,7 +46,6 @@ bool connection_status;
 VelmWheelLaserDriver::~VelmWheelLaserDriver() 
 {
     laser_lms.scanContinous(0);
-    laser_lms.stopMeas();
     laser_lms.disconnect();
 }
 bool VelmWheelLaserDriver::checkLaserConnection(std::string &host)
