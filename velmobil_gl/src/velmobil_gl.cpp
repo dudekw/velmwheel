@@ -68,6 +68,7 @@
 // XML
   boost::property_tree::ptree xml_tree;
   boost::property_tree::ptree& marker_tree = xml_tree;
+  std::ostringstream marker_path;
 
 // opencv
   cv::Mat transform_cv;
@@ -80,6 +81,7 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
   this->addPort("in_laser_front",in_laser_front_);
   this->addPort("in_laser_rear",in_laser_rear_);
   this->addPort("in_change_mode",in_change_mode_);
+  this->addPort("in_save_map",in_save_map_);
   this->addPort("out_markers",out_markers_);
   min_intensity_ = -1;
   this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/min_intensity",min_intensity_);
@@ -87,14 +89,14 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
 
   if (marker_position_tresh_.size() < 2)
   {
-      std::cout<< "Marker position treshold not specified. Using default: [0.1, 0.1] " << "\n";
+      //std::cout<< "Marker position treshold not specified. Using default: [0.1, 0.1] " << "\n";
       marker_position_tresh_.resize(2);
-      marker_position_tresh_ << 0.1, 0.1;
+      marker_position_tresh_ = {0.1, 0.1};
   }
 
   if (min_intensity_ == -1)
   {
-      std::cout<< "Minimal intensity not specified. Using default: 1500 " << "\n";
+      //std::cout<< "Minimal intensity not specified. Using default: 1500 " << "\n";
       min_intensity_ = 1500;
   }
 
@@ -136,18 +138,46 @@ bool VelmobilGlobalLocalization::localize()
 // input: markers, marker_counter, map_markers
 bool VelmobilGlobalLocalization::updateMarkers()
 {
+    myfile <<"marker_counter: "<< marker_counter <<"\n"; 
+    myfile <<"markers SIZE: "<< markers.size() <<"\n"; 
+    myfile <<"map_marker_counter: "<< map_marker_counter <<"\n"; 
+    myfile <<"map_markers SIZE: "<< map_markers.size() <<"\n"; 
+
   for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
   {
     for (global_iterator_2 = 0; global_iterator_2 < map_marker_counter; global_iterator_2++)
     {
-      if (abs(markers.at(global_iterator)(0) - map_markers.at(global_iterator_2)(0)) < marker_position_tresh_(0) 
-          && abs(markers.at(global_iterator)(1) - map_markers.at(global_iterator_2)(1)) < marker_position_tresh_(1))
+      if (abs(markers.at(global_iterator)(0) - map_markers.at(global_iterator_2)(0)) < marker_position_tresh_[0] 
+          && abs(markers.at(global_iterator)(1) - map_markers.at(global_iterator_2)(1)) < marker_position_tresh_[1])
       {
-        map_markers.at(global_iterator_2) = map_markers.at(global_iterator_2) + (markers.at(global_iterator) - map_markers.at(global_iterator_2))/2;
+        // needed to determine if the marker was found -> global_iterator_2 greater then map_marker_counter
+        myfile <<"Marker in TRESH"<<"\n"; 
+        global_iterator_2 = global_iterator_2 + map_marker_counter + 1;
+        break;
       }
     }
-    map_markers.at(map_marker_counter + 1) = markers.at(global_iterator);
-    map_marker_counter += 1;
+    // marker found in map_markers, change pose of known marker
+    if (global_iterator_2 > map_marker_counter)
+    {
+      // get the true global_iterator_2 count
+      global_iterator_2 = global_iterator_2 - map_marker_counter - 1;
+      map_markers.at(global_iterator_2) = map_markers.at(global_iterator_2) + (markers.at(global_iterator) - map_markers.at(global_iterator_2))/2;
+      myfile <<"global_iterator_2: "<< global_iterator_2 <<"\n"; 
+      myfile <<"global_iterator: "<< global_iterator<<"\n"; 
+      myfile <<"map_marker_counter: "<< map_marker_counter <<"\n"; 
+    }
+    //marker not found in map_markers -> adding this marker to map
+    else
+    {
+      myfile <<"Adding new marker to map"<<"\n"; 
+      if (map_marker_counter + 1 > map_markers.size())
+            RTT::Logger::log() << RTT::Logger::Warning << "[Global localization] -- reached max global markers count ( "<<map_markers.size()<<" )!!!! \n"<< RTT::Logger::endl;
+      else
+      {   
+        map_markers.at(map_marker_counter) = markers.at(global_iterator);
+        map_marker_counter += 1;
+      }
+    }
   }
   return true;
 }
@@ -172,7 +202,7 @@ bool VelmobilGlobalLocalization::removeMarkers(visualization_msgs::Marker &vis_m
 
 bool VelmobilGlobalLocalization::visualizationInitialization(visualization_msgs::Marker &vis_markers, const size_t &marker_id , const std::vector<Eigen::Vector2f> &positions)
 {
-vis_markers.header.frame_id = "base_link";
+vis_markers.header.frame_id = "odom";
 
 vis_markers.ns = "localization";
 vis_markers.id = 1;
@@ -206,6 +236,7 @@ for (global_iterator = marker_id+1; global_iterator < vis_markers.colors.size();
   vis_markers.colors.at(global_iterator).b = 0;
   vis_markers.colors.at(global_iterator).a = 0;
 }
+  myfile <<"EXIT initialization \n"; 
 
 }
 
@@ -220,14 +251,15 @@ bool VelmobilGlobalLocalization::polarLaserToCartesianBase(const std::vector<flo
 		data(global_iterator,1) = transform(1,0) * ranges.at(global_iterator) * cos(angles.at(global_iterator)) + transform(1,1) * ranges.at(global_iterator) * sin(angles.at(global_iterator)) + transform(1,2);
 		data(global_iterator,2) = intensities.at(global_iterator);
 	}
+  myfile <<"EXIT polarLaserToCartesianBase \n"; 
 
 	return true;
 }
 bool VelmobilGlobalLocalization::configureHook() 
 {
 
-std::cout<< "min_intensity_: " << min_intensity_<< "\n";
-std::cout<< "marker_position_tresh: " << marker_position_tresh_<< "\n";
+//std::cout<< "min_intensity_: " << min_intensity_<< "\n";
+//std::cout<< "marker_position_tresh: \n[ " << marker_position_tresh_[0]<< ", "<<marker_position_tresh_[1]<<"\n" ;
 
 
 	return true;
@@ -262,7 +294,7 @@ bool VelmobilGlobalLocalization::startHook()
   new_rising_edge_rear = true;
   rising_marker_iterator_front = 0;
   rising_marker_iterator_rear = 0;
-std::cout<< "marker size: " << markers.size()<< "\n";
+//std::cout<< "marker size: " << markers.size()<< "\n";
   myfile.open ("/tmp/gl_log_data.txt");
   odom_transform.setIdentity();
   odom_quaternion.setIdentity();
@@ -298,7 +330,7 @@ void VelmobilGlobalLocalization::updateHook()
   //
 if (RTT::NewData == in_odom_transform_.read((*msg_odom_transform_ptr)))
   {
-std::cout<< "--- ODOM --- " << "\n";
+////std::cout<< "--- ODOM --- " << "\n";
 
     odom_quaternion.x() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.x;
     odom_quaternion.y() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.y;
@@ -307,15 +339,13 @@ std::cout<< "--- ODOM --- " << "\n";
 
     odom_translation(0) =  msg_odom_transform_ptr->transforms.at(0).transform.translation.x;
     odom_translation(1) =  msg_odom_transform_ptr->transforms.at(0).transform.translation.y;
-    //odom_translation(2) =  msg_odom_transform_ptr->transforms.transform.translation.z;
 
     odom_transform.topLeftCorner(2,2) = odom_quaternion.toRotationMatrix().topLeftCorner(2,2);
-    odom_transform.col(3) << odom_translation(0), 
+    odom_transform.col(2) << odom_translation(0), 
                               odom_translation(1), 
     //                          odom_translation(2), 
                               1;
 
-std::cout<< "Transform: \n" <<odom_transform<< "\n";
 
   }
 
@@ -327,8 +357,12 @@ std::cout<< "Transform: \n" <<odom_transform<< "\n";
   laser_in_base_transform << 1, 0, 0.3,
                              0, 1, 0,
                              0, 0, 1;
-	laser_in_odom_transform = laser_in_base_transform * odom_transform;
+  //std::cout<< "ODOM: \n" <<odom_transform<< "\n";
+  //std::cout<< "ODOM)inv: \n" <<odom_transform.inverse() << "\n";
+
+	laser_in_odom_transform = odom_transform * laser_in_base_transform ;
   //polarLaserToCartesianBase(msg_laser_front_ptr->ranges, msg_laser_front_ptr->intensities, (*scan_front_data_matrix), laser_in_base_transform);
+  //std::cout<< "FRONT: \n" <<laser_in_odom_transform<< "\n";
   
   polarLaserToCartesianBase(msg_laser_front_ptr->ranges, msg_laser_front_ptr->intensities, (*scan_front_data_matrix), laser_in_odom_transform);
   	new_data_vec_ptr->at(0) = true;
@@ -337,11 +371,13 @@ std::cout<< "Transform: \n" <<odom_transform<< "\n";
   if (RTT::NewData == in_laser_rear_.read((*msg_laser_rear_ptr)))
   {
 
-  scan_front_data_matrix->setZero();
+  scan_rear_data_matrix->setZero();
   laser_in_base_transform << -1, 0, -0.3,
                              0, -1, 0,
                              0, 0, 1;
-  laser_in_odom_transform = laser_in_base_transform * odom_transform;
+  laser_in_odom_transform = odom_transform * laser_in_base_transform;
+  //std::cout<< "REAR: \n" <<laser_in_odom_transform<< "\n";
+
   //polarLaserToCartesianBase(msg_laser_rear_ptr->ranges, msg_laser_rear_ptr->intensities, (*scan_rear_data_matrix), laser_in_base_transform);
   polarLaserToCartesianBase(msg_laser_rear_ptr->ranges, msg_laser_rear_ptr->intensities, (*scan_rear_data_matrix), laser_in_odom_transform);
     new_data_vec_ptr->at(1) = true;
@@ -351,7 +387,7 @@ std::cout<< "Transform: \n" <<odom_transform<< "\n";
   {
 myfile << "remove markers \n";
 
-    // removeMarkers( (*msg_markers_ptr));
+    //removeMarkers( (*msg_markers_ptr));
     // out_markers_.write((*msg_markers_ptr));
 
   	for (global_iterator = 0; global_iterator < scan_front_data_matrix->rows(); global_iterator++ )
@@ -367,47 +403,108 @@ myfile << "remove markers \n";
 			new_rising_edge_front = false;
   		}
   		// found sloping edge
-  		else if ((*scan_front_data_matrix)(global_iterator,2) < min_intensity_ && !new_rising_edge_front)
+  		if (((*scan_front_data_matrix)(global_iterator,2) < min_intensity_ || global_iterator == (scan_front_data_matrix->rows() - 1)) && !new_rising_edge_front)
   		{
         myfile << "SLOPING\n";
-
-  			//marker = {x_in_base, y_in_base}
+        new_rising_edge_front = true;
         marker_id = rising_marker_iterator_front + floor((global_iterator-rising_marker_iterator_front)/2);
-  			markers.at(marker_counter) << (*scan_front_data_matrix)(marker_id,0),(*scan_front_data_matrix)(marker_id,1);
+
+        // check if both lasers found the same marker. If so, change marker pose to average
+
+        for (global_iterator_2 = 0; global_iterator_2 < marker_counter; global_iterator_2++)
+        {
+          if (abs(markers.at(global_iterator_2)(0) - (*scan_front_data_matrix)(marker_id,0)) < marker_position_tresh_[0] 
+            && abs(markers.at(global_iterator_2)(1) - (*scan_front_data_matrix)(marker_id,1)) < marker_position_tresh_[1])
+          {
+            myfile << "Both lasers found the same marker\n";
+            myfile << "saved marker:\n";
+            myfile << markers.at(global_iterator_2)(0) << "\n";
+            myfile << markers.at(global_iterator_2)(1) << "\n";
+            myfile << "front marker:\n";
+            myfile << (*scan_front_data_matrix)(marker_id,0) << "\n";
+            myfile << (*scan_front_data_matrix)(marker_id,1) << "\n";
+
+            markers.at(global_iterator_2)(0) = markers.at(global_iterator_2)(0) + ((*scan_front_data_matrix)(marker_id,0) - markers.at(global_iterator_2)(0))/2;
+            markers.at(global_iterator_2)(1) = markers.at(global_iterator_2)(1) + ((*scan_front_data_matrix)(marker_id,1) - markers.at(global_iterator_2)(1))/2;
+            global_iterator_2 = marker_counter + 1;
+            break;
+          }
+        }
+        // add new marker if front laser didn't find one in nearby
+        if (global_iterator_2 <= marker_counter )
+        {
+          markers.at(marker_counter) << (*scan_front_data_matrix)(marker_id,0),(*scan_front_data_matrix)(marker_id,1);
+          myfile << "FRONT -marker_id: " << marker_id<<"\n";
+          myfile << "FRONT -marker_intensity: " << (*scan_front_data_matrix)(marker_id,2)<<"\n";
+          myfile << "FRONT -marker_counter: " << marker_counter<<"\n";
+          myfile << "FRONT -markers: \n"<< markers.at(marker_counter)<<"\n";
+          marker_counter += 1;          
+        }
+/*
+  			//marker = {x_in_base, y_in_base}
+
+        markers.at(marker_counter) << (*scan_front_data_matrix)(marker_id,0),(*scan_front_data_matrix)(marker_id,1);
   			new_rising_edge_front = true;
         myfile << "marker_id: " << marker_id<<"\n";
         myfile << "marker_intensity: " << (*scan_front_data_matrix)(marker_id,2)<<"\n";
         myfile << "marker_counter: " << marker_counter<<"\n";
         myfile << "markers: \n"<< markers.at(marker_counter)<<"\n";
-        myfile << "scan data: \n"<< (*scan_front_data_matrix)(marker_id,0) << "\n"<<(*scan_front_data_matrix)(marker_id,1)<<"\n";
         marker_counter += 1;
-
+*/
   		}
 
       // [REAR LASER] found rising edge
       if ((*scan_rear_data_matrix)(global_iterator,2)  > min_intensity_ && new_rising_edge_rear)
       {
         myfile << "REAR - RISING\n";
+        myfile << "global_iterator\n";
+        myfile << global_iterator<<"\n";
+        myfile << "scan_front_data_matrix->rows()\n";
+        myfile << scan_front_data_matrix->rows()<<"\n";
 
         //calculate distance between last rising edge and cutten 
       rising_marker_iterator_rear = global_iterator;
       new_rising_edge_rear = false;
       }
       // found sloping edge
-      else if ((*scan_rear_data_matrix)(global_iterator,2) < min_intensity_ && !new_rising_edge_rear)
+      if (((*scan_rear_data_matrix)(global_iterator,2) < min_intensity_ || global_iterator == (scan_front_data_matrix->rows() - 1)) && !new_rising_edge_rear)
       {
         myfile << "REAR -SLOPING\n";
 
         //marker = {x_in_base, y_in_base}
         marker_id = rising_marker_iterator_rear + floor((global_iterator-rising_marker_iterator_rear)/2);
-        markers.at(marker_counter) << (*scan_rear_data_matrix)(marker_id,0),(*scan_rear_data_matrix)(marker_id,1);
         new_rising_edge_rear = true;
-        myfile << "REAR -marker_id: " << marker_id<<"\n";
-        myfile << "REAR -marker_intensity: " << (*scan_rear_data_matrix)(marker_id,2)<<"\n";
-        myfile << "REAR -marker_counter: " << marker_counter<<"\n";
-        myfile << "REAR -markers: \n"<< markers.at(marker_counter)<<"\n";
-        myfile << "REAR -scan data: \n"<< (*scan_rear_data_matrix)(marker_id,0) << "\n"<<(*scan_rear_data_matrix)(marker_id,1)<<"\n";
-        marker_counter += 1;
+        
+        // check if both lasers found the same marker. If so, change marker pose to average
+        for (global_iterator_2 = 0; global_iterator_2 < marker_counter; global_iterator_2++)
+        {
+          if (abs(markers.at(global_iterator_2)(0) - (*scan_rear_data_matrix)(marker_id,0)) < marker_position_tresh_[0] 
+            && abs(markers.at(global_iterator_2)(1) - (*scan_rear_data_matrix)(marker_id,1)) < marker_position_tresh_[1])
+          {
+            myfile << "Both lasers found the same marker\n";
+            myfile << "front marker:\n";
+            myfile << markers.at(global_iterator_2)(0) << "\n";
+            myfile << markers.at(global_iterator_2)(1) << "\n";
+            myfile << "rear marker:\n";
+            myfile << (*scan_rear_data_matrix)(marker_id,0) << "\n";
+            myfile << (*scan_rear_data_matrix)(marker_id,1) << "\n";
+
+            markers.at(global_iterator_2)(0) = markers.at(global_iterator_2)(0) + ((*scan_rear_data_matrix)(marker_id,0) - markers.at(global_iterator_2)(0))/2;
+            markers.at(global_iterator_2)(1) = markers.at(global_iterator_2)(1) + ((*scan_rear_data_matrix)(marker_id,1) - markers.at(global_iterator_2)(1))/2;
+            global_iterator_2 = marker_counter + 1;
+          }
+        }
+        // add new marker if front laser didn't find one in nearby
+        if (global_iterator_2 <= marker_counter )
+        {
+          markers.at(marker_counter) << (*scan_rear_data_matrix)(marker_id,0),(*scan_rear_data_matrix)(marker_id,1);
+          myfile << "REAR -marker_id: " << marker_id<<"\n";
+          myfile << "REAR -marker_intensity: " << (*scan_rear_data_matrix)(marker_id,2)<<"\n";
+          myfile << "REAR -marker_counter: " << marker_counter<<"\n";
+          myfile << "REAR -markers: \n"<< markers.at(marker_counter)<<"\n";
+          marker_counter += 1;          
+        }
+        
       }
    	}
 
@@ -440,18 +537,36 @@ myfile << "remove markers \n";
 
   if (RTT::NewData == in_save_map_.read((*msg_save_map_ptr)))
   {
+      myfile <<"save map \n"; 
+      //xml_tree.put("map", "");
 
-    for (global_iterator = 0; global_iterator < marker_counter; global_iterator++ )
+    for (global_iterator = 0; global_iterator < map_marker_counter; global_iterator++ )
     {
-        marker_tree = xml_tree.add("map.marker", "");
-        marker_tree.add("x", markers.at(marker_counter)(0));
-        marker_tree.add("y", markers.at(marker_counter)(1));
+        marker_path.str("");
+        marker_path << "marker_" << global_iterator;
+
+        myfile <<" \n node_name:  \n"; 
+        myfile << marker_path.str() << "\n";
+
+        //marker_tree = xml_tree.add_child(marker_path.str(), boost::property_tree::ptree{});
+        marker_path.str("");
+        marker_path << "map.marker_"<<global_iterator<<".x";
+        xml_tree.put(marker_path.str(), map_markers.at(global_iterator)(0));
+        marker_path.str("");
+        marker_path << "map.marker_"<<global_iterator<<".y";
+        xml_tree.put(marker_path.str(), map_markers.at(global_iterator)(1));
+        myfile <<" node_data:  \n"; 
+      boost::property_tree::write_xml(myfile, xml_tree);    
+        myfile <<" \n"; 
+
     }
     boost::property_tree::write_xml(*msg_save_map_ptr, xml_tree,
         std::locale(),
         boost::property_tree::xml_writer_make_settings<std::string>('\t', 1));    
+    boost::property_tree::write_xml(myfile, xml_tree);    
   }
   loop_seq += 1;
+      myfile <<" <<<<  NEXT LOOP \n"; 
 
 }
 

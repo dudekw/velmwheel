@@ -38,7 +38,7 @@ class VelmobilGlobalLocalization : public RTT::TaskContext
  		RTT::OutputPort<visualization_msgs::Marker> out_markers_;
 
   		int min_intensity_;
-	  	Eigen::Vector2f marker_position_tresh_;
+	  	std::vector<float> marker_position_tresh_;
 
 };
 #endif  // VELMOBILGlobalLocalization_H_
