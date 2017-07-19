@@ -30,7 +30,7 @@ VelmWheelLaserDriver::VelmWheelLaserDriver(const std::string& name) : TaskContex
 	msg_laserF_ptr.reset(new sensor_msgs::LaserScan);
 
 	msg_laserOut_ptr.reset(new sensor_msgs::LaserScan);
-	 LMS1xx laser_F;
+	 LMS1xx laser_lms;
   scanCfg cfg;
   NTPcfg cfg_ntp;
   scanOutputRange outputRange;
@@ -45,17 +45,17 @@ bool connection_status;
 
 VelmWheelLaserDriver::~VelmWheelLaserDriver() 
 {
-    laser_F.scanContinous(0);
-    laser_F.stopMeas();
-    laser_F.disconnect();
+    laser_lms.scanContinous(0);
+    laser_lms.stopMeas();
+    laser_lms.disconnect();
 }
-bool VelmWheelLaserDriver::checkLaserConnection(LMS1xx *laser, std::string &host)
+bool VelmWheelLaserDriver::checkLaserConnection(std::string &host)
 {
 	std::cout<< "start connect" <<std::endl;
-	laser->connect(host);
+	laser_lms.connect(host);
 	std::cout<< "after connect" <<std::endl;
 
-	if (!laser->isConnected())
+	if (!laser_lms.isConnected())
 	{
 		std::cout<< "not connected" <<std::endl;
 
@@ -68,17 +68,17 @@ bool VelmWheelLaserDriver::checkLaserConnection(LMS1xx *laser, std::string &host
 	return true;
 }
 
-void VelmWheelLaserDriver::configLaser(LMS1xx *laser, std::string &host)
+void VelmWheelLaserDriver::configLaser(std::string &host)
 {
-	laser->login();
-	cfg = laser->getScanCfg();
+	laser_lms.login();
+	cfg = laser_lms.getScanCfg();
 	while(cfg.scaningFrequency != 5000)
 	{
-	    laser->disconnect();
+	    laser_lms.disconnect();
 	    RTT::Logger::log() << RTT::Logger::Debug << "Unable to get laser output range: \n"<<host<< RTT::Logger::endl;
 		sleep(1);
-		laser->login();
-		cfg = laser->getScanCfg();
+		laser_lms.login();
+		cfg = laser_lms.getScanCfg();
 	}
 	if (useNTP_)
 	{
@@ -98,7 +98,7 @@ void VelmWheelLaserDriver::configLaser(LMS1xx *laser, std::string &host)
       cfg_ntp.timeZone =1;
       cfg_ntp.updateTime =10;
       RTT::Logger::log() << RTT::Logger::Debug << "Setting NTP configuration."<< RTT::Logger::endl;
-      laser->setNTPsettings(cfg_ntp);  
+      laser_lms.setNTPsettings(cfg_ntp);  
     }
 
 
@@ -113,13 +113,13 @@ void VelmWheelLaserDriver::configLaser(LMS1xx *laser, std::string &host)
 
     RTT::Logger::log() << RTT::Logger::Debug << "Setting scan data configuration."<< RTT::Logger::endl;
     RTT::Logger::log() << RTT::Logger::Debug << "dataCfg.remission: "<< dataCfg.remission<< RTT::Logger::endl;
-    laser->setScanDataCfg(dataCfg);
+    laser_lms.setScanDataCfg(dataCfg);
 
     RTT::Logger::log() << RTT::Logger::Debug << "Starting measurements."<< RTT::Logger::endl;
 
-    laser->startMeas();
+    laser_lms.startMeas();
 
-    status_t stat = laser->queryStatus();
+    status_t stat = laser_lms.queryStatus();
     sleep(1);
     if (stat != ready_for_measurement)
     {
@@ -127,7 +127,7 @@ void VelmWheelLaserDriver::configLaser(LMS1xx *laser, std::string &host)
       sleep(1);
     }
 
-    outputRange = laser->getScanOutputRange();
+    outputRange = laser_lms.getScanOutputRange();
 	RTT::Logger::log() << RTT::Logger::Debug << "Got laser output range: \n"<<host<< RTT::Logger::endl;
 	// Log laser configuration
     RTT::Logger::log() << RTT::Logger::Debug << "HOST: \n"<<host<<"\n      Laser configuration: scaningFrequency " << 
@@ -138,10 +138,10 @@ void VelmWheelLaserDriver::configLaser(LMS1xx *laser, std::string &host)
     					", startAngle " <<  outputRange.startAngle << ", stopAngle " <<  outputRange.stopAngle << RTT::Logger::endl;
 
     RTT::Logger::log() << RTT::Logger::Debug << "Starting device."<< RTT::Logger::endl;
-    laser->startDevice(); // Log out to properly re-enable system after config
+    laser_lms.startDevice(); // Log out to properly re-enable system after config
 
     RTT::Logger::log() << RTT::Logger::Debug << "Commanding continuous measurements."<< RTT::Logger::endl;
-    laser->scanContinous(1);
+    laser_lms.scanContinous(1);
 
 	int angle_range = outputRange.stopAngle - outputRange.startAngle;
     int num_values = angle_range / outputRange.angleResolution ;
@@ -165,7 +165,7 @@ std::cout<< "host param" << host_F_ <<std::endl;
 	connection_status = false;
 	while (!connection_status)
 	{	
-		connection_status = checkLaserConnection(&laser_F, host_F_);
+		connection_status = checkLaserConnection(host_F_);
 
 	      RTT::Logger::log() << RTT::Logger::Debug << "[Laser driver] -- retying in 1 sec"<< RTT::Logger::endl;
 	      sleep(1);
@@ -173,7 +173,7 @@ std::cout<< "host param" << host_F_ <<std::endl;
 	std::cout<< "after while" <<std::endl;
 
 
-	configLaser(&laser_F, host_F_);
+	configLaser(host_F_);
 
    	
 
@@ -221,7 +221,7 @@ void VelmWheelLaserDriver::updateHook()
 
     RTT::Logger::log() << RTT::Logger::Debug << "Reading scan data. "<< getName() <<""<< RTT::Logger::endl;
 
-    if (laser_F.getScanData(&data))
+    if (laser_lms.getScanData(&data))
     {
      // RTT::Logger::log() << RTT::Logger::Debug << "dist_len1: "<< data.dist_len1<< RTT::Logger::endl;
          RTT::Logger::log() << RTT::Logger::Debug << " RANGES SIZE -- "<< getName() <<" "<< msg_laserOut_ptr->ranges.size()<<RTT::Logger::endl;
