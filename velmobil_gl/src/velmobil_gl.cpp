@@ -21,6 +21,8 @@
 
 //openCV
 #include "opencv2/opencv.hpp" 
+
+
   // Pointers to msgs
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_front_ptr;
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_rear_ptr;
@@ -47,6 +49,7 @@
 
   std::vector<Eigen::Vector2f> markers;
   std::vector<Eigen::Vector2f> map_markers;
+  std::vector<Eigen::Vector2f> markers_in_odom;
   std::vector<float> ranges;
   std::vector<float> angles;
   std::vector<int> intensities;
@@ -74,6 +77,11 @@
   cv::Mat transform_cv;
   std::vector<cv::Point2f> markers_cv;
   std::vector<cv::Point2f> map_markers_cv;
+  std::vector<cv::Point2f> map_markers_mached_cv;
+
+  // matchMarkers
+  int matched_count;
+  Eigen::Vector2f markers_memory;
 VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) : TaskContext(name)
 {
 
@@ -119,15 +127,18 @@ VelmobilGlobalLocalization::~VelmobilGlobalLocalization()
 bool VelmobilGlobalLocalization::localize()
 {
   myfile <<"-----   LOCALIZE   ------\n"; 
-
+  
   for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
   {
-    markers_cv.at(global_iterator) = cv::Point2f(markers.at(global_iterator)(0), markers.at(global_iterator)(1));
-  }
+    markers_cv.at(global_iterator) = cv::Point2f(markers.at(global_iterator)(0), markers.at(global_iterator)(1));  }
   for (global_iterator = 0; global_iterator < map_marker_counter; global_iterator++)
   {
     map_markers_cv.at(global_iterator) = cv::Point2f(map_markers.at(global_iterator)(0), map_markers.at(global_iterator)(1));
   }
+
+  myfile <<"CV markers: \n" << markers_cv; 
+  myfile <<"CV map_markers_cv: \n" << map_markers_cv; 
+  matchMarkers();
   transform_cv = cv::findHomography(markers_cv, map_markers_cv);
   myfile <<"CV transform: \n"; 
   myfile <<transform_cv<<"\n"; 
@@ -135,6 +146,12 @@ bool VelmobilGlobalLocalization::localize()
   return true;
 
 }
+bool VelmobilGlobalLocalization::matchMarkers()
+{
+
+  return true;
+}
+
 // input: markers, marker_counter, map_markers
 bool VelmobilGlobalLocalization::updateMarkers()
 {
@@ -142,13 +159,17 @@ bool VelmobilGlobalLocalization::updateMarkers()
     myfile <<"markers SIZE: "<< markers.size() <<"\n"; 
     myfile <<"map_marker_counter: "<< map_marker_counter <<"\n"; 
     myfile <<"map_markers SIZE: "<< map_markers.size() <<"\n"; 
-
+  for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
+  {
+    markers_in_odom.at(global_iterator)(0) = odom_transform(0,0) * markers.at(global_iterator)(0) + odom_transform(0,1) * markers.at(global_iterator)(1) + odom_transform(0,2);
+    markers_in_odom.at(global_iterator)(1) = odom_transform(1,0) * markers.at(global_iterator)(0) + odom_transform(1,1) * markers.at(global_iterator)(1) + odom_transform(1,2);
+  }
   for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
   {
     for (global_iterator_2 = 0; global_iterator_2 < map_marker_counter; global_iterator_2++)
     {
-      if (abs(markers.at(global_iterator)(0) - map_markers.at(global_iterator_2)(0)) < marker_position_tresh_[0] 
-          && abs(markers.at(global_iterator)(1) - map_markers.at(global_iterator_2)(1)) < marker_position_tresh_[1])
+      if (abs(markers_in_odom.at(global_iterator)(0) - map_markers.at(global_iterator_2)(0)) < marker_position_tresh_[0] 
+          && abs(markers_in_odom.at(global_iterator)(1) - map_markers.at(global_iterator_2)(1)) < marker_position_tresh_[1])
       {
         // needed to determine if the marker was found -> global_iterator_2 greater then map_marker_counter
         myfile <<"Marker in TRESH"<<"\n"; 
@@ -161,7 +182,7 @@ bool VelmobilGlobalLocalization::updateMarkers()
     {
       // get the true global_iterator_2 count
       global_iterator_2 = global_iterator_2 - map_marker_counter - 1;
-      map_markers.at(global_iterator_2) = map_markers.at(global_iterator_2) + (markers.at(global_iterator) - map_markers.at(global_iterator_2))/2;
+      map_markers.at(global_iterator_2) = map_markers.at(global_iterator_2) + (markers_in_odom.at(global_iterator) - map_markers.at(global_iterator_2))/2;
       myfile <<"global_iterator_2: "<< global_iterator_2 <<"\n"; 
       myfile <<"global_iterator: "<< global_iterator<<"\n"; 
       myfile <<"map_marker_counter: "<< map_marker_counter <<"\n"; 
@@ -174,7 +195,7 @@ bool VelmobilGlobalLocalization::updateMarkers()
             RTT::Logger::log() << RTT::Logger::Warning << "[Global localization] -- reached max global markers count ( "<<map_markers.size()<<" )!!!! \n"<< RTT::Logger::endl;
       else
       {   
-        map_markers.at(map_marker_counter) = markers.at(global_iterator);
+        map_markers.at(map_marker_counter) = markers_in_odom.at(global_iterator);
         map_marker_counter += 1;
       }
     }
@@ -202,7 +223,7 @@ bool VelmobilGlobalLocalization::removeMarkers(visualization_msgs::Marker &vis_m
 
 bool VelmobilGlobalLocalization::visualizationInitialization(visualization_msgs::Marker &vis_markers, const size_t &marker_id , const std::vector<Eigen::Vector2f> &positions)
 {
-vis_markers.header.frame_id = "odom";
+vis_markers.header.frame_id = "base_link";
 
 vis_markers.ns = "localization";
 vis_markers.id = 1;
@@ -285,7 +306,10 @@ bool VelmobilGlobalLocalization::startHook()
   global_iterator = 0;
   // set max markers count 
   markers.resize(20);
+  markers_matched = 0;
   map_markers.resize(200);
+  markers_in_odom.resize(20);
+
   marker_id = 0;
   map_marker_counter = 0;
   msg_markers_ptr->points.resize(20);
@@ -300,7 +324,9 @@ bool VelmobilGlobalLocalization::startHook()
   odom_quaternion.setIdentity();
 
   xml_tree.add("map.<xmlattr>.version", "1.0");
-
+// localizacion
+  map_markers_cv.resize(200);
+  markers_cv.resize(200);
   return true;
 }
 
@@ -360,7 +386,7 @@ if (RTT::NewData == in_odom_transform_.read((*msg_odom_transform_ptr)))
   //std::cout<< "ODOM: \n" <<odom_transform<< "\n";
   //std::cout<< "ODOM)inv: \n" <<odom_transform.inverse() << "\n";
 
-	laser_in_odom_transform = odom_transform * laser_in_base_transform ;
+	laser_in_odom_transform = laser_in_base_transform ;
   //polarLaserToCartesianBase(msg_laser_front_ptr->ranges, msg_laser_front_ptr->intensities, (*scan_front_data_matrix), laser_in_base_transform);
   //std::cout<< "FRONT: \n" <<laser_in_odom_transform<< "\n";
   
@@ -375,7 +401,7 @@ if (RTT::NewData == in_odom_transform_.read((*msg_odom_transform_ptr)))
   laser_in_base_transform << -1, 0, -0.3,
                              0, -1, 0,
                              0, 0, 1;
-  laser_in_odom_transform = odom_transform * laser_in_base_transform;
+  laser_in_odom_transform = laser_in_base_transform;
   //std::cout<< "REAR: \n" <<laser_in_odom_transform<< "\n";
 
   //polarLaserToCartesianBase(msg_laser_rear_ptr->ranges, msg_laser_rear_ptr->intensities, (*scan_rear_data_matrix), laser_in_base_transform);
@@ -518,7 +544,7 @@ myfile << "remove markers \n";
   
   // check component mode
   // state: 0 - mapping
-  // state: 1 - SLAM
+  // state: 1 - localization
 
   if (RTT::NewData == in_change_mode_.read((*msg_change_mode_ptr)))
   {
@@ -528,7 +554,7 @@ myfile << "remove markers \n";
   if (my_mode == 1)
   {
     localize();
-    updateMarkers();
+    //updateMarkers();
   }
   else
   {
