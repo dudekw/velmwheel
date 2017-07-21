@@ -11,6 +11,8 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
+//openCV
+#include "opencv2/opencv.hpp" 
 class VelmobilGlobalLocalization : public RTT::TaskContext
 {
 	public:
@@ -25,8 +27,13 @@ class VelmobilGlobalLocalization : public RTT::TaskContext
 		bool visualizationInitialization(visualization_msgs::Marker &markers, const size_t &marker_id , const std::vector<Eigen::Vector2f> &positions);
 		bool polarLaserToCartesianBase(const std::vector<float> &ranges, const std::vector<float> &intensities, Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic> &data, const Eigen::Matrix< float, 3, 3> &transform );
 		bool updateMarkers();
-		bool localize();
+		bool localizeEIGEN();
+		bool calcMarkDistEIGEN(const Eigen::Matrix<float,Eigen::Dynamic,3> &input_markers, const int &marker_size, const int &respect_marker, std::vector<float> &distances, size_t &my_iterator);
+		bool matchMarkersEIGEN(); 
 
+		bool localizeCV();
+		bool calcMarkDistCV(const std::vector<cv::Point2f> &input_markers, const int &marker_size, const int &respect_marker, std::vector<float> &distances, size_t &my_iterator);
+		bool matchMarkersCV();
 
 
  		RTT::InputPort<tf2_msgs::TFMessage> in_odom_transform_;

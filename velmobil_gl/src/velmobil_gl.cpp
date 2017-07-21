@@ -19,8 +19,6 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
-//openCV
-#include "opencv2/opencv.hpp" 
 
 
   // Pointers to msgs
@@ -55,6 +53,8 @@
   std::vector<int> intensities;
   size_t global_iterator;
   size_t global_iterator_2;
+  size_t global_iterator_3;
+  size_t global_iterator_4;
 
   size_t marker_id;
   size_t marker_counter;
@@ -77,11 +77,21 @@
   cv::Mat transform_cv;
   std::vector<cv::Point2f> markers_cv;
   std::vector<cv::Point2f> map_markers_cv;
-  std::vector<cv::Point2f> map_markers_mached_cv;
+  std::vector<cv::Point2f> map_markers_matched_cv;
 
   // matchMarkers
   int matched_count;
   Eigen::Vector2f markers_memory;
+  std::vector<float> map_markers_dist;
+  std::vector<float> markers_dist;
+  float matching_eps;
+  float diff;
+  Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic> map_markers_matched_eigen;
+  Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic> transform_eigen;
+  Eigen::Matrix<float,Eigen::Dynamic,3> markers_eigen;
+  Eigen::Matrix<float,Eigen::Dynamic,3> map_markers_eigen;
+  Eigen::Matrix<float,Eigen::Dynamic, 1> proj;
+  Eigen::Matrix<float,Eigen::Dynamic, 4> M;
 VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) : TaskContext(name)
 {
 
@@ -108,13 +118,13 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
       min_intensity_ = 1500;
   }
 
-current_loop_time_ptr.reset(new ros::Time());
-  msg_laser_front_ptr.reset(new sensor_msgs::LaserScan());
-  msg_laser_rear_ptr.reset(new sensor_msgs::LaserScan());
-  msg_markers_ptr.reset(new visualization_msgs::Marker());
-  msg_odom_transform_ptr.reset(new tf2_msgs::TFMessage());
-  msg_save_map_ptr.reset(new std::string());
-  msg_change_mode_ptr.reset(new int());
+current_loop_time_ptr.reset(new ros::Time);
+  msg_laser_front_ptr.reset(new sensor_msgs::LaserScan);
+  msg_laser_rear_ptr.reset(new sensor_msgs::LaserScan);
+  msg_markers_ptr.reset(new visualization_msgs::Marker);
+  msg_odom_transform_ptr.reset(new tf2_msgs::TFMessage);
+  msg_save_map_ptr.reset(new std::string);
+  msg_change_mode_ptr.reset(new int);
   
   new_data_vec_ptr.reset(new std::vector<bool>(2,false));
   scan_front_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
@@ -124,30 +134,274 @@ current_loop_time_ptr.reset(new ros::Time());
 VelmobilGlobalLocalization::~VelmobilGlobalLocalization() 
 {
 }
-bool VelmobilGlobalLocalization::localize()
+
+bool VelmobilGlobalLocalization::localizeEIGEN()
 {
-  myfile <<"-----   LOCALIZE   ------\n"; 
-  
-  for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
+  //
+  //  math explanation https://stackoverflow.com/questions/11687281/transformation-between-two-set-of-points
+    myfile <<"-----   TRY LOCALIZE   ------\n"; 
+
+  if (marker_counter > 1 && map_marker_counter > 1)
   {
-    markers_cv.at(global_iterator) = cv::Point2f(markers.at(global_iterator)(0), markers.at(global_iterator)(1));  }
-  for (global_iterator = 0; global_iterator < map_marker_counter; global_iterator++)
+proj.resize(marker_counter*2,1);
+M.resize(marker_counter*2,4);
+transform_eigen.resize(3,3);
+    Eigen::Matrix<float,Eigen::Dynamic, Eigen::Dynamic> trans;
+    myfile <<"-----   LOCALIZE   ------\n"; 
+    map_markers_matched_eigen.resize(marker_counter,3);
+    markers_eigen.resize(marker_counter,3);
+    map_markers_eigen.resize(map_marker_counter,3);
+    for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
+    {
+      markers_eigen.row(global_iterator) << markers.at(global_iterator)(0), markers.at(global_iterator)(1), 1;  
+    }
+    for (global_iterator = 0; global_iterator < map_marker_counter; global_iterator++)
+    {
+      map_markers_eigen.row(global_iterator) << map_markers.at(global_iterator)(0), map_markers.at(global_iterator)(1), 1;
+    }
+
+    //myfile <<"CV map_markers_cv: \n" << map_markers_cv; 
+    matchMarkersEIGEN();
+    myfile <<"EIGEN markers: \n" << markers_eigen << "\n"; 
+    myfile <<"EIGEN map_markers_matched_eigen: \n" << map_markers_matched_eigen<< "\n"; 
+    global_iterator_2 = 0;
+    for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
+    {
+
+        M.row(global_iterator_2) << map_markers_matched_eigen.row(global_iterator), 0;
+        M.row(global_iterator_2 + 1) << map_markers_matched_eigen(global_iterator,1), -map_markers_matched_eigen(global_iterator,0), 0, 1;
+        proj(global_iterator_2) = markers_eigen(global_iterator,0);
+        proj(global_iterator_2+1) = markers_eigen(global_iterator,1);
+        myfile <<"global_iterator: " << global_iterator<< "\n"; 
+    global_iterator_2+=2;
+    }
+    myfile <<"M: \n"; 
+    myfile <<M; 
+
+    myfile <<"proj: \n"; 
+    myfile <<proj; 
+
+    trans = M.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(proj);
+transform_eigen << trans(0), trans(1), trans(2),
+                  -trans(1),  trans(0), trans(3),
+                      0    ,      0   ,     1;
+    myfile <<"MY transform: \n"; 
+    myfile <<transform_eigen<<"\n"; 
+
+    return true;
+  }
+  else
   {
-    map_markers_cv.at(global_iterator) = cv::Point2f(map_markers.at(global_iterator)(0), map_markers.at(global_iterator)(1));
+    return false;
   }
 
-  myfile <<"CV markers: \n" << markers_cv; 
-  myfile <<"CV map_markers_cv: \n" << map_markers_cv; 
-  matchMarkers();
-  transform_cv = cv::findHomography(markers_cv, map_markers_cv);
-  myfile <<"CV transform: \n"; 
-  myfile <<transform_cv<<"\n"; 
+}
 
-  return true;
+/*
+bool VelmobilGlobalLocalization::localizeEIGEN()
+{
+  
+    myfile <<"-----   TRY LOCALIZE   ------\n"; 
+
+  if (marker_counter > 1 && map_marker_counter > 1)
+  {
+
+    myfile <<"-----   LOCALIZE   ------\n"; 
+    map_markers_matched_eigen.resize(marker_counter,3);
+    markers_eigen.resize(marker_counter,3);
+
+    map_markers_eigen.resize(map_marker_counter,3);
+    for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
+    {
+      markers_eigen.row(global_iterator) << markers.at(global_iterator)(0), markers.at(global_iterator)(1), 1;  
+    }
+    for (global_iterator = 0; global_iterator < map_marker_counter; global_iterator++)
+    {
+      map_markers_eigen.row(global_iterator) << map_markers.at(global_iterator)(0), map_markers.at(global_iterator)(1), 1;
+    }
+
+    //myfile <<"CV map_markers_cv: \n" << map_markers_cv; 
+    matchMarkersEIGEN();
+    myfile <<"EIGEN markers: \n" << markers_eigen << "\n"; 
+    myfile <<"EIGEN map_markers_matched_eigen: \n" << map_markers_matched_eigen<< "\n"; 
+
+    transform_eigen = Eigen::umeyama (markers_eigen, map_markers_matched_eigen, false);
+    myfile <<"CV transform: \n"; 
+    myfile <<transform_eigen<<"\n"; 
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 
 }
-bool VelmobilGlobalLocalization::matchMarkers()
+*/
+bool VelmobilGlobalLocalization::calcMarkDistEIGEN(const Eigen::Matrix<float,Eigen::Dynamic,3> &input_markers, const int &marker_size, const int &respect_marker, std::vector<float> &distances, size_t &my_iterator)
 {
+for (my_iterator = 0; my_iterator < marker_size; ++my_iterator)
+  {
+    distances.at(my_iterator) = sqrt(pow(input_markers(my_iterator,0) - input_markers(respect_marker,0), 2) + 
+                                        pow(input_markers(my_iterator,1) - input_markers(respect_marker,1), 2)); 
+  }
+
+  return true;
+}
+bool VelmobilGlobalLocalization::matchMarkersEIGEN()
+{
+  myfile <<"--- MATCHING ----" <<"\n"; 
+
+  // 1) calculate distance between marker(0) and other markers 
+  calcMarkDistEIGEN(markers_eigen, marker_counter, 0, markers_dist, global_iterator);
+  myfile <<"markers_dist:" <<"\n"; 
+  for (global_iterator_3 = 0; global_iterator_3 < marker_counter; ++global_iterator_3)
+  {
+    myfile <<markers_dist.at(global_iterator_3) <<"\n"; 
+  }
+
+  // 2) calculate distances between map_markers with respect to map_marker(global_iterator)
+  for (global_iterator = 0; global_iterator < map_marker_counter; ++global_iterator)
+  {
+    myfile <<"calcualte map_markers_dist" <<"\n"; 
+    calcMarkDistEIGEN(map_markers_eigen, map_marker_counter, global_iterator, map_markers_dist, global_iterator_2);
+    myfile <<"map_markers_dist:" <<"\n";
+    for (global_iterator_3 = 0; global_iterator_3 < map_marker_counter; ++global_iterator_3)
+    {
+      myfile <<map_markers_dist.at(global_iterator_3) <<"\n"; 
+    }
+
+    // 3) calculate difference between each map_marker and marker, if all markers_dist will be found in map_markers_dist,
+    //    then markers[0] corresponds to map_markers[global_iterator] (both are relative values), 
+    //    and map_markers_dist[global_iterator_4] corresponds markers_dist[global_iterator_3]
+    //    first "marker_counter" objects of map_markers_matched_cv contains corresponding objects of markers_cv
+    matched_count = 0;
+    for (global_iterator_3 = 0; global_iterator_3 < marker_counter; ++global_iterator_3)
+    {
+      for (global_iterator_4 = 0; global_iterator_4 < map_marker_counter; ++global_iterator_4)
+      {
+        diff = fabs(map_markers_dist[global_iterator_4] - markers_dist[global_iterator_3]);
+        if(diff < matching_eps)
+        {
+          matched_count += 1;
+          map_markers_matched_eigen.row(global_iterator_3) = map_markers_eigen.row(global_iterator_4);
+          
+          //map_markers_matched_eigen.row(global_iterator_3) = map_markers_eigen.row(global_iterator_4);
+          myfile <<"matched_count: " <<matched_count<<"\n"; 
+          myfile <<"fabs(map_marker_dist[" <<global_iterator_4<<"] "<<" - marker_dist["<<global_iterator_3<<"]) = "<< fabs(map_markers_dist[global_iterator_4] - markers_dist[global_iterator_3]) <<" \n"; 
+          myfile <<"fabs(map_marker_dist[" <<global_iterator_4<<"] "<<" - marker_dist["<<global_iterator_3<<"]) = "<< fabs(map_markers_dist.at(global_iterator_4) - markers_dist.at(global_iterator_3)) <<" \n"; 
+          myfile <<"diff: " <<diff<<"\n"; 
+          
+          myfile << "map_marker_dist[" <<global_iterator_4<<"] == " << "marker_dist["<<global_iterator_3<<"]"<<"\n"; 
+          myfile << map_markers_dist[global_iterator_4]<<" == " << markers_dist[global_iterator_3]<<"\n"; 
+        }
+        if (matched_count == marker_counter)
+          return true;
+      }
+    }
+
+  }
+
+  return true;
+}
+
+bool VelmobilGlobalLocalization::localizeCV()
+{
+  if (marker_counter > 1 && map_marker_counter > 1)
+  {
+
+    myfile <<"-----   LOCALIZE   ------\n"; 
+    map_markers_matched_cv.resize(marker_counter);
+    markers_cv.resize(marker_counter);
+    for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
+    {
+      markers_cv.at(global_iterator) = cv::Point2f(markers.at(global_iterator)(0), markers.at(global_iterator)(1));  }
+    for (global_iterator = 0; global_iterator < map_marker_counter; global_iterator++)
+    {
+      map_markers_cv.at(global_iterator) = cv::Point2f(map_markers.at(global_iterator)(0), map_markers.at(global_iterator)(1));
+    }
+
+    myfile <<"CV markers: \n" << markers_cv << "\n"; 
+    //myfile <<"CV map_markers_cv: \n" << map_markers_cv; 
+    matchMarkersCV();
+      myfile <<"CV markers: \n" << markers_cv<< "\n"; 
+    myfile <<"CV map_markers_matched_cv: \n" << map_markers_matched_cv<< "\n"; 
+
+    transform_cv = cv::findHomography(markers_cv, map_markers_matched_cv);
+    myfile <<"CV transform: \n"; 
+    myfile <<transform_cv<<"\n"; 
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+
+}
+
+
+bool VelmobilGlobalLocalization::calcMarkDistCV(const std::vector<cv::Point2f> &input_markers, const int &marker_size, const int &respect_marker, std::vector<float> &distances, size_t &my_iterator)
+{
+for (my_iterator = 0; my_iterator < marker_size; ++my_iterator)
+  {
+    distances.at(my_iterator) = sqrt(pow(input_markers.at(my_iterator).x - input_markers.at(respect_marker).x, 2) + 
+                                        pow(input_markers.at(my_iterator).y - input_markers.at(respect_marker).y, 2)); 
+  }
+
+  return true;
+}
+bool VelmobilGlobalLocalization::matchMarkersCV()
+{
+  myfile <<"--- MATCHING ----" <<"\n"; 
+
+  // 1) calculate distance between marker(0) and other markers 
+  calcMarkDistCV(markers_cv, marker_counter, 0, markers_dist, global_iterator);
+  myfile <<"markers_dist:" <<"\n"; 
+  for (global_iterator_3 = 0; global_iterator_3 < marker_counter; ++global_iterator_3)
+  {
+    myfile <<markers_dist.at(global_iterator_3) <<"\n"; 
+  }
+
+  // 2) calculate distances between map_markers with respect to map_marker(global_iterator)
+  for (global_iterator = 0; global_iterator < map_marker_counter; ++global_iterator)
+  {
+    myfile <<"calcualte map_markers_dist" <<"\n"; 
+    calcMarkDistCV(map_markers_cv, map_marker_counter, global_iterator, map_markers_dist, global_iterator_2);
+    myfile <<"map_markers_dist:" <<"\n";
+    for (global_iterator_3 = 0; global_iterator_3 < map_marker_counter; ++global_iterator_3)
+    {
+      myfile <<map_markers_dist.at(global_iterator_3) <<"\n"; 
+    }
+
+    // 3) calculate difference between each map_marker and marker, if all markers_dist will be found in map_markers_dist,
+    //    then markers[0] corresponds to map_markers[global_iterator] (both are relative values), 
+    //    and map_markers_dist[global_iterator_4] corresponds markers_dist[global_iterator_3]
+    //    first "marker_counter" objects of map_markers_matched_cv contains corresponding objects of markers_cv
+    matched_count = 0;
+    for (global_iterator_3 = 0; global_iterator_3 < marker_counter; ++global_iterator_3)
+    {
+      for (global_iterator_4 = 0; global_iterator_4 < map_marker_counter; ++global_iterator_4)
+      {
+        diff = fabs(map_markers_dist[global_iterator_4] - markers_dist[global_iterator_3]);
+        if(diff < matching_eps)
+        {
+          matched_count += 1;
+          map_markers_matched_cv[global_iterator_3] = map_markers_cv[global_iterator_4];
+          myfile <<"matched_count: " <<matched_count<<"\n"; 
+          myfile <<"fabs(map_marker_dist[" <<global_iterator_4<<"] "<<" - marker_dist["<<global_iterator_3<<"]) = "<< fabs(map_markers_dist[global_iterator_4] - markers_dist[global_iterator_3]) <<" \n"; 
+          myfile <<"fabs(map_marker_dist[" <<global_iterator_4<<"] "<<" - marker_dist["<<global_iterator_3<<"]) = "<< fabs(map_markers_dist.at(global_iterator_4) - markers_dist.at(global_iterator_3)) <<" \n"; 
+          myfile <<"diff: " <<diff<<"\n"; 
+          
+          myfile << "map_marker_dist[" <<global_iterator_4<<"] == " << "marker_dist["<<global_iterator_3<<"]"<<"\n"; 
+          myfile << map_markers_dist[global_iterator_4]<<" == " << markers_dist[global_iterator_3]<<"\n"; 
+        }
+        if (matched_count == marker_counter)
+          return true;
+      }
+    }
+
+  }
 
   return true;
 }
@@ -155,10 +409,12 @@ bool VelmobilGlobalLocalization::matchMarkers()
 // input: markers, marker_counter, map_markers
 bool VelmobilGlobalLocalization::updateMarkers()
 {
+/*
     myfile <<"marker_counter: "<< marker_counter <<"\n"; 
     myfile <<"markers SIZE: "<< markers.size() <<"\n"; 
     myfile <<"map_marker_counter: "<< map_marker_counter <<"\n"; 
     myfile <<"map_markers SIZE: "<< map_markers.size() <<"\n"; 
+*/
   for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
   {
     markers_in_odom.at(global_iterator)(0) = odom_transform(0,0) * markers.at(global_iterator)(0) + odom_transform(0,1) * markers.at(global_iterator)(1) + odom_transform(0,2);
@@ -306,7 +562,6 @@ bool VelmobilGlobalLocalization::startHook()
   global_iterator = 0;
   // set max markers count 
   markers.resize(20);
-  markers_matched = 0;
   map_markers.resize(200);
   markers_in_odom.resize(20);
 
@@ -327,6 +582,13 @@ bool VelmobilGlobalLocalization::startHook()
 // localizacion
   map_markers_cv.resize(200);
   markers_cv.resize(200);
+
+// matching
+  map_markers_dist.resize(200);
+  markers_dist.resize(20);
+  matched_count = 0;
+  matching_eps = 0.1;
+
   return true;
 }
 
@@ -439,8 +701,8 @@ myfile << "remove markers \n";
 
         for (global_iterator_2 = 0; global_iterator_2 < marker_counter; global_iterator_2++)
         {
-          if (abs(markers.at(global_iterator_2)(0) - (*scan_front_data_matrix)(marker_id,0)) < marker_position_tresh_[0] 
-            && abs(markers.at(global_iterator_2)(1) - (*scan_front_data_matrix)(marker_id,1)) < marker_position_tresh_[1])
+          if (fabs(markers.at(global_iterator_2)(0) - (*scan_front_data_matrix)(marker_id,0)) < marker_position_tresh_[0] 
+            && fabs(markers.at(global_iterator_2)(1) - (*scan_front_data_matrix)(marker_id,1)) < marker_position_tresh_[1])
           {
             myfile << "Both lasers found the same marker\n";
             myfile << "saved marker:\n";
@@ -504,8 +766,8 @@ myfile << "remove markers \n";
         // check if both lasers found the same marker. If so, change marker pose to average
         for (global_iterator_2 = 0; global_iterator_2 < marker_counter; global_iterator_2++)
         {
-          if (abs(markers.at(global_iterator_2)(0) - (*scan_rear_data_matrix)(marker_id,0)) < marker_position_tresh_[0] 
-            && abs(markers.at(global_iterator_2)(1) - (*scan_rear_data_matrix)(marker_id,1)) < marker_position_tresh_[1])
+          if (fabs(markers.at(global_iterator_2)(0) - (*scan_rear_data_matrix)(marker_id,0)) < marker_position_tresh_[0] 
+            && fabs(markers.at(global_iterator_2)(1) - (*scan_rear_data_matrix)(marker_id,1)) < marker_position_tresh_[1])
           {
             myfile << "Both lasers found the same marker\n";
             myfile << "front marker:\n";
@@ -548,16 +810,21 @@ myfile << "remove markers \n";
 
   if (RTT::NewData == in_change_mode_.read((*msg_change_mode_ptr)))
   {
+    myfile <<"NEW MODE \n"; 
     my_mode = (*msg_change_mode_ptr);
   }
 
   if (my_mode == 1)
   {
-    localize();
+    myfile <<"USE LOCALIZE mode \n"; 
+
+    localizeEIGEN();
     //updateMarkers();
   }
   else
   {
+    myfile <<"USE mapping mode \n"; 
+
     updateMarkers();
   }
 
