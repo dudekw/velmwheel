@@ -87,11 +87,14 @@
   float matching_eps;
   float diff;
   Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic> map_markers_matched_eigen;
-  Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic> transform_eigen;
+  Eigen::Matrix<float,3,3> transform_eigen;
   Eigen::Matrix<float,Eigen::Dynamic,3> markers_eigen;
   Eigen::Matrix<float,Eigen::Dynamic,3> map_markers_eigen;
-  Eigen::Matrix<float,Eigen::Dynamic, 1> proj;
+  // Leasat Squares Fit (LSF) localization
+  Eigen::Matrix<float,4, 1> LSF_product;
+  Eigen::Matrix<float,Eigen::Dynamic, 1> projection;
   Eigen::Matrix<float,Eigen::Dynamic, 4> M;
+
 VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) : TaskContext(name)
 {
 
@@ -135,7 +138,7 @@ VelmobilGlobalLocalization::~VelmobilGlobalLocalization()
 {
 }
 
-bool VelmobilGlobalLocalization::localizeEIGEN()
+bool VelmobilGlobalLocalization::localizeLSF()
 {
   //
   //  math explanation https://stackoverflow.com/questions/11687281/transformation-between-two-set-of-points
@@ -143,14 +146,8 @@ bool VelmobilGlobalLocalization::localizeEIGEN()
 
   if (marker_counter > 1 && map_marker_counter > 1)
   {
-proj.resize(marker_counter*2,1);
-M.resize(marker_counter*2,4);
-transform_eigen.resize(3,3);
-    Eigen::Matrix<float,Eigen::Dynamic, Eigen::Dynamic> trans;
     myfile <<"-----   LOCALIZE   ------\n"; 
-    map_markers_matched_eigen.resize(marker_counter,3);
-    markers_eigen.resize(marker_counter,3);
-    map_markers_eigen.resize(map_marker_counter,3);
+
     for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
     {
       markers_eigen.row(global_iterator) << markers.at(global_iterator)(0), markers.at(global_iterator)(1), 1;  
@@ -160,30 +157,29 @@ transform_eigen.resize(3,3);
       map_markers_eigen.row(global_iterator) << map_markers.at(global_iterator)(0), map_markers.at(global_iterator)(1), 1;
     }
 
-    //myfile <<"CV map_markers_cv: \n" << map_markers_cv; 
     matchMarkersEIGEN();
     myfile <<"EIGEN markers: \n" << markers_eigen << "\n"; 
     myfile <<"EIGEN map_markers_matched_eigen: \n" << map_markers_matched_eigen<< "\n"; 
+    
     global_iterator_2 = 0;
     for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
     {
-
-        M.row(global_iterator_2) << map_markers_matched_eigen.row(global_iterator), 0;
-        M.row(global_iterator_2 + 1) << map_markers_matched_eigen(global_iterator,1), -map_markers_matched_eigen(global_iterator,0), 0, 1;
-        proj(global_iterator_2) = markers_eigen(global_iterator,0);
-        proj(global_iterator_2+1) = markers_eigen(global_iterator,1);
-        myfile <<"global_iterator: " << global_iterator<< "\n"; 
-    global_iterator_2+=2;
+      M.row(global_iterator_2) << map_markers_matched_eigen.row(global_iterator), 0;
+      M.row(global_iterator_2 + 1) << map_markers_matched_eigen(global_iterator,1), -map_markers_matched_eigen(global_iterator,0), 0, 1;
+      projection(global_iterator_2) = markers_eigen(global_iterator,0);
+      projection(global_iterator_2+1) = markers_eigen(global_iterator,1);
+      myfile <<"global_iterator: " << global_iterator<< "\n"; 
+      global_iterator_2+=2;
     }
     myfile <<"M: \n"; 
     myfile <<M; 
 
-    myfile <<"proj: \n"; 
-    myfile <<proj; 
+    myfile <<"projection: \n"; 
+    myfile <<projection; 
 
-    trans = M.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(proj);
-transform_eigen << trans(0), trans(1), trans(2),
-                  -trans(1),  trans(0), trans(3),
+    LSF_product = M.block(0,0,marker_counter*2,4).jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(projection.block(0,0,marker_counter*2,1));
+transform_eigen << LSF_product(0), LSF_product(1), LSF_product(2),
+                  -LSF_product(1),  LSF_product(0), LSF_product(3),
                       0    ,      0   ,     1;
     myfile <<"MY transform: \n"; 
     myfile <<transform_eigen<<"\n"; 
@@ -197,8 +193,7 @@ transform_eigen << trans(0), trans(1), trans(2),
 
 }
 
-/*
-bool VelmobilGlobalLocalization::localizeEIGEN()
+bool VelmobilGlobalLocalization::localizeUmeyama()
 {
   
     myfile <<"-----   TRY LOCALIZE   ------\n"; 
@@ -206,11 +201,7 @@ bool VelmobilGlobalLocalization::localizeEIGEN()
   if (marker_counter > 1 && map_marker_counter > 1)
   {
 
-    myfile <<"-----   LOCALIZE   ------\n"; 
-    map_markers_matched_eigen.resize(marker_counter,3);
-    markers_eigen.resize(marker_counter,3);
-
-    map_markers_eigen.resize(map_marker_counter,3);
+    myfile <<"-----   LOCALIZE   ------\n";
     for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
     {
       markers_eigen.row(global_iterator) << markers.at(global_iterator)(0), markers.at(global_iterator)(1), 1;  
@@ -220,7 +211,6 @@ bool VelmobilGlobalLocalization::localizeEIGEN()
       map_markers_eigen.row(global_iterator) << map_markers.at(global_iterator)(0), map_markers.at(global_iterator)(1), 1;
     }
 
-    //myfile <<"CV map_markers_cv: \n" << map_markers_cv; 
     matchMarkersEIGEN();
     myfile <<"EIGEN markers: \n" << markers_eigen << "\n"; 
     myfile <<"EIGEN map_markers_matched_eigen: \n" << map_markers_matched_eigen<< "\n"; 
@@ -237,7 +227,7 @@ bool VelmobilGlobalLocalization::localizeEIGEN()
   }
 
 }
-*/
+
 bool VelmobilGlobalLocalization::calcMarkDistEIGEN(const Eigen::Matrix<float,Eigen::Dynamic,3> &input_markers, const int &marker_size, const int &respect_marker, std::vector<float> &distances, size_t &my_iterator)
 {
 for (my_iterator = 0; my_iterator < marker_size; ++my_iterator)
@@ -544,7 +534,8 @@ bool VelmobilGlobalLocalization::configureHook()
 
 bool VelmobilGlobalLocalization::startHook() 
 {
-
+  size_t current_set_markers_size = 20;
+  size_t map_set_markers_size = 200;
   nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
   nsec_old = nsec;
   loop_seq = 0;
@@ -561,14 +552,14 @@ bool VelmobilGlobalLocalization::startHook()
   }
   global_iterator = 0;
   // set max markers count 
-  markers.resize(20);
+  markers.resize(current_set_markers_size);
   map_markers.resize(200);
-  markers_in_odom.resize(20);
+  markers_in_odom.resize(current_set_markers_size);
 
   marker_id = 0;
   map_marker_counter = 0;
-  msg_markers_ptr->points.resize(20);
-  msg_markers_ptr->colors.resize(20);
+  msg_markers_ptr->points.resize(current_set_markers_size);
+  msg_markers_ptr->colors.resize(current_set_markers_size);
   new_rising_edge_front = true;
   new_rising_edge_rear = true;
   rising_marker_iterator_front = 0;
@@ -580,14 +571,21 @@ bool VelmobilGlobalLocalization::startHook()
 
   xml_tree.add("map.<xmlattr>.version", "1.0");
 // localizacion
-  map_markers_cv.resize(200);
-  markers_cv.resize(200);
+  map_markers_cv.resize(map_set_markers_size);
+  markers_cv.resize(map_set_markers_size);
 
 // matching
-  map_markers_dist.resize(200);
-  markers_dist.resize(20);
+  map_markers_dist.resize(map_set_markers_size);
+  markers_dist.resize(current_set_markers_size);
   matched_count = 0;
   matching_eps = 0.1;
+// LSF localization
+
+    projection.resize(current_set_markers_size*2,1);
+    M.resize(current_set_markers_size*2,4);
+    map_markers_matched_eigen.resize(current_set_markers_size,3);
+    markers_eigen.resize(current_set_markers_size,3);
+    map_markers_eigen.resize(map_set_markers_size,3);
 
   return true;
 }
@@ -818,7 +816,7 @@ myfile << "remove markers \n";
   {
     myfile <<"USE LOCALIZE mode \n"; 
 
-    localizeEIGEN();
+    localizeLSF();
     //updateMarkers();
   }
   else
