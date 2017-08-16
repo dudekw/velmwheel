@@ -147,6 +147,7 @@ stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 	connect("velmobil_global_localization.in_laser_front", "VelmWheel_laser_driver_F.out_laser", ConnPolicy());
 	connect("velmobil_global_localization.in_laser_rear",  "VelmWheel_laser_driver_R.out_laser", ConnPolicy());
 	stream("velmobil_global_localization.in_save_map",  ros.comm.topic("/save_marker_map"));
+	stream("velmobil_global_localization.in_load_map",  ros.comm.topic("/load_marker_map"));
 	stream("velmobil_global_localization.in_change_mode",  ros.comm.topic("/gl_change_mode"));
 	stream("velmobil_global_localization.out_markers",  ros.comm.topic("/visualization_marker"));
 	velmobil_global_localization.start()

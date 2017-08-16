@@ -45,6 +45,7 @@ class VelmobilGlobalLocalization : public RTT::TaskContext
  		RTT::InputPort<sensor_msgs::LaserScan> in_laser_front_;
  		RTT::InputPort<sensor_msgs::LaserScan> in_laser_rear_;
  		RTT::InputPort<std::string> in_save_map_;
+ 		RTT::InputPort<std::string> in_load_map_;
  		RTT::InputPort<int> in_change_mode_;
  		//RTT::InputPort<geometry_msgs::PoseWithCovarianceStamped> in_laser_;
  		RTT::OutputPort<visualization_msgs::Marker> out_markers_;

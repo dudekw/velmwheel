@@ -19,6 +19,7 @@
 //XML
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+#include <intensity_map_lib/intensity_map_lib.h>
 
 
 
@@ -28,6 +29,7 @@
   std::auto_ptr<tf2_msgs::TFMessage> msg_odom_transform_ptr;
   std::auto_ptr<visualization_msgs::Marker> msg_markers_ptr;
   std::auto_ptr<std::string> msg_save_map_ptr;
+  std::auto_ptr<std::string> msg_load_map_ptr;
   std::auto_ptr<int> msg_change_mode_ptr;
   std::auto_ptr<tf2_msgs::TFMessage> msg_base_map_tf_ptr;
 
@@ -75,7 +77,7 @@
   boost::property_tree::ptree xml_tree;
   boost::property_tree::ptree& marker_tree = xml_tree;
   std::ostringstream marker_path;
-
+  std::auto_ptr<intensity_map> im_map_ptr;
 // opencv
   cv::Mat transform_cv;
   std::vector<cv::Point2f> markers_cv;
@@ -121,6 +123,7 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
   this->addPort("in_laser_rear",in_laser_rear_);
   this->addPort("in_change_mode",in_change_mode_);
   this->addPort("in_save_map",in_save_map_);
+  this->addPort("in_load_map",in_load_map_);
   this->addPort("out_markers",out_markers_);
   this->addPort("out_transform",out_transform_);
   min_intensity_ = -1;
@@ -146,12 +149,14 @@ current_loop_time_ptr.reset(new ros::Time);
   msg_markers_ptr.reset(new visualization_msgs::Marker);
   msg_odom_transform_ptr.reset(new tf2_msgs::TFMessage);
   msg_save_map_ptr.reset(new std::string);
+  msg_load_map_ptr.reset(new std::string);
   msg_change_mode_ptr.reset(new int);
   msg_base_map_tf_ptr.reset(new tf2_msgs::TFMessage);
 
   new_data_vec_ptr.reset(new std::vector<bool>(2,false));
   scan_front_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
   scan_rear_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
+
 }
 
 VelmobilGlobalLocalization::~VelmobilGlobalLocalization() 
@@ -737,6 +742,7 @@ bool VelmobilGlobalLocalization::startHook()
 
   msg_base_map_tf_ptr->transforms.at(0).header.seq = 0;
   msg_base_map_tf_ptr->transforms.at(0).header.stamp = *current_loop_time_ptr;
+  im_map_ptr.reset(new intensity_map(map_set_markers_size));
 
   return true;
 }
@@ -1013,8 +1019,9 @@ myfile << "remove markers \n";
   if (RTT::NewData == in_save_map_.read((*msg_save_map_ptr)))
   {
       myfile <<"save map \n"; 
+      im_map_ptr->save_map((*msg_save_map_ptr), map_markers, map_marker_counter);
       //xml_tree.put("map", "");
-
+/*
     for (global_iterator = 0; global_iterator < map_marker_counter; global_iterator++ )
     {
         marker_path.str("");
@@ -1039,6 +1046,17 @@ myfile << "remove markers \n";
         std::locale(),
         boost::property_tree::xml_writer_make_settings<std::string>('\t', 1));    
     boost::property_tree::write_xml(myfile, xml_tree);    
+    */
+  }
+  if (RTT::NewData == in_load_map_.read((*msg_load_map_ptr)))
+  {
+      myfile <<"load map \n"; 
+      im_map_ptr->load_map((*msg_load_map_ptr), map_markers, map_marker_counter);
+      std::cout << "-- show-map-markers ---\n";
+    for (global_iterator_2 = 0; global_iterator_2 < map_marker_counter; ++global_iterator_2)
+    {
+          std::cout << map_markers.at(global_iterator_2)<<"\n";
+    }
   }
   loop_seq += 1;
       myfile <<" <<<<  NEXT LOOP \n"; 
