@@ -38,6 +38,9 @@ install(DIRECTORY include/intensity_map_lib/
   FILES_MATCHING PATTERN "*.h"
   PATTERN ".svn" EXCLUDE)
 
+catkin_install_python(PROGRAMS scripts/show_map.py
+                      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
 install(TARGETS intensity_map_lib
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
