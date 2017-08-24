@@ -34,6 +34,10 @@ class VelmobilGlobalLocalization : public RTT::TaskContext
 
 		bool localizeUmeyama();
 		bool localizeLSF();
+		bool get2BestMatchedMarkersByWeight();
+		bool calcLSFtransform_2Best();
+		bool calcLSFtransform();
+
 		bool calcMarkDistEIGEN(const Eigen::Matrix<float,Eigen::Dynamic,3> &input_markers, const int &marker_size, const int &respect_marker, std::vector<float> &distances, size_t &my_iterator);
 		bool matchMarkersEIGEN(); 
 
