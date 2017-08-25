@@ -203,6 +203,7 @@ bool VelmobilGlobalLocalization::get2BestMatchedMarkersByWeight()
 bool VelmobilGlobalLocalization::calcLSFtransform_2Best()
 {
 	get2BestMatchedMarkersByWeight();
+  /*
 	M.row(0) << bestMatch(1,0), bestMatch(1,1), 1, 0;
 	M.row(1) << bestMatch(1,1), - bestMatch(1,0), 0, 1;
     projection(0) = bestMatch(0,0);
@@ -226,8 +227,24 @@ bool VelmobilGlobalLocalization::calcLSFtransform_2Best()
 	transform_eigen << LSF_product(0), LSF_product(1), LSF_product(2),
                   -LSF_product(1),  LSF_product(0), LSF_product(3),
                       0    ,      0   ,     1;
+                      */
+  transform_eigen(0,0) = cos(atan2(bestMatch(1,1) - secBestMatch(1,1),bestMatch(1,0) - secBestMatch(1,0)) - atan2(bestMatch(0,1) - secBestMatch(0,1),bestMatch(0,0) - secBestMatch(0,0)));
+  transform_eigen(0,1) =  sin(atan2(bestMatch(1,1) - secBestMatch(1,1),bestMatch(1,0) - secBestMatch(1,0)) - atan2(bestMatch(0,1) - secBestMatch(0,1),bestMatch(0,0) - secBestMatch(0,0)));
+  transform_eigen(0,2) = bestMatch(1,0) - bestMatch(0,0);
+
+  transform_eigen(1,0) =  -transform_eigen(0,1);
+  transform_eigen(1,1) = transform_eigen(0,0) ;
+  transform_eigen(1,2) = bestMatch(1,1) - bestMatch(0,1);
+  transform_eigen.row(2) << 0    ,      0   ,     1;
+
     myfile <<"MY transform: \n"; 
     myfile <<transform_eigen<<"\n"; 
+       transform_eigen_inverted.topLeftCorner(2,2) = transform_eigen.topLeftCorner(2,2).transpose();
+    transform_eigen_inverted.col(2) << -(transform_eigen_inverted(0,0)*transform_eigen(0,2) + transform_eigen_inverted(0,1)*transform_eigen(1,2)), 
+                              -(transform_eigen_inverted(1,0)*transform_eigen(0,2) + transform_eigen_inverted(1,1)*transform_eigen(1,2)),
+                              1;
+
+
 	transform_eigen_inverted = transform_eigen.inverse();
 	return true;
 }
@@ -447,8 +464,8 @@ bool VelmobilGlobalLocalization::matchMarkersEIGEN()
     {
       myfile <<"calcualte map_markers_dist" <<"\n"; 
       calcMarkDistEIGEN(map_markers_eigen, map_marker_counter, global_iterator_2, map_markers_dist);
-
-/*    	myfile <<"map_markers_dist:" <<"\n";
+/*
+    	myfile <<"map_markers_dist:" <<"\n";
     	for (global_iterator_3 = 0; global_iterator_3 < map_marker_counter; ++global_iterator_3)
     	{
     	  myfile <<map_markers_dist.row(global_iterator_3) <<"\n"; 
@@ -612,8 +629,8 @@ bool VelmobilGlobalLocalization::updateMapMarkers()
 
   for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
   {
-    markers_in_map.at(global_iterator)(0) = (transform_eigen(0,0) * markers.at(global_iterator)(0) + transform_eigen(0,1) * markers.at(global_iterator)(1) + transform_eigen(0,2));
-    markers_in_map.at(global_iterator)(1) = (transform_eigen(1,0) * markers.at(global_iterator)(0) + transform_eigen(1,1) * markers.at(global_iterator)(1) + transform_eigen(1,2));
+    markers_in_map.at(global_iterator)(0) = (transform_eigen_inverted(0,0) * markers.at(global_iterator)(0) + transform_eigen_inverted(0,1) * markers.at(global_iterator)(1) + transform_eigen_inverted(0,2));
+    markers_in_map.at(global_iterator)(1) = (transform_eigen_inverted(1,0) * markers.at(global_iterator)(0) + transform_eigen_inverted(1,1) * markers.at(global_iterator)(1) + transform_eigen_inverted(1,2));
   }
  /* for (global_iterator = 0; global_iterator < map_marker_counter; ++global_iterator)
   {
@@ -1078,11 +1095,11 @@ void VelmobilGlobalLocalization::updateHook()
     msg_base_map_tf_ptr->transforms.at(0).header.seq = loop_seq;
     msg_base_map_tf_ptr->transforms.at(0).header.stamp = *current_loop_time_ptr;
 
-    msg_base_map_tf_ptr->transforms.at(0).transform.translation.x = transform_eigen(0,2);
-    msg_base_map_tf_ptr->transforms.at(0).transform.translation.y = transform_eigen(1,2);
+    msg_base_map_tf_ptr->transforms.at(0).transform.translation.x = transform_eigen_inverted(0,2);
+    msg_base_map_tf_ptr->transforms.at(0).transform.translation.y = transform_eigen_inverted(1,2);
     msg_base_map_tf_ptr->transforms.at(0).transform.translation.z = 0;
-// acos(transform_eigen(0,0))
-    transf_orient_quat_.setRPY(0, 0, atan2(transform_eigen(1,0),transform_eigen(0,0)));
+// acos(transform_eigen_inverted(0,0))
+    transf_orient_quat_.setRPY(0, 0, atan2(transform_eigen_inverted(1,0),transform_eigen_inverted(0,0)));
     msg_base_map_tf_ptr->transforms.at(0).transform.rotation.x = transf_orient_quat_.getX();
     msg_base_map_tf_ptr->transforms.at(0).transform.rotation.y = transf_orient_quat_.getY();
     msg_base_map_tf_ptr->transforms.at(0).transform.rotation.z = transf_orient_quat_.getZ();
