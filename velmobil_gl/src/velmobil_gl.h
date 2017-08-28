@@ -6,6 +6,8 @@
 #include <rtt/Port.hpp>
 #include <tf2_msgs/TFMessage.h>
 #include <sensor_msgs/LaserScan.h>
+#include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/Pose2D.h>
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <string>
@@ -57,6 +59,8 @@ class VelmobilGlobalLocalization : public RTT::TaskContext
  		//RTT::InputPort<geometry_msgs::PoseWithCovarianceStamped> in_laser_;
  		RTT::OutputPort<visualization_msgs::MarkerArray> out_markers_;
  		RTT::OutputPort<tf2_msgs::TFMessage> out_transform_;
+ 		RTT::OutputPort<geometry_msgs::PoseStamped> out_pose_stamped_;
+ 		RTT::OutputPort<geometry_msgs::Pose2D> out_pose_2d_;
 
   		int min_intensity_;
 

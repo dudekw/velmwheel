@@ -32,6 +32,8 @@
   std::auto_ptr<std::string> msg_load_map_ptr;
   std::auto_ptr<int> msg_change_mode_ptr;
   std::auto_ptr<tf2_msgs::TFMessage> msg_base_map_tf_ptr;
+  std::auto_ptr<geometry_msgs::PoseStamped> msg_pose_stamped_ptr;
+  std::auto_ptr<geometry_msgs::Pose2D> msg_pose_2d_ptr;
 
   // time variables
   uint32_t loop_time;
@@ -140,6 +142,8 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
   this->addPort("in_load_map",in_load_map_);
   this->addPort("out_markers",out_markers_);
   this->addPort("out_transform",out_transform_);
+  this->addPort("out_pose_stamped",out_pose_stamped_);
+  this->addPort("out_pose_2d",out_pose_2d_);
   min_intensity_ = -1;
   this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/min_intensity",min_intensity_);
   this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/marker_position_tresh",marker_position_tresh_);
@@ -170,7 +174,8 @@ current_loop_time_ptr.reset(new ros::Time);
   new_data_vec_ptr.reset(new std::vector<bool>(2,false));
   scan_front_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
   scan_rear_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
-
+  msg_pose_stamped_ptr.reset(new geometry_msgs::PoseStamped);
+  msg_pose_2d_ptr.reset(new geometry_msgs::Pose2D);
 }
 
 VelmobilGlobalLocalization::~VelmobilGlobalLocalization() 
@@ -228,9 +233,26 @@ bool VelmobilGlobalLocalization::calcLSFtransform_2Best()
                   -LSF_product(1),  LSF_product(0), LSF_product(3),
                       0    ,      0   ,     1;
                       */
+  
+odom_quaternion = Eigen::AngleAxisf(0, Eigen::Vector3f::UnitX())
+                    * Eigen::AngleAxisf(0,  Eigen::Vector3f::UnitY())
+                    * Eigen::AngleAxisf((atan2(bestMatch(1,1) - secBestMatch(1,1),bestMatch(1,0) - secBestMatch(1,0)) - atan2(bestMatch(0,1) - secBestMatch(0,1),bestMatch(0,0) - secBestMatch(0,0))), Eigen::Vector3f::UnitZ());
+
+  msg_pose_2d_ptr->x = (bestMatch(1,0) - bestMatch(0,0) + secBestMatch(1,0) - secBestMatch(0,0))/2;
+  msg_pose_2d_ptr->y = (bestMatch(1,1) - bestMatch(0,1) + secBestMatch(1,1) - secBestMatch(0,1))/2;
+  msg_pose_2d_ptr->theta = (atan2(bestMatch(1,1) - secBestMatch(1,1),bestMatch(1,0) - secBestMatch(1,0)) - atan2(bestMatch(0,1) - secBestMatch(0,1),bestMatch(0,0) - secBestMatch(0,0)));
+
+  msg_pose_stamped_ptr->pose.orientation.x = odom_quaternion.x();
+  msg_pose_stamped_ptr->pose.orientation.y = odom_quaternion.y();
+  msg_pose_stamped_ptr->pose.orientation.z = odom_quaternion.z();
+  msg_pose_stamped_ptr->pose.orientation.w = odom_quaternion.w();
+  msg_pose_stamped_ptr->pose.position.x = (bestMatch(1,0) - bestMatch(0,0) + secBestMatch(1,0) - secBestMatch(0,0))/2;
+  msg_pose_stamped_ptr->pose.position.y = (bestMatch(1,1) - bestMatch(0,1) + secBestMatch(1,1) - secBestMatch(0,1))/2;
+  
+  out_pose_stamped_.write(*msg_pose_stamped_ptr);
   transform_eigen(0,0) = cos(atan2(bestMatch(1,1) - secBestMatch(1,1),bestMatch(1,0) - secBestMatch(1,0)) - atan2(bestMatch(0,1) - secBestMatch(0,1),bestMatch(0,0) - secBestMatch(0,0)));
   transform_eigen(0,1) =  sin(atan2(bestMatch(1,1) - secBestMatch(1,1),bestMatch(1,0) - secBestMatch(1,0)) - atan2(bestMatch(0,1) - secBestMatch(0,1),bestMatch(0,0) - secBestMatch(0,0)));
-  transform_eigen(0,2) = bestMatch(1,0) - bestMatch(0,0);
+  transform_eigen(0,2) = (bestMatch(1,0) - bestMatch(0,0) + secBestMatch(1,0) - secBestMatch(0,0))/2;
 
   transform_eigen(1,0) =  -transform_eigen(0,1);
   transform_eigen(1,1) = transform_eigen(0,0) ;
@@ -271,6 +293,11 @@ bool VelmobilGlobalLocalization::calcLSFtransform()
 	transform_eigen << LSF_product(0), LSF_product(1), LSF_product(2),
                   -LSF_product(1),  LSF_product(0), LSF_product(3),
                       0    ,      0   ,     1;
+  msg_pose_2d_ptr->x = LSF_product(2);
+  msg_pose_2d_ptr->y = LSF_product(3);
+  msg_pose_2d_ptr->theta = (acos(LSF_product(0)));
+out_pose_2d_.write(*msg_pose_2d_ptr);
+
     myfile <<"MY transform: \n"; 
     myfile <<transform_eigen<<"\n"; 
 	transform_eigen_inverted = transform_eigen.inverse();
@@ -282,7 +309,7 @@ bool VelmobilGlobalLocalization::localizeLSF()
   //  math explanation https://stackoverflow.com/questions/11687281/transformation-between-two-set-of-points
     myfile <<"-----   TRY LOCALIZE   ------\n"; 
 
-  if (marker_counter > 1 && map_marker_counter > 1)
+  if (marker_counter > 2 && map_marker_counter > 2)
   {
     myfile <<"-----   LOCALIZE   ------\n"; 
 
@@ -298,10 +325,10 @@ bool VelmobilGlobalLocalization::localizeLSF()
     matchMarkersEIGEN();
     myfile <<"EIGEN markers: \n" << markers_eigen << "\n"; 
     myfile <<"EIGEN map_markers_matched_eigen: \n" << map_markers_matched_eigen<< "\n"; 
-    /*
+    
     calcLSFtransform();
-    */
-    calcLSFtransform_2Best();
+    
+    //calcLSFtransform_2Best();
     return true;
   }
   else
@@ -361,7 +388,7 @@ matchWeight = 0;
 				diff = fabs(map_markers_dist(calcWeight_iterator_2,0) - markers_dist(calcWeight_iterator,0));
 
 //  myfile << "diff:" <<"\n";
-//  myfile << diff << "\n";
+//myfile << diff << "\n";
 				// check if current match is worse then the previous one 
 				if( diff_old(0) < diff )
 				{
@@ -372,7 +399,8 @@ matchWeight = 0;
 					// mark previous map_markers_dist as matched
 					map_markers_dist(diff_old(1),2) = 1;
 //          myfile << "BREAK" <<"\n";
-					continue;
+        diff_old << diff, calcWeight_iterator_2;  
+					break;
 				}
 				if (calcWeight_iterator_2 == map_marker_counter - 1)
 				{
@@ -380,7 +408,7 @@ matchWeight = 0;
 					matchWeight += diff;
 					// mark map_markers_dist as matched
 					map_markers_dist(calcWeight_iterator_2,2) = 1;
-					continue;
+					break;
 				}					
 				diff_old << diff, calcWeight_iterator_2;				
 //        myfile << "diff_old:" <<"\n";
@@ -392,13 +420,13 @@ matchWeight = 0;
 				matchWeight += diff_old(0);
 				// mark map_markers_dist as matched
 				map_markers_dist(diff_old(1),2) = 1;
-				continue;
+				break;
 			}				
 		}
 	}	
   
-//  myfile << "matchWeight:" <<"\n";
-//  myfile << matchWeight << "\n";
+  myfile << "matchWeight:" <<"\n";
+  myfile << matchWeight << "\n";
   
 //  myfile << "MATCHES:" <<"\n";
 //  myfile << match_ids << "\n";
@@ -440,11 +468,12 @@ bool VelmobilGlobalLocalization::matchMarkersEIGEN()
   {
     myfile <<markers_eigen.row(global_iterator) <<"\n"; 
   }
-      myfile <<"map_markers:" <<"\n"; 
+/*      myfile <<"map_markers:" <<"\n"; 
       for (global_iterator_3 = 0; global_iterator_3 < map_marker_counter; ++global_iterator_3)
       {
         myfile <<map_markers_eigen.row(global_iterator_3) <<"\n"; 
       }
+      */
   // 1) calculate distance between marker(0) and other markers 
   for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
   {
@@ -464,13 +493,13 @@ bool VelmobilGlobalLocalization::matchMarkersEIGEN()
     {
       myfile <<"calcualte map_markers_dist" <<"\n"; 
       calcMarkDistEIGEN(map_markers_eigen, map_marker_counter, global_iterator_2, map_markers_dist);
-/*
+
     	myfile <<"map_markers_dist:" <<"\n";
     	for (global_iterator_3 = 0; global_iterator_3 < map_marker_counter; ++global_iterator_3)
     	{
     	  myfile <<map_markers_dist.row(global_iterator_3) <<"\n"; 
     	}
-*/
+
     	calcMatchWeight(pointCurrentWeight, pointCurrentMatches);
     	if (pointCurrentWeight < pointBestWeight)
     	{
@@ -625,12 +654,12 @@ bool VelmobilGlobalLocalization::updateMapMarkers()
     myfile <<"map_markers SIZE: "<< map_markers.size() <<"\n"; 
 */
           myfile <<"Using localization transform:"<<"\n"; 
-          myfile <<transform_eigen<<"\n"; 
+          myfile <<odom_transform<<"\n"; 
 
   for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
   {
-    markers_in_map.at(global_iterator)(0) = (transform_eigen_inverted(0,0) * markers.at(global_iterator)(0) + transform_eigen_inverted(0,1) * markers.at(global_iterator)(1) + transform_eigen_inverted(0,2));
-    markers_in_map.at(global_iterator)(1) = (transform_eigen_inverted(1,0) * markers.at(global_iterator)(0) + transform_eigen_inverted(1,1) * markers.at(global_iterator)(1) + transform_eigen_inverted(1,2));
+    markers_in_map.at(global_iterator)(0) = (odom_transform(0,0) * markers.at(global_iterator)(0) + odom_transform(0,1) * markers.at(global_iterator)(1) + odom_transform(0,2));
+    markers_in_map.at(global_iterator)(1) = (odom_transform(1,0) * markers.at(global_iterator)(0) + odom_transform(1,1) * markers.at(global_iterator)(1) + odom_transform(1,2));
   }
  /* for (global_iterator = 0; global_iterator < map_marker_counter; ++global_iterator)
   {
@@ -875,41 +904,13 @@ bool VelmobilGlobalLocalization::startHook()
   vis_marker_array.markers.at(0).colors.resize(current_set_markers_size);
   vis_marker_array.markers.at(1).points.resize(current_set_markers_size);
   vis_marker_array.markers.at(1).colors.resize(current_set_markers_size);
+  msg_pose_stamped_ptr->header.frame_id = "odom";
   return true;
 }
 
 bool VelmobilGlobalLocalization::getScanData()
 {
-  // 
-  // // // ODOM 
-  //
-  if (RTT::NewData == in_odom_transform_.read((*msg_odom_transform_ptr)))
-  {
-    old_odom_transform_inverted.topLeftCorner(2,2) = odom_transform.topLeftCorner(2,2).transpose();
-    old_odom_transform_inverted.col(2) << -(old_odom_transform_inverted(0,0)*odom_translation(0) + old_odom_transform_inverted(0,1)*odom_translation(1)), 
-                              -(old_odom_transform_inverted(1,0)*odom_translation(0) + old_odom_transform_inverted(1,1)*odom_translation(1)),
-                              1;
 
-    odom_quaternion.x() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.x;
-    odom_quaternion.y() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.y;
-    odom_quaternion.z() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.z;
-    odom_quaternion.w() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.w;
-
-    odom_translation(0) =  msg_odom_transform_ptr->transforms.at(0).transform.translation.x;
-    odom_translation(1) =  msg_odom_transform_ptr->transforms.at(0).transform.translation.y;
-
-    odom_transform.topLeftCorner(2,2) = odom_quaternion.toRotationMatrix().topLeftCorner(2,2);
-    odom_transform.col(2) << odom_translation(0), 
-                              odom_translation(1),
-                              1;
-    myfile << "odom:\n";
-    myfile << odom_transform<<std::endl;
-    myfile << "old_odom_transform_inverted:\n";
-    myfile << old_odom_transform_inverted<<std::endl;
-    odom_transform_diff = transform_eigen * old_odom_transform_inverted;
-    myfile << "odom_transform_diff:\n";
-    myfile << odom_transform_diff<<std::endl;
-  }
 
   // predict bias and calculate theta
   if (RTT::NewData == in_laser_front_.read((*msg_laser_front_ptr)))
@@ -1019,7 +1020,7 @@ void VelmobilGlobalLocalization::updateHook()
 
   //removeVisMarkers( (*msg_markers_ptr), marker_counter);
   //out_markers_.write((*msg_markers_ptr));
-
+  msg_pose_stamped_ptr->header.stamp = *current_loop_time_ptr;
   marker_counter = 0;
 
   ////
@@ -1035,6 +1036,7 @@ void VelmobilGlobalLocalization::updateHook()
           myfile << map_markers.at(global_iterator_2)<<"\n";
     }
   }
+
   ////
   // check component mode
   ////
@@ -1081,7 +1083,7 @@ void VelmobilGlobalLocalization::updateHook()
         //vis_marker_array.markers.at(0) = (*msg_markers_ptr);
 
         vis_color << 1,0,0,1;
-        vis_frame = "map_2";
+        vis_frame = "odom";
         vis_namespace = "localization_map";
         visualizationInitialization( vis_marker_array.markers.at(1), map_marker_counter, map_markers, vis_color, vis_frame, vis_namespace);
         //vis_marker_array.markers.at(1) = (*msg_markers_ptr);
@@ -1089,17 +1091,17 @@ void VelmobilGlobalLocalization::updateHook()
         out_markers_.write(vis_marker_array);
 
     }
-    msg_base_map_tf_ptr->transforms.at(0).header.frame_id = "base_link";
-    msg_base_map_tf_ptr->transforms.at(0).child_frame_id = "map_2";
+    msg_base_map_tf_ptr->transforms.at(0).header.frame_id = "map_2";
+    msg_base_map_tf_ptr->transforms.at(0).child_frame_id = "odom";
 
     msg_base_map_tf_ptr->transforms.at(0).header.seq = loop_seq;
     msg_base_map_tf_ptr->transforms.at(0).header.stamp = *current_loop_time_ptr;
 
-    msg_base_map_tf_ptr->transforms.at(0).transform.translation.x = transform_eigen_inverted(0,2);
-    msg_base_map_tf_ptr->transforms.at(0).transform.translation.y = transform_eigen_inverted(1,2);
+    msg_base_map_tf_ptr->transforms.at(0).transform.translation.x = odom_transform_diff(0,2);
+    msg_base_map_tf_ptr->transforms.at(0).transform.translation.y = odom_transform_diff(1,2);
     msg_base_map_tf_ptr->transforms.at(0).transform.translation.z = 0;
-// acos(transform_eigen_inverted(0,0))
-    transf_orient_quat_.setRPY(0, 0, atan2(transform_eigen_inverted(1,0),transform_eigen_inverted(0,0)));
+// acos(odom_transform_diff_inverted(0,0))
+    transf_orient_quat_.setRPY(0, 0, atan2(odom_transform_diff(1,0),odom_transform_diff(0,0)));
     msg_base_map_tf_ptr->transforms.at(0).transform.rotation.x = transf_orient_quat_.getX();
     msg_base_map_tf_ptr->transforms.at(0).transform.rotation.y = transf_orient_quat_.getY();
     msg_base_map_tf_ptr->transforms.at(0).transform.rotation.z = transf_orient_quat_.getZ();
@@ -1136,6 +1138,52 @@ void VelmobilGlobalLocalization::updateHook()
 
       localizeLSF();
     }
+
+  }else
+  {
+    return;
+  }
+  ////
+  // save current state of map_markers if requested
+  ////
+  if (RTT::NewData == in_save_map_.read((*msg_save_map_ptr)))
+  {
+    myfile <<"save map \n"; 
+    im_map_ptr->save_map((*msg_save_map_ptr), map_markers, map_marker_counter);
+  }
+  // 
+  // // // ODOM 
+  //
+  if (RTT::NewData == in_odom_transform_.read((*msg_odom_transform_ptr)))
+  {
+    old_odom_transform_inverted.topLeftCorner(2,2) = odom_transform.topLeftCorner(2,2).transpose();
+    old_odom_transform_inverted.col(2) << -(old_odom_transform_inverted(0,0)*odom_translation(0) + old_odom_transform_inverted(0,1)*odom_translation(1)), 
+                              -(old_odom_transform_inverted(1,0)*odom_translation(0) + old_odom_transform_inverted(1,1)*odom_translation(1)),
+                              1;
+
+    odom_quaternion.x() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.x;
+    odom_quaternion.y() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.y;
+    odom_quaternion.z() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.z;
+    odom_quaternion.w() =  msg_odom_transform_ptr->transforms.at(0).transform.rotation.w;
+
+    odom_translation(0) =  msg_odom_transform_ptr->transforms.at(0).transform.translation.x;
+    odom_translation(1) =  msg_odom_transform_ptr->transforms.at(0).transform.translation.y;
+
+    odom_transform.topLeftCorner(2,2) = odom_quaternion.toRotationMatrix().topLeftCorner(2,2);
+    odom_transform.col(2) << odom_translation(0), 
+                              odom_translation(1),
+                              1;
+    myfile << "odom:\n";
+    myfile << odom_transform<<std::endl;
+    myfile << "old_odom_transform_inverted:\n";
+    myfile << old_odom_transform_inverted<<std::endl;
+    odom_transform_diff = transform_eigen * odom_transform;
+    myfile << "odom_transform_diff:\n";
+    myfile << odom_transform_diff<<std::endl;
+  }
+
+  transform_eigen = old_odom_transform_inverted;
+
     msg_base_map_tf_ptr->transforms.at(0).header.frame_id = "base_link";
     msg_base_map_tf_ptr->transforms.at(0).child_frame_id = "map_2";
 
@@ -1153,19 +1201,6 @@ void VelmobilGlobalLocalization::updateHook()
     msg_base_map_tf_ptr->transforms.at(0).transform.rotation.w = transf_orient_quat_.getW();
 
     out_transform_.write((*msg_base_map_tf_ptr));
-  }else
-  {
-    return;
-  }
-  ////
-  // save current state of map_markers if requested
-  ////
-  if (RTT::NewData == in_save_map_.read((*msg_save_map_ptr)))
-  {
-    myfile <<"save map \n"; 
-    im_map_ptr->save_map((*msg_save_map_ptr), map_markers, map_marker_counter);
-  }
-
 
   loop_seq += 1;
   myfile <<" <<<<  NEXT LOOP \n"; 

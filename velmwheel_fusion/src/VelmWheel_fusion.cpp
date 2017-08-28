@@ -77,7 +77,7 @@ bool VelmWheelFusion::configureHook()
   (*curr_measurement_ptr) << 0,0,0,0,0,0,1,1,0,0,0,1;
 filter_->initialize( (*curr_measurement_ptr), 15 );
 
-filter_->setControlParams({0,0,0,0,0,01,1,0,0,0,1,0,0,0,0,0,0}, 1, {1.3, 1.3, 1.3, 1.3, 1.3, 4.5}, {0.8, 1.3, 1.3, 1.3, 1.3, 0.9}, {1.3, 1.3, 1.3, 1.3, 1.3, 4.5}, {1.0, 1.3, 1.3, 1.3, 1.3, 1.0});
+filter_->setControlParams({0,0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0}, 1, {1.3, 1.3, 1.3, 1.3, 1.3, 4.5}, {0.8, 1.3, 1.3, 1.3, 1.3, 0.9}, {1.3, 1.3, 1.3, 1.3, 1.3, 4.5}, {1.0, 1.3, 1.3, 1.3, 1.3, 1.0});
 Eigen::MatrixXd process_noise_cov(15,15);
  process_noise_cov << 0.05, 0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                            0,    0.05, 0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
@@ -197,6 +197,7 @@ void VelmWheelFusion::updateHook()
     filter_->setControl(*latestControl_, current_loop_time_ptr->toSec()- 0.001);
 
     new_measurement_ptr->topicName_ = "odom";
+
 
 
     (*curr_measurement_ptr) <<     msg_global_localization->x,         msg_global_localization->y,                             0, 
