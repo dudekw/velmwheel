@@ -119,7 +119,7 @@ stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 	connect("VelmWheel_Fusion.in_odometry","VelmWheel_Core.out_odometry", ConnPolicy())
 	stream("VelmWheel_Fusion.out_odometry", ros.comm.topic("ekf/odometry"));
 	stream("VelmWheel_Fusion.out_odom_tf", ros.comm.topic("tf"));
-	stream("VelmWheel_Fusion.in_global_localization",ros.comm.topic("gl_pose_2d"))
+	stream("VelmWheel_Fusion.in_global_localization",ros.comm.topic("scan_matcher_pose_rear"))
 
 	VelmWheel_Fusion.start()
 

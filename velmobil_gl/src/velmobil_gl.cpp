@@ -8,7 +8,6 @@
 #include <std_srvs/Empty.h>
 #include <ros/ros.h>
 #include <ros/console.h>
-#include "tf/tf.h"
 #include <chrono>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -21,8 +20,9 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <intensity_map_lib/intensity_map_lib.h>
 
-
-
+//TF
+#include "tf/tf.h"
+#include <tf/transform_listener.h>
   // Pointers to msgs
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_front_ptr;
   std::auto_ptr<sensor_msgs::LaserScan> msg_laser_rear_ptr;
@@ -131,6 +131,9 @@ std::string vis_frame;
 std::string vis_namespace;
 visualization_msgs::MarkerArray vis_marker_array;
 
+// TF
+tf::TransformListener tf_listener;
+tf::StampedTransform tf_transform;
 VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) : TaskContext(name)
 {
 
@@ -238,18 +241,7 @@ odom_quaternion = Eigen::AngleAxisf(0, Eigen::Vector3f::UnitX())
                     * Eigen::AngleAxisf(0,  Eigen::Vector3f::UnitY())
                     * Eigen::AngleAxisf((atan2(bestMatch(1,1) - secBestMatch(1,1),bestMatch(1,0) - secBestMatch(1,0)) - atan2(bestMatch(0,1) - secBestMatch(0,1),bestMatch(0,0) - secBestMatch(0,0))), Eigen::Vector3f::UnitZ());
 
-  msg_pose_2d_ptr->x = (bestMatch(1,0) - bestMatch(0,0) + secBestMatch(1,0) - secBestMatch(0,0))/2;
-  msg_pose_2d_ptr->y = (bestMatch(1,1) - bestMatch(0,1) + secBestMatch(1,1) - secBestMatch(0,1))/2;
-  msg_pose_2d_ptr->theta = (atan2(bestMatch(1,1) - secBestMatch(1,1),bestMatch(1,0) - secBestMatch(1,0)) - atan2(bestMatch(0,1) - secBestMatch(0,1),bestMatch(0,0) - secBestMatch(0,0)));
 
-  msg_pose_stamped_ptr->pose.orientation.x = odom_quaternion.x();
-  msg_pose_stamped_ptr->pose.orientation.y = odom_quaternion.y();
-  msg_pose_stamped_ptr->pose.orientation.z = odom_quaternion.z();
-  msg_pose_stamped_ptr->pose.orientation.w = odom_quaternion.w();
-  msg_pose_stamped_ptr->pose.position.x = (bestMatch(1,0) - bestMatch(0,0) + secBestMatch(1,0) - secBestMatch(0,0))/2;
-  msg_pose_stamped_ptr->pose.position.y = (bestMatch(1,1) - bestMatch(0,1) + secBestMatch(1,1) - secBestMatch(0,1))/2;
-  
-  out_pose_stamped_.write(*msg_pose_stamped_ptr);
   transform_eigen(0,0) = cos(atan2(bestMatch(1,1) - secBestMatch(1,1),bestMatch(1,0) - secBestMatch(1,0)) - atan2(bestMatch(0,1) - secBestMatch(0,1),bestMatch(0,0) - secBestMatch(0,0)));
   transform_eigen(0,1) =  sin(atan2(bestMatch(1,1) - secBestMatch(1,1),bestMatch(1,0) - secBestMatch(1,0)) - atan2(bestMatch(0,1) - secBestMatch(0,1),bestMatch(0,0) - secBestMatch(0,0)));
   transform_eigen(0,2) = (bestMatch(1,0) - bestMatch(0,0) + secBestMatch(1,0) - secBestMatch(0,0))/2;
@@ -268,6 +260,12 @@ odom_quaternion = Eigen::AngleAxisf(0, Eigen::Vector3f::UnitX())
 
 
 	transform_eigen_inverted = transform_eigen.inverse();
+
+   msg_pose_2d_ptr->x = (bestMatch(1,0) - bestMatch(0,0) + secBestMatch(1,0) - secBestMatch(0,0))/2;
+  msg_pose_2d_ptr->y = (bestMatch(1,1) - bestMatch(0,1) + secBestMatch(1,1) - secBestMatch(0,1))/2;
+  msg_pose_2d_ptr->theta = (atan2(transform_eigen(0,1),transform_eigen(0,0)));
+  out_pose_2d_.write(*msg_pose_2d_ptr);
+
 	return true;
 }
 
@@ -295,11 +293,14 @@ bool VelmobilGlobalLocalization::calcLSFtransform()
                       0    ,      0   ,     1;
   msg_pose_2d_ptr->x = LSF_product(2);
   msg_pose_2d_ptr->y = LSF_product(3);
-  msg_pose_2d_ptr->theta = (acos(LSF_product(0)));
+  msg_pose_2d_ptr->theta = (atan2(LSF_product(1),LSF_product(0)));
 out_pose_2d_.write(*msg_pose_2d_ptr);
 
     myfile <<"MY transform: \n"; 
-    myfile <<transform_eigen<<"\n"; 
+    myfile <<transform_eigen<<"\n";
+    myfile <<"Pose2D: \n"; 
+    myfile <<*msg_pose_2d_ptr<<"\n";
+
 	transform_eigen_inverted = transform_eigen.inverse();
 	return true;
 }
@@ -653,9 +654,16 @@ bool VelmobilGlobalLocalization::updateMapMarkers()
     myfile <<"map_marker_counter: "<< map_marker_counter <<"\n"; 
     myfile <<"map_markers SIZE: "<< map_markers.size() <<"\n"; 
 */
+/*  tf_listener.lookupTransform("base_link", "map", ros::Time(0), tf_transform);
+ 
+odom_transform.col(2) << tf_transform.getOrigin().x(),tf_transform.getOrigin().y(), 0;
+odom_transform(0,0) = tf_transform.getBasis()[0][0];
+odom_transform(1,0) = tf_transform.getBasis()[1][0];
+odom_transform(0,1) = tf_transform.getBasis()[0][1];
+odom_transform(1,1) = tf_transform.getBasis()[1][1];
+*/
           myfile <<"Using localization transform:"<<"\n"; 
-          myfile <<odom_transform<<"\n"; 
-
+          myfile <<odom_transform<<"\n";
   for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
   {
     markers_in_map.at(global_iterator)(0) = (odom_transform(0,0) * markers.at(global_iterator)(0) + odom_transform(0,1) * markers.at(global_iterator)(1) + odom_transform(0,2));

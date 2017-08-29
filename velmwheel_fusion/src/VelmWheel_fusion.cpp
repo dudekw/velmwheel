@@ -33,6 +33,15 @@ std::auto_ptr<Eigen::VectorXd> curr_meas_cov_diag_ptr;
 std::auto_ptr<RobotLocalization::Measurement> new_measurement_ptr;
 std::auto_ptr<tf2_msgs::TFMessage> msg_odom_tf_ptr;
 long long int loop_seq;
+std::ofstream *myfile;
+
+std::vector<int> control_vector;
+double control_timeout;
+std::vector<double> control_acc_limit_vec;
+std::vector<double> control_acc_gain_vec;
+std::vector<double> control_dec_limit_vec;
+std::vector<double> control_dec_gain_vec;
+
 VelmWheelFusion::VelmWheelFusion(const std::string& name) : TaskContext(name)
 {
   this->addPort("in_global_localization",in_global_localization_);
@@ -57,6 +66,16 @@ VelmWheelFusion::VelmWheelFusion(const std::string& name) : TaskContext(name)
   new_measurement_ptr.reset(new RobotLocalization::Measurement);
   msg_odom_tf_ptr.reset(new tf2_msgs::TFMessage);
   msg_global_localization.reset(new geometry_msgs::Pose2D());
+myfile = new std::ofstream("/tmp/fusion_log_data.txt");
+  filter_->setDebug(true, myfile);
+
+
+std::vector<int> control_vector;
+double control_timeout;
+std::vector<double> control_acc_limit_vec;
+std::vector<double> control_acc_gain_vec;
+std::vector<double> control_dec_limit_vec;
+std::vector<double> control_dec_gain_vec;
 }
 
 VelmWheelFusion::~VelmWheelFusion() 
@@ -77,7 +96,20 @@ bool VelmWheelFusion::configureHook()
   (*curr_measurement_ptr) << 0,0,0,0,0,0,1,1,0,0,0,1;
 filter_->initialize( (*curr_measurement_ptr), 15 );
 
-filter_->setControlParams({0,0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0}, 1, {1.3, 1.3, 1.3, 1.3, 1.3, 4.5}, {0.8, 1.3, 1.3, 1.3, 1.3, 0.9}, {1.3, 1.3, 1.3, 1.3, 1.3, 4.5}, {1.0, 1.3, 1.3, 1.3, 1.3, 1.0});
+control_vector.resize(6);
+control_timeout = 0.1;
+control_acc_gain_vec.resize(6);
+control_acc_limit_vec.resize(6);
+control_dec_gain_vec.resize(6);
+control_dec_limit_vec.resize(6);
+control_vector = {1,1,0,0,0,1,0,0,0,0,0,0};
+control_timeout = 0.1;
+control_acc_gain_vec = {1.3, 1.3, 1.3, 1.3, 1.3, 4.5};
+control_acc_limit_vec = {0.8, 1.3, 1.3, 1.3, 1.3, 0.9};
+control_dec_gain_vec = {1.3, 1.3, 1.3, 1.3, 1.3, 4.5};
+control_dec_limit_vec = {1.0, 1.3, 1.3, 1.3, 1.3, 1.0};
+
+filter_->setControlParams(control_vector, control_timeout, control_acc_limit_vec, control_acc_gain_vec, control_dec_limit_vec, control_dec_gain_vec );
 Eigen::MatrixXd process_noise_cov(15,15);
  process_noise_cov << 0.05, 0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                            0,    0.05, 0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
@@ -120,6 +152,14 @@ Eigen::MatrixXd process_noise_cov(15,15);
 
 bool VelmWheelFusion::startHook() 
 {
+
+control_vector = {1,1,0,0,0,1};
+control_timeout = 0.1;
+control_acc_gain_vec = {1.3, 1.3, 1.3, 1.3, 1.3, 4.5};
+control_acc_limit_vec = {0.8, 1.3, 1.3, 1.3, 1.3, 0.9};
+control_dec_gain_vec = {1.3, 1.3, 1.3, 1.3, 1.3, 4.5};
+control_dec_limit_vec = {1.0, 1.3, 1.3, 1.3, 1.3, 1.0};
+
  //std::cout << "test 3"<<std::endl;
     loop_seq = 0;
     msg_twist->linear.x = 0.0;
@@ -196,7 +236,7 @@ void VelmWheelFusion::updateHook()
   {
     filter_->setControl(*latestControl_, current_loop_time_ptr->toSec()- 0.001);
 
-    new_measurement_ptr->topicName_ = "odom";
+    new_measurement_ptr->topicName_ = "global_localization";
 
 
 
@@ -207,7 +247,7 @@ void VelmWheelFusion::updateHook()
     new_measurement_ptr->measurement_ = (*curr_measurement_ptr);
 
     //new_measurement_ptr->measurement_ = Eigen::VectorXd(0,0,0,0,0,0,msg_odometry->twist.twist.linear.x, msg_odometry->twist.twist.linear.y,0,0,0,msg_odometry->twist.twist.angular.z);
-    (*curr_meas_cov_diag_ptr) << 0.001, 0.001, 1, 1, 1, 0.001;
+    (*curr_meas_cov_diag_ptr) << 0.01, 0.01, 1, 1, 1, 0.01;
     new_measurement_ptr->covariance_ = curr_meas_cov_diag_ptr->asDiagonal();
     /*
     size_t k = 0;
@@ -218,7 +258,8 @@ void VelmWheelFusion::updateHook()
     }
     }
     */
-    //std::cout << "covariance : \n"<< new_measurement_ptr->covariance_ <<std::endl;
+    *myfile << "measurement_ : \n"<< new_measurement_ptr->measurement_ <<"\n";
+    *myfile << "covariance : \n"<< new_measurement_ptr->covariance_ <<"\n";
 
     new_measurement_ptr->updateVector_ = {1,1,0,0,0,1};
     new_measurement_ptr->time_ = current_loop_time_ptr->toSec();
