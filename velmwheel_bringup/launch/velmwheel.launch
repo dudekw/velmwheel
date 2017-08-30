@@ -41,16 +41,14 @@
   <arg name="use_imu" value="false"/>
   <arg name="imu_topic" value="imu"/>
 </include>
--->
+
 <include file="$(find velmwheel_bringup)/launch/include/scan_matcher.launch">
   <arg name="laser_topic" value="laser_rear"/>
   <arg name="pose_topic" value="scan_matcher_pose_rear"/>
   <arg name="use_imu" value="false"/>
   <arg name="imu_topic" value="imu"/>
 </include>
-<!-- 
-<node name="gmapping" pkg="gmapping" type="slam_gmapping" args="scan:=laser_front"/>
-
 -->
+<node name="gmapping" pkg="gmapping" type="slam_gmapping" args="scan:=laser_front"/>
 
 </launch>

@@ -7,7 +7,7 @@ find_package(catkin REQUIRED)
 find_package( OpenCV REQUIRED )
 find_package(Eigen3 REQUIRED)
 
-find_package(catkin REQUIRED COMPONENTS rtt_ros cmake_modules tf)
+find_package(catkin REQUIRED COMPONENTS rtt_ros cmake_modules tf intensity_map_builder intensity_map_msgs)
 
 find_package(OROCOS-RTT REQUIRED)
 include(${OROCOS-RTT_USE_FILE_PATH}/UseOROCOS-RTT.cmake )
@@ -19,13 +19,10 @@ catkin_package(
   CATKIN_DEPENDS rtt_ros 
 )
 
-add_library(intensity_map_lib SHARED src/intensity_map_lib.cpp)
-target_link_libraries(intensity_map_lib ${catkin_LIBRARIES} ${BOOST_LIBRARIES} )
-
 orocos_component(${PROJECT_NAME} src/velmobil_gl.cpp)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_range_for)
 
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${BOOST_LIBRARIES} ${OpenCV_LIBRARIES} intensity_map_lib)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${BOOST_LIBRARIES} ${OpenCV_LIBRARIES})
 
 
 install(DIRECTORY param/
@@ -33,19 +30,6 @@ install(DIRECTORY param/
   FILES_MATCHING PATTERN "*.yaml"
   PATTERN ".svn" EXCLUDE)
 
-install(DIRECTORY include/intensity_map_lib/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING PATTERN "*.h"
-  PATTERN ".svn" EXCLUDE)
-
-catkin_install_python(PROGRAMS scripts/show_map.py
-                      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
-install(TARGETS intensity_map_lib
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
 
 orocos_generate_package()
 

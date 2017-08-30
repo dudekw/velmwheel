@@ -13,6 +13,7 @@
 #include <string>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <intensity_map_msgs/IntensityMarker.h>
 
 //openCV
 #include "opencv2/opencv.hpp" 
@@ -61,7 +62,7 @@ class VelmobilGlobalLocalization : public RTT::TaskContext
  		RTT::OutputPort<tf2_msgs::TFMessage> out_transform_;
  		RTT::OutputPort<geometry_msgs::PoseStamped> out_pose_stamped_;
  		RTT::OutputPort<geometry_msgs::Pose2D> out_pose_2d_;
-
+		RTT::OutputPort<intensity_map_msgs::IntensityMarker> out_intense_markers_;
   		int min_intensity_;
 
 	  	std::vector<float> marker_position_tresh_;

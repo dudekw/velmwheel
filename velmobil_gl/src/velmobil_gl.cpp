@@ -134,6 +134,9 @@ visualization_msgs::MarkerArray vis_marker_array;
 // TF
 tf::TransformListener tf_listener;
 tf::StampedTransform tf_transform;
+
+intensity_map_msgs::IntensityMarker intense_marker;
+
 VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) : TaskContext(name)
 {
 
@@ -147,6 +150,7 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
   this->addPort("out_transform",out_transform_);
   this->addPort("out_pose_stamped",out_pose_stamped_);
   this->addPort("out_pose_2d",out_pose_2d_);
+  this->addPort("out_intense_markers",out_intense_markers_);
   min_intensity_ = -1;
   this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/min_intensity",min_intensity_);
   this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/marker_position_tresh",marker_position_tresh_);
@@ -913,6 +917,8 @@ bool VelmobilGlobalLocalization::startHook()
   vis_marker_array.markers.at(1).points.resize(current_set_markers_size);
   vis_marker_array.markers.at(1).colors.resize(current_set_markers_size);
   msg_pose_stamped_ptr->header.frame_id = "odom";
+
+  intense_marker.points.resize(current_set_markers_size);
   return true;
 }
 
@@ -1075,10 +1081,21 @@ void VelmobilGlobalLocalization::updateHook()
       for (global_iterator_2 = 0; global_iterator_2 < marker_counter; ++global_iterator_2)
       {
             myfile << markers.at(global_iterator_2)<<"\n";
+
+            intense_marker.points.at(global_iterator_2).x = markers.at(global_iterator_2)(0);
+            intense_marker.points.at(global_iterator_2).y = markers.at(global_iterator_2)(1);
+            intense_marker.points.at(global_iterator_2).z = 0;
       }
-      localizeLSF();
+      intense_marker.header.stamp = *current_loop_time_ptr;
+      intense_marker.header.frame_id = "base_link";
+    intense_marker.marker_count = marker_counter;
+    out_intense_markers_.write(intense_marker);
+    }
+ /*     localizeLSF();
 
       updateMapMarkers();
+
+
       myfile << "-- show-map-markers ---\n";
       for (global_iterator_2 = 0; global_iterator_2 < map_marker_counter; ++global_iterator_2)
       {
@@ -1116,6 +1133,7 @@ void VelmobilGlobalLocalization::updateHook()
     msg_base_map_tf_ptr->transforms.at(0).transform.rotation.w = transf_orient_quat_.getW();
 
     out_transform_.write((*msg_base_map_tf_ptr));
+  */  
   }
   else  if (my_mode == 2)
   {
@@ -1212,7 +1230,6 @@ void VelmobilGlobalLocalization::updateHook()
 
   loop_seq += 1;
   myfile <<" <<<<  NEXT LOOP \n"; 
-
 }
 
 ORO_CREATE_COMPONENT(VelmobilGlobalLocalization)

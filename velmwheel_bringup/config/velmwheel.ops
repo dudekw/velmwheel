@@ -11,6 +11,7 @@ ros.import("velmwheel_fusion")
 ros.import("velmwheel_laser_driver")
 ros.import("velmwheel_bias_estimator")
 ros.import("velmobil_gl")
+ros.import("rtt_intensity_map_msgs")
 
 ros.import("rtt_nav_msgs")
 ros.import("rtt_std_msgs")
@@ -153,6 +154,7 @@ stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 	stream("velmobil_global_localization.out_transform", ros.comm.topic("tf"));
 	stream("velmobil_global_localization.out_pose_stamped", ros.comm.topic("gl_pose"));
 	stream("velmobil_global_localization.out_pose_2d", ros.comm.topic("gl_pose_2d"));
+	stream("velmobil_global_localization.out_intense_markers", ros.comm.topic("/intensity_map_markers"));
 
 	velmobil_global_localization.start()
 
