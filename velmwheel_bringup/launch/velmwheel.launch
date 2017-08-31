@@ -28,8 +28,9 @@
 
 <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
 <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+<node name="map_server" pkg="map_server" type="map_server" args="/home/wdudek/ws_velmwheel/occupancy_map.yaml"/>
 <!--
-<node name="map_server" pkg="map_server" type="map_server" args="$(find velmwheel_description)/maps/map_p109.yaml"/>
 -->
 <!-- 
 <include file="$(find velmwheel_bringup)/launch/include/amcl_velmobil.launch"/>
@@ -48,7 +49,7 @@
   <arg name="use_imu" value="false"/>
   <arg name="imu_topic" value="imu"/>
 </include>
--->
-<node name="gmapping" pkg="gmapping" type="slam_gmapping" args="scan:=laser_front"/>
 
+<node name="gmapping" pkg="gmapping" type="slam_gmapping" args="scan:=laser_front" output="screen"/>
+-->
 </launch>
