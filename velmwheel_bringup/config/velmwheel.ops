@@ -150,6 +150,7 @@ stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));
 	stream("velmobil_global_localization.in_save_map",  ros.comm.topic("/save_marker_map"));
 	stream("velmobil_global_localization.in_load_map",  ros.comm.topic("/load_marker_map"));
 	stream("velmobil_global_localization.in_change_mode",  ros.comm.topic("/gl_change_mode"));
+	stream("velmobil_global_localization.in_localization_initialized",  ros.comm.topic("/gl_localization_initialized"));
 	stream("velmobil_global_localization.out_markers",  ros.comm.topic("/visualization_marker"));
 	stream("velmobil_global_localization.out_transform", ros.comm.topic("tf"));
 	stream("velmobil_global_localization.out_pose_stamped", ros.comm.topic("gl_pose"));

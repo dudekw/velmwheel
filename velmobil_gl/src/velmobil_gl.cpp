@@ -11,13 +11,13 @@
 #include <chrono>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <Eigen/SparseCore>
+#include <Eigen/IterativeLinearSolvers>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 
-//XML
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
+//Intensity map handler
 #include <intensity_map_builder/intensity_map_handler.h>
 
 //TF
@@ -34,59 +34,68 @@
   std::auto_ptr<tf2_msgs::TFMessage> msg_base_map_tf_ptr;
   std::auto_ptr<geometry_msgs::PoseStamped> msg_pose_stamped_ptr;
   std::auto_ptr<geometry_msgs::Pose2D> msg_pose_2d_ptr;
+  intensity_map_msgs::IntensityMarker intense_marker;
 
   // time variables
   uint32_t loop_time;
+  uint64_t loop_seq;
   std::chrono::nanoseconds nsec;
   std::chrono::nanoseconds nsec_old;
   std::auto_ptr<ros::Time> current_loop_time_ptr; 
-  Eigen::Vector3d euler_laser;
+
+  // convertion euler<->quaternion
   Eigen::Quaternion<float> odom_quaternion;
   Eigen::Vector3f odom_translation;
+  tf2::Quaternion transf_orient_quat_;
+  // odometry transformations
   Eigen::Matrix<float,3,3> odom_transform;
   Eigen::Matrix<float,3,3> old_odom_transform_inverted;
   Eigen::Matrix<float,3,3> odom_transform_diff;
   Eigen::Matrix<float,3,3> laser_in_odom_transform;
 
-  uint64_t loop_seq;
+  // scan data variables
   std::auto_ptr<std::vector<bool> > new_data_vec_ptr;
-
   std::auto_ptr<Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>> scan_front_data_matrix;
   size_t scan_front_size;
   std::auto_ptr<Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>> scan_rear_data_matrix;
   size_t scan_rear_size;
+  std::vector<float> ranges;
+  std::vector<float> angles;
+  std::vector<int> intensities;
+
+  // polarLaserToCartesianBase
   Eigen::Vector2f current_dist_check_vec;
   Eigen::Vector2f last_dist_check_vec;
   Eigen::Vector2f diff_dist_check_vec;
 
+  // markers containers
   std::vector<Eigen::Vector3f> markers;
   std::vector<Eigen::Vector3f> map_markers;
   std::vector<Eigen::Vector2f> markers_in_map;
-  std::vector<float> ranges;
-  std::vector<float> angles;
-  std::vector<int> intensities;
+  size_t marker_id;
+  size_t marker_counter;
+  size_t map_marker_counter;
+
+  // global iterators
   size_t global_iterator;
   size_t global_iterator_2;
   size_t global_iterator_3;
   size_t global_iterator_4;
-
-  size_t marker_id;
-  size_t marker_counter;
-  size_t map_marker_counter;
-  Eigen::Matrix<float,3,3> laser_in_base_transform;
-  bool new_rising_edge_front;
-  bool new_rising_edge_rear;
   size_t rising_marker_iterator_front;
   size_t rising_marker_iterator_rear;
+
+  // find markers
+  bool new_rising_edge_front;
+  bool new_rising_edge_rear;
+  Eigen::Matrix<float,3,3> laser_in_base_transform;
+
 
     std::ofstream myfile;
 // mode
   int my_mode;
-// XML
-  boost::property_tree::ptree xml_tree;
-  boost::property_tree::ptree& marker_tree = xml_tree;
-  std::ostringstream marker_path;
+// Intensity Map Handler
   std::auto_ptr<IntensityMapHandler> im_map_ptr;
+
 // opencv
   cv::Mat transform_cv;
   std::vector<cv::Point2f> markers_cv;
@@ -101,6 +110,8 @@
   float matching_eps;
   float diff_x;
   float diff_y;
+  float diff;
+  Eigen::Vector2f diff_old;
   Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic> map_markers_matched_eigen;
   Eigen::Matrix<float,3,3> transform_eigen;
   Eigen::Matrix<float,3,3> transform_eigen_inverted;
@@ -110,32 +121,36 @@
   Eigen::Matrix<float,Eigen::Dynamic,1> pointCurrentMatches;
   float pointBestWeight;
   Eigen::Matrix<float,Eigen::Dynamic,1> pointBestMatches;
+  Eigen::Matrix<float,1,3>  distance_memory;
+  bool calc_match_initialized;
+  // matchMarkersLocally
+  Eigen::Matrix<float,1,3> marker_transformed;
+	float	marker_pose_dist;
+	float map_marker_pose_dist;
+  bool msg_localization_initialized;
+  // iterators for matchMarkers
   size_t calcMarkDist_iter = 0;
   size_t calcMarkDist_iter_2 = 0;
   size_t calcMarkDist_iter_3 = 0;
   size_t calcWeight_iterator = 0;
   size_t calcWeight_iterator_2 = 0;
-  float diff;
-  Eigen::Vector2f diff_old;
-  Eigen::Matrix<float,1,3>  distance_memory;
   // Leasat Squares Fit (LSF) localization
-  Eigen::Matrix<float,4, 1> LSF_product;
+  Eigen::Matrix<float,4, 1> GL_product;
   Eigen::Matrix<float,Eigen::Dynamic, 1> projection;
   Eigen::Matrix<float,Eigen::Dynamic, 4> M;
   Eigen::Matrix<float,2,4> bestMatch; 
   Eigen::Matrix<float,2,4> secBestMatch;
-    tf2::Quaternion transf_orient_quat_;
-
+  bool localization_initialized;
+// visualization
   Eigen::Matrix<float,4, 1> vis_color;
-std::string vis_frame;
-std::string vis_namespace;
-visualization_msgs::MarkerArray vis_marker_array;
+  std::string vis_frame;
+  std::string vis_namespace;
+  visualization_msgs::MarkerArray vis_marker_array;
 
-// TF
-tf::TransformListener tf_listener;
-tf::StampedTransform tf_transform;
+  // TF
+  tf::TransformListener tf_listener;
+  tf::StampedTransform tf_transform;
 
-intensity_map_msgs::IntensityMarker intense_marker;
 
 VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) : TaskContext(name)
 {
@@ -146,6 +161,7 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
   this->addPort("in_change_mode",in_change_mode_);
   this->addPort("in_save_map",in_save_map_);
   this->addPort("in_load_map",in_load_map_);
+  this->addPort("in_localization_initialized",in_localization_initialized_);
   this->addPort("out_markers",out_markers_);
   this->addPort("out_transform",out_transform_);
   this->addPort("out_pose_stamped",out_pose_stamped_);
@@ -183,6 +199,7 @@ current_loop_time_ptr.reset(new ros::Time);
   scan_rear_data_matrix.reset(new Eigen::Matrix<float, Eigen::Dynamic , Eigen::Dynamic>);
   msg_pose_stamped_ptr.reset(new geometry_msgs::PoseStamped);
   msg_pose_2d_ptr.reset(new geometry_msgs::Pose2D);
+  bool msg_localization_initialized;
 }
 
 VelmobilGlobalLocalization::~VelmobilGlobalLocalization() 
@@ -235,9 +252,9 @@ bool VelmobilGlobalLocalization::calcLSFtransform_2Best()
     myfile <<"projection: \n"; 
     myfile <<projection; 
 
-    LSF_product = M.block(0,0,4,4).jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(projection.block(0,0,4,1));
-	transform_eigen << LSF_product(0), LSF_product(1), LSF_product(2),
-                  -LSF_product(1),  LSF_product(0), LSF_product(3),
+    GL_product = M.block(0,0,4,4).jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(projection.block(0,0,4,1));
+	transform_eigen << GL_product(0), GL_product(1), GL_product(2),
+                  -GL_product(1),  GL_product(0), GL_product(3),
                       0    ,      0   ,     1;
                       */
   
@@ -272,12 +289,56 @@ odom_quaternion = Eigen::AngleAxisf(0, Eigen::Vector3f::UnitX())
 
 	return true;
 }
+bool VelmobilGlobalLocalization::calcConjugateGradient()
+{
+  global_iterator_2 = 0;
+  //marker_counter = 2;
+ 	for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
+    {
+		M.row(global_iterator_2) << map_markers_matched_eigen(global_iterator,0), map_markers_matched_eigen(global_iterator,1),1, 0;
+		M.row(global_iterator_2 + 1) << map_markers_matched_eigen(global_iterator,1), -map_markers_matched_eigen(global_iterator,0), 0, 1;
+	    projection(global_iterator_2) = markers_eigen(global_iterator,0);
+	    projection(global_iterator_2+1) = markers_eigen(global_iterator,1);
+     myfile <<"global_iterator: " << global_iterator<< "\n"; 
+	    global_iterator_2+=2;
+    }
+     myfile <<"M: \n" << M.block(0,0,marker_counter*2,4)<< "\n"; 
+     myfile <<"projection: \n" << projection.block(0,0,marker_counter*2,1)<< "\n"; 
 
+	Eigen::ConjugateGradient<Eigen::Matrix<float, -1, -1>, Eigen::Lower|Eigen::Upper> cg;
+	cg.setMaxIterations(10);
+	cg.setTolerance(0.05);
+  Eigen::Matrix<float, 4, 4> my_product;
+  my_product = M.block(0,0,marker_counter*2,4);
+	cg.compute(my_product);
+  Eigen::Matrix<float, 4, 1> guess;
+	guess = GL_product;
+      GL_product = M.block(0,0,marker_counter*2,4).jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(projection.block(0,0,marker_counter*2,1));
+
+//  GL_product = cg.solveWithGuess(projection.block(0,0,marker_counter*2,1),guess);
+  //GL_product = cg.solve(projection.block(0,0,marker_counter*2,1));
+     myfile <<"my_product: \n" << GL_product<< "\n"; 
+
+		transform_eigen << GL_product(0), GL_product(1), GL_product(2),
+                  -GL_product(1),  GL_product(0), GL_product(3),
+                      0    ,      0   ,     1;
+  msg_pose_2d_ptr->x = GL_product(2);
+  msg_pose_2d_ptr->y = GL_product(3);
+  msg_pose_2d_ptr->theta = (atan2(GL_product(1),GL_product(0)));
+out_pose_2d_.write(*msg_pose_2d_ptr);
+
+    myfile <<"MY transform: \n"; 
+    myfile <<transform_eigen<<"\n";
+    myfile <<"Pose2D: \n"; 
+    myfile <<*msg_pose_2d_ptr<<"\n";
+
+	transform_eigen_inverted = transform_eigen.inverse();
+
+	return true;
+}
 bool VelmobilGlobalLocalization::calcLSFtransform()
 {
 	global_iterator_2 = 0;
-    myfile <<"M: \n"; 
-    myfile <<M<<"\n";
     myfile <<"map_markers_matched_eigen.row(global_iterator).head(2): \n"; 
     myfile <<map_markers_matched_eigen(0,0)<<", "<<map_markers_matched_eigen(0,1)<<"\n";
     for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
@@ -289,6 +350,8 @@ bool VelmobilGlobalLocalization::calcLSFtransform()
 	//      myfile <<"global_iterator: " << global_iterator<< "\n"; 
 	    global_iterator_2+=2;
     }
+    myfile <<"M: \n"; 
+    myfile <<M<<"\n";
 //    myfile <<"M: \n"; 
 //    myfile <<M; 
 
@@ -296,13 +359,13 @@ bool VelmobilGlobalLocalization::calcLSFtransform()
 //    myfile <<projection; 
 
     myfile <<"CALC LOCALIZATION \n"; 
-    LSF_product = M.block(0,0,marker_counter*2,4).jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(projection.block(0,0,marker_counter*2,1));
-	transform_eigen << LSF_product(0), LSF_product(1), LSF_product(2),
-                  -LSF_product(1),  LSF_product(0), LSF_product(3),
+    GL_product = M.block(0,0,marker_counter*2,4).jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(projection.block(0,0,marker_counter*2,1));
+	transform_eigen << GL_product(0), GL_product(1), GL_product(2),
+                  -GL_product(1),  GL_product(0), GL_product(3),
                       0    ,      0   ,     1;
-  msg_pose_2d_ptr->x = LSF_product(2);
-  msg_pose_2d_ptr->y = LSF_product(3);
-  msg_pose_2d_ptr->theta = (atan2(LSF_product(1),LSF_product(0)));
+  msg_pose_2d_ptr->x = GL_product(2);
+  msg_pose_2d_ptr->y = GL_product(3);
+  msg_pose_2d_ptr->theta = (atan2(GL_product(1),GL_product(0)));
 out_pose_2d_.write(*msg_pose_2d_ptr);
 
     myfile <<"MY transform: \n"; 
@@ -318,33 +381,61 @@ bool VelmobilGlobalLocalization::localizeLSF()
   //
   //  math explanation https://stackoverflow.com/questions/11687281/transformation-between-two-set-of-points
     myfile <<"-----   TRY LOCALIZE   ------\n"; 
+    // if GL is NOT initialized, use LSF method to fit found markers to the map
+	if (!localization_initialized)
+	{
+		if (marker_counter > 2 && map_marker_counter > 2)
+  		{
+	    myfile <<"-----   LOCALIZATION INITIALIZATION   ------\n"; 
 
-  if (marker_counter > 2 && map_marker_counter > 2)
-  {
-    myfile <<"-----   LOCALIZE   ------\n"; 
+	    for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
+	    {
+	      markers_eigen.row(global_iterator) << markers.at(global_iterator)(0), markers.at(global_iterator)(1), 1;  
+	    }
+	        myfile <<"-----   map markers eigen   ------\n"; 
 
-    for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
-    {
-      markers_eigen.row(global_iterator) << markers.at(global_iterator)(0), markers.at(global_iterator)(1), 1;  
-    }
-    for (global_iterator = 0; global_iterator < map_marker_counter; global_iterator++)
-    {
-      map_markers_eigen.row(global_iterator) << map_markers.at(global_iterator)(0), map_markers.at(global_iterator)(1), 1;
-    }
+	    for (global_iterator = 0; global_iterator < map_marker_counter; global_iterator++)
+	    {
+	      map_markers_eigen.row(global_iterator) << map_markers.at(global_iterator)(0), map_markers.at(global_iterator)(1), 1;
+	      myfile << map_markers_eigen.row(global_iterator) << "\n";
 
-    matchMarkersEIGEN();
-    myfile <<"EIGEN markers: \n" << markers_eigen << "\n"; 
-    myfile <<"EIGEN map_markers_matched_eigen: \n" << map_markers_matched_eigen<< "\n"; 
-    
-    calcLSFtransform();
-    
-    //calcLSFtransform_2Best();
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+	    }
+
+	    matchMarkersEIGEN();
+	    myfile <<"EIGEN markers: \n" << markers_eigen << "\n"; 
+	    myfile <<"EIGEN map_markers_matched_eigen: \n" << map_markers_matched_eigen<< "\n"; 
+	    
+	    calcLSFtransform();
+	    
+	    //calcLSFtransform_2Best();
+	    //localization_initialized = true;
+	    return true;
+	  }
+	  else
+	  {
+	    return false;
+	  }
+	}
+	// if GL is initialized use conjugened gradirnt method
+	else
+	{
+    myfile << "LOCALIZATION using initialized transform\n";
+		// we need to find 2 markers at least
+		if (marker_counter > 1 && map_marker_counter > 1)
+  		{
+  			matchMarkersLocally();
+      calcLSFtransform();
+
+//				calcConjugateGradient();
+			return true;
+  		}
+  		// we found less then 2 markers in this loop
+  		else
+  		{
+  			return false;
+  		}
+	}
+  
 
 }
 
@@ -382,15 +473,16 @@ transform_eigen_inverted = transform_eigen.inverse();
   }
 
 }
-bool VelmobilGlobalLocalization::calcMatchWeight( float &matchWeight, Eigen::Matrix<float,Eigen::Dynamic,1> &match_ids)
+bool VelmobilGlobalLocalization::calcMatchWeight(float &matchWeight, Eigen::Matrix<float,Eigen::Dynamic,1> &match_ids)
 {
   myfile <<"calcMatchWeight\n";
-  myfile <<"marker_counter\n";
+/*  myfile <<"marker_counter\n";
   myfile <<marker_counter<<"\n";
   myfile <<"map_marker_counter\n";
-  myfile <<map_marker_counter<<"\n";
+  myfile <<map_marker_counter<<"\n"; */
 	map_markers_dist.col(2).setZero();
 matchWeight = 0;
+calc_match_initialized = false;
 	for (calcWeight_iterator = 0; calcWeight_iterator < marker_counter; ++calcWeight_iterator)
 	{
     // set initial value 
@@ -398,14 +490,18 @@ matchWeight = 0;
 		for (calcWeight_iterator_2 = 0; calcWeight_iterator_2 < map_marker_counter; ++calcWeight_iterator_2)
 		{
 			// check if this map_markers_dist was matched before
-			if (map_markers_dist(calcWeight_iterator_2,2) != 1)
+			if (map_markers_dist(calcWeight_iterator_2,2) != 1 )
 			{
 				diff = fabs(map_markers_dist(calcWeight_iterator_2,0) - markers_dist(calcWeight_iterator,0));
-
-//  myfile << "diff:" <<"\n";
-//myfile << diff << "\n";
+        if (!calc_match_initialized)
+        {
+          diff_old << diff, calcWeight_iterator_2;  
+          calc_match_initialized = true;
+        }
+         myfile << "diff:" <<"\n";
+        myfile << diff << "\n";
 				// check if current match is worse then the previous one 
-				if( diff_old(0) < diff )
+				if( diff_old(0) <= diff )
 				{
 					// if so match the scan_point_dist to the prevoius map_markers_dist
 					match_ids(markers_dist(calcWeight_iterator,1)) = map_markers_dist(diff_old(1),1);
@@ -421,6 +517,7 @@ matchWeight = 0;
 				{
 					match_ids(markers_dist(calcWeight_iterator,1)) = map_markers_dist(calcWeight_iterator_2,1);
 					matchWeight += diff;
+          myfile << "++++++LAST MARKER +++++" << "\n";
 					// mark map_markers_dist as matched
 					map_markers_dist(calcWeight_iterator_2,2) = 1;
 					break;
@@ -434,6 +531,8 @@ matchWeight = 0;
 				match_ids(markers_dist(calcWeight_iterator,1)) = map_markers_dist(diff_old(1),1);
 				matchWeight += diff_old(0);
 				// mark map_markers_dist as matched
+          myfile << "***** LAST MARKER ******" << "\n";
+
 				map_markers_dist(diff_old(1),2) = 1;
 				break;
 			}				
@@ -476,6 +575,52 @@ for (calcMarkDist_iter = 0; calcMarkDist_iter < marker_size; ++calcMarkDist_iter
 
   return true;
 }
+ bool VelmobilGlobalLocalization::matchMarkersLocally()
+ {
+  myfile << "matchMarkersLocally\n";
+
+ 	for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
+	{
+	 	// ++++ ADD +++ 
+	 	// Transform markers_eigen to the map frame
+
+
+		marker_transformed = transform_eigen_inverted * markers_eigen.row(global_iterator).transpose() ;
+
+  myfile << "marker_transformed:\n";
+  myfile << markers_eigen.row(global_iterator).transpose();
+  myfile << "\n * \n";
+  myfile << transform_eigen_inverted <<"\n = \n"<< marker_transformed << "\n";
+		// match closest map_marker to the transformed marker
+		//
+		// initialize diff calculation
+		marker_pose_dist = sqrt(pow(marker_transformed(0),2) + pow(marker_transformed(1),2));
+		map_marker_pose_dist = sqrt(pow(map_markers_eigen(0, 0),2) + pow(map_markers_eigen(0, 1),2));
+		diff = fabs(marker_pose_dist - map_marker_pose_dist);
+	 	diff_old << diff,0;
+	 	map_markers_matched_eigen.row(global_iterator) << map_markers_eigen.row(0), 0;
+	 	// search map_markers for the closest marker to the marksers(global_iterator), the map_markers(0) is handeled in above initialization
+		for (global_iterator_2 = 1; global_iterator_2 < map_marker_counter; ++global_iterator_2)
+		{
+			map_marker_pose_dist = sqrt(pow(map_markers_eigen(global_iterator_2, 0),2) + pow(map_markers_eigen(global_iterator_2, 1),2));
+			diff = fabs(marker_pose_dist - map_marker_pose_dist);
+			if (diff <= diff_old(0))
+			{
+				map_markers_matched_eigen.row(global_iterator) << map_markers_eigen.row(global_iterator_2), 0;
+				diff_old(0) = diff;
+			}
+		}
+	}
+    myfile << "MARKERS:\n";
+    myfile << markers_eigen <<"\n";
+    myfile << "MATCHED:\n";
+    myfile << map_markers_matched_eigen <<"\n";
+
+    myfile << "--- END matchMarkersLocally ---\n";
+	return true;
+ }
+
+
 bool VelmobilGlobalLocalization::matchMarkersEIGEN()
 {
   myfile <<"--- MATCHING ----" <<"\n"; 
@@ -494,12 +639,13 @@ bool VelmobilGlobalLocalization::matchMarkersEIGEN()
   for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
   {
     calcMarkDistEIGEN(markers_eigen, marker_counter, global_iterator, markers_dist);
-/*    myfile <<"markers_dist:" <<"\n"; 
+    myfile <<"--- NEXT MARKER MATCHING ----" <<"\n"; 
+    myfile <<"markers_dist:" <<"\n"; 
     for (global_iterator_2 = 0; global_iterator_2 < marker_counter; ++global_iterator_2)
     {
       myfile <<markers_dist.row(global_iterator_2) <<"\n"; 
     }
-*/
+
     // 2) calculate distances between map_markers with respect to map_marker(global_iterator)
     pointBestWeight = 10000;
     pointBestMatches.setZero();
@@ -882,8 +1028,6 @@ bool VelmobilGlobalLocalization::startHook()
   myfile.open ("/tmp/gl_log_data.txt");
   odom_transform.setIdentity();
   odom_quaternion.setIdentity();
-
-  xml_tree.add("map.<xmlattr>.version", "1.0");
 // localizacion
   map_markers_cv.resize(map_set_markers_size);
   markers_cv.resize(map_set_markers_size);
@@ -904,8 +1048,13 @@ bool VelmobilGlobalLocalization::startHook()
   calcWeight_iterator_2 = 0;
   diff_old.setZero();
   distance_memory.setZero();
-// LSF localization
+  // match locally
+  marker_transformed.setZero();
+	marker_pose_dist = 0;
+	map_marker_pose_dist = 0;
 
+// LSF localization
+calc_match_initialized = false;
     projection.resize(current_set_markers_size*2,1);
     M.resize(current_set_markers_size*2,4);
     // map_markers_matched_eigen -> position vector(0,1,2) + match weight(3)
@@ -915,7 +1064,7 @@ bool VelmobilGlobalLocalization::startHook()
     transform_eigen.setIdentity();
     transform_eigen_inverted.setIdentity();
   geometry_msgs::TransformStamped init_transform;
-
+ localization_initialized = false;
   msg_base_map_tf_ptr->transforms.push_back(init_transform);
 
   msg_base_map_tf_ptr->transforms.at(0).header.seq = 0;
@@ -930,6 +1079,7 @@ bool VelmobilGlobalLocalization::startHook()
   msg_pose_stamped_ptr->header.frame_id = "odom";
 
   intense_marker.points.resize(current_set_markers_size);
+  msg_localization_initialized = false;
   return true;
 }
 
@@ -1061,7 +1211,14 @@ void VelmobilGlobalLocalization::updateHook()
           myfile << map_markers.at(global_iterator_2)<<"\n";
     }
   }
-
+  ////
+  // check if localization set to initialized
+  ////
+  if (RTT::NewData == in_localization_initialized_.read(msg_localization_initialized))
+  {
+      myfile <<"localization initialized \n"; 
+      localization_initialized = msg_localization_initialized;
+  }
   ////
   // check component mode
   ////
