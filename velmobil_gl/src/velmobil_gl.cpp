@@ -395,27 +395,29 @@ bool VelmobilGlobalLocalization::localizeLSF()
   {
     markers_eigen.row(global_iterator) << markers.at(global_iterator)(0), markers.at(global_iterator)(1), 1;  
   }
-	// We need at least 3 markers and 3 map_markers	
-	if (marker_counter > 2 && map_marker_counter > 2)
-	{
-	// if GL is initialized use markers local matching
-		if (localization_initialized)
-		{
-			// if local matching returns false ( there are less then 3 markers mathed with cost less then local_cost_match_thresh )
-			// use matchMarkersEIGEN method - reinitialize global localization 
-			if(!matchMarkersLocally())
-		  	matchMarkersEIGEN();
-		}
-	  // if GL is NOT initialized, use matchMarkersEIGEN to match markers
-		else
-			matchMarkersEIGEN();
-		// fit found markers to matched markers by least squared error minimalization 
-	  calcLSFtransform();	
-		return true;
-	}
-	else
-		return false;
-
+	// if GL is initialized use markers local matching using at least 2 markers and 2 map_markers
+	if (marker_counter > 1 && map_marker_counter > 1)
+  {
+    if (localization_initialized)
+  	{
+  		// if local matching returns false ( there are less then 2 markers mathed with cost less then local_cost_match_thresh )
+  		// use matchMarkersEIGEN method - reinitialize global localization 
+      // matchMarkersEigen requires at least 3 markers and 3 map_markers
+  		if(!matchMarkersLocally())
+        if (marker_counter > 2 && map_marker_counter > 2)
+  	  	  matchMarkersEIGEN();
+        else 
+          return false;
+    }
+    // if GL is NOT initialized, use matchMarkersEIGEN to match markers
+    else
+    		matchMarkersEIGEN();
+    	// fit found markers to matched markers by least squared error minimalization 
+    calcLSFtransform();	
+    return true;
+  }
+  return false;
+	
 
 
 /*
