@@ -128,6 +128,8 @@
 	float	marker_pose_dist;
 	float map_marker_pose_dist;
   bool msg_localization_initialized;
+  float local_cost_match_thresh;
+  int low_cost_local_match;
   // iterators for matchMarkers
   size_t calcMarkDist_iter = 0;
   size_t calcMarkDist_iter_2 = 0;
@@ -168,8 +170,10 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
   this->addPort("out_pose_2d",out_pose_2d_);
   this->addPort("out_intense_markers",out_intense_markers_);
   min_intensity_ = -1;
+  local_cost_match_thresh = 0;
   this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/min_intensity",min_intensity_);
   this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/marker_position_tresh",marker_position_tresh_);
+  this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/local_cost_match_thresh",local_cost_match_thresh);
 
   if (marker_position_tresh_.size() < 2)
   {
@@ -182,6 +186,11 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
   {
       //myfile<< "Minimal intensity not specified. Using default: 1500 " << "\n";
       min_intensity_ = 1500;
+  }
+  if (local_cost_match_thresh == 0)
+  {
+      //myfile<< "Minimal intensity not specified. Using default: 1500 " << "\n";
+      local_cost_match_thresh = 0.15;
   }
 
 current_loop_time_ptr.reset(new ros::Time);
@@ -380,26 +389,45 @@ bool VelmobilGlobalLocalization::localizeLSF()
 {
   //
   //  math explanation https://stackoverflow.com/questions/11687281/transformation-between-two-set-of-points
-    myfile <<"-----   TRY LOCALIZE   ------\n"; 
-    // if GL is NOT initialized, use LSF method to fit found markers to the map
+  // LSE recursive -> http://www.cs.tut.fi/~tabus/course/ASP/LectureNew10.pdf
+  myfile <<"-----   TRY LOCALIZE   ------\n"; 
+  for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
+  {
+    markers_eigen.row(global_iterator) << markers.at(global_iterator)(0), markers.at(global_iterator)(1), 1;  
+  }
+	// We need at least 3 markers and 3 map_markers	
+	if (marker_counter > 2 && map_marker_counter > 2)
+	{
+	// if GL is initialized use markers local matching
+		if (localization_initialized)
+		{
+			// if local matching returns false ( there are less then 3 markers mathed with cost less then local_cost_match_thresh )
+			// use matchMarkersEIGEN method - reinitialize global localization 
+			if(!matchMarkersLocally())
+		  	matchMarkersEIGEN();
+		}
+	  // if GL is NOT initialized, use matchMarkersEIGEN to match markers
+		else
+			matchMarkersEIGEN();
+		// fit found markers to matched markers by least squared error minimalization 
+	  calcLSFtransform();	
+		return true;
+	}
+	else
+		return false;
+
+
+
+/*
+
+
 	if (!localization_initialized)
 	{
 		if (marker_counter > 2 && map_marker_counter > 2)
   		{
 	    myfile <<"-----   LOCALIZATION INITIALIZATION   ------\n"; 
 
-	    for (global_iterator = 0; global_iterator < marker_counter; global_iterator++)
-	    {
-	      markers_eigen.row(global_iterator) << markers.at(global_iterator)(0), markers.at(global_iterator)(1), 1;  
-	    }
-	        myfile <<"-----   map markers eigen   ------\n"; 
 
-	    for (global_iterator = 0; global_iterator < map_marker_counter; global_iterator++)
-	    {
-	      map_markers_eigen.row(global_iterator) << map_markers.at(global_iterator)(0), map_markers.at(global_iterator)(1), 1;
-	      myfile << map_markers_eigen.row(global_iterator) << "\n";
-
-	    }
 
 	    matchMarkersEIGEN();
 	    myfile <<"EIGEN markers: \n" << markers_eigen << "\n"; 
@@ -408,7 +436,7 @@ bool VelmobilGlobalLocalization::localizeLSF()
 	    calcLSFtransform();
 	    
 	    //calcLSFtransform_2Best();
-	    //localization_initialized = true;
+	    localization_initialized = true;
 	    return true;
 	  }
 	  else
@@ -422,21 +450,26 @@ bool VelmobilGlobalLocalization::localizeLSF()
     myfile << "LOCALIZATION using initialized transform\n";
 		// we need to find 2 markers at least
 		if (marker_counter > 1 && map_marker_counter > 1)
-  		{
-  			matchMarkersLocally();
-      calcLSFtransform();
-
-//				calcConjugateGradient();
+		{
+			if (matchMarkersLocally())
+	    	calcLSFtransform();
+	    else
+	    {
+		    matchMarkersEIGEN();
+		    calcLSFtransform();
+		    localization_initialized = false;
+	    }
+			//calcConjugateGradient();
 			return true;
-  		}
-  		// we found less then 2 markers in this loop
-  		else
-  		{
-  			return false;
-  		}
+		}
+		// we found less then 2 markers in this loop
+		else
+		{
+			return false;
+		}
 	}
   
-
+*/
 }
 
 bool VelmobilGlobalLocalization::localizeUmeyama()
@@ -578,7 +611,8 @@ for (calcMarkDist_iter = 0; calcMarkDist_iter < marker_size; ++calcMarkDist_iter
  bool VelmobilGlobalLocalization::matchMarkersLocally()
  {
   myfile << "matchMarkersLocally\n";
-
+	
+	low_cost_local_match = 0;
  	for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
 	{
 	 	// ++++ ADD +++ 
@@ -596,20 +630,23 @@ for (calcMarkDist_iter = 0; calcMarkDist_iter < marker_size; ++calcMarkDist_iter
 		// initialize diff calculation
 		marker_pose_dist = sqrt(pow(marker_transformed(0),2) + pow(marker_transformed(1),2));
 		map_marker_pose_dist = sqrt(pow(map_markers_eigen(0, 0),2) + pow(map_markers_eigen(0, 1),2));
-		diff = fabs(marker_pose_dist - map_marker_pose_dist);
+		diff = sqrt(pow(marker_transformed(0) - map_markers_eigen(0, 0),2) + pow(marker_transformed(1) - map_markers_eigen(0, 1),2));
 	 	diff_old << diff,0;
 	 	map_markers_matched_eigen.row(global_iterator) << map_markers_eigen.row(0), 0;
 	 	// search map_markers for the closest marker to the marksers(global_iterator), the map_markers(0) is handeled in above initialization
 		for (global_iterator_2 = 1; global_iterator_2 < map_marker_counter; ++global_iterator_2)
 		{
-			map_marker_pose_dist = sqrt(pow(map_markers_eigen(global_iterator_2, 0),2) + pow(map_markers_eigen(global_iterator_2, 1),2));
-			diff = fabs(marker_pose_dist - map_marker_pose_dist);
+			diff = sqrt(pow(marker_transformed(0) - map_markers_eigen(global_iterator_2, 0),2) + pow(marker_transformed(1) - map_markers_eigen(global_iterator_2, 1),2));
 			if (diff <= diff_old(0))
 			{
-				map_markers_matched_eigen.row(global_iterator) << map_markers_eigen.row(global_iterator_2), 0;
+				map_markers_matched_eigen.row(global_iterator) << map_markers_eigen.row(global_iterator_2), diff;
 				diff_old(0) = diff;
 			}
 		}
+		
+		if (diff_old(0) < local_cost_match_thresh)
+			low_cost_local_match += 1;
+
 	}
     myfile << "MARKERS:\n";
     myfile << markers_eigen <<"\n";
@@ -617,7 +654,12 @@ for (calcMarkDist_iter = 0; calcMarkDist_iter < marker_size; ++calcMarkDist_iter
     myfile << map_markers_matched_eigen <<"\n";
 
     myfile << "--- END matchMarkersLocally ---\n";
-	return true;
+
+    if (low_cost_local_match >= 3)
+			return true;
+		else
+			return false;
+
  }
 
 
@@ -1080,6 +1122,7 @@ calc_match_initialized = false;
 
   intense_marker.points.resize(current_set_markers_size);
   msg_localization_initialized = false;
+  low_cost_local_match = 0;
   return true;
 }
 
@@ -1208,7 +1251,10 @@ void VelmobilGlobalLocalization::updateHook()
       myfile << "-- LOADED markers: ---\n";
     for (global_iterator_2 = 0; global_iterator_2 < map_marker_counter; ++global_iterator_2)
     {
-          myfile << map_markers.at(global_iterator_2)<<"\n";
+ 	        myfile <<"-----   map markers eigen   ------\n"; 
+   	      map_markers_eigen.row(global_iterator_2) << map_markers.at(global_iterator_2)(0), map_markers.at(global_iterator_2)(1), 1;
+          myfile << map_markers_eigen.at(global_iterator_2)<<"\n";
+
     }
   }
   ////
