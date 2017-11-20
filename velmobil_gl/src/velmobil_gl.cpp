@@ -123,6 +123,13 @@
   Eigen::Matrix<float,Eigen::Dynamic,1> pointBestMatches;
   Eigen::Matrix<float,1,3>  distance_memory;
   bool calc_match_initialized;
+  Eigen::Matrix<float, Eigen::Dynamic, 1> matched_map_markers;
+  size_t marker_counter_check_matched_markers;
+  size_t best_matched_map;
+  Eigen::Matrix<float, Eigen::Dynamic, 1> partial_cost;
+  Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> matched_partial_cost;
+  float matched_cost_thresh;
+  float matched_cost_thresh_factor;
   // matchMarkersLocally
   Eigen::Matrix<float,1,3> marker_transformed;
 	float	marker_pose_dist;
@@ -173,10 +180,11 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
   this->addPort("out_intense_markers",out_intense_markers_);
   min_intensity_ = -1;
   local_cost_match_thresh = 0;
+  matched_cost_thresh_factor = -1;
   this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/min_intensity",min_intensity_);
   this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/marker_position_tresh",marker_position_tresh_);
   this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/local_cost_match_thresh",local_cost_match_thresh);
-
+  this->addProperty("/VELMWHEEL_OROCOS_ROBOT/velmobil_global_localization/matched_cost_thresh_factor",matched_cost_thresh_factor);
   if (marker_position_tresh_.size() < 2)
   {
       //myfile<< "Marker position treshold not specified. Using default: [0.1, 0.1] " << "\n";
@@ -191,10 +199,13 @@ VelmobilGlobalLocalization::VelmobilGlobalLocalization(const std::string& name) 
   }
   if (local_cost_match_thresh == 0)
   {
-      //myfile<< "Minimal intensity not specified. Using default: 1500 " << "\n";
-      local_cost_match_thresh = 0.15;
+      //myfile<< "Max cost of a locally matched marker. Default: 0.25 m " << "\n";
+      local_cost_match_thresh = 0.25;
   }
-
+  if (matched_cost_thresh_factor == -1)
+  {
+      matched_cost_thresh_factor = 0.15;
+  }
 current_loop_time_ptr.reset(new ros::Time);
   msg_laser_front_ptr.reset(new sensor_msgs::LaserScan);
   msg_laser_rear_ptr.reset(new sensor_msgs::LaserScan);
@@ -421,6 +432,7 @@ bool VelmobilGlobalLocalization::localizeLSF()
         if (marker_counter > 2 && map_marker_counter > 2)
         {
            myfile << "REINITIALIZATION\n";
+           std::cout << "REINITIALIZATION\n";
 
   	  	  matchMarkersEIGEN();
         }else 
@@ -440,9 +452,13 @@ bool VelmobilGlobalLocalization::localizeLSF()
           return false;
 
     }
+    // if there are at least 3 markers matched to the map
     // fit found markers to matched markers by least squared error minimalization 
-    calcLSFtransform();	
-    return true;
+    if (marker_counter > 2 && map_marker_counter > 2)
+    {
+      calcLSFtransform();	
+      return true;
+    }
   }
   return false;
 	
@@ -502,6 +518,29 @@ bool VelmobilGlobalLocalization::localizeLSF()
 */
 }
 
+/*
+bool VelmobilGlobalLocalization::checkMatchedMarkers()
+{
+  marker_counter_check_matched_markers = marker_counter;
+  for (global_iterator = 0; global_iterator < count; ++global_iterator)
+  {
+    if (map_markers_matched_eigen.row(global_iterator).tail(1) > matched_cost_thresh)
+    {
+      for (global_iterator_2 = global_iterator; global_iterator_2 < marker_counter; global_iterator_2++)
+      {     
+        markers_eigen.row(global_iterator_2) = markers_eigen.row(global_iterator_2+1);
+        matched_map_markers()
+      }
+      // markers list becomes shorter 
+      --marker_counter;
+    }
+  }
+  if (marker_counter_check_matched_markers != marker_counter)
+    return false;
+  else
+    return true;
+}
+*/
 bool VelmobilGlobalLocalization::localizeUmeyama()
 {
   
@@ -539,10 +578,10 @@ transform_eigen_inverted = transform_eigen.inverse();
 bool VelmobilGlobalLocalization::calcMatchWeight(float &matchWeight, Eigen::Matrix<float,Eigen::Dynamic,1> &match_ids)
 {
   myfile <<"calcMatchWeight\n";
-/*  myfile <<"marker_counter\n";
+  myfile <<"marker_counter\n";
   myfile <<marker_counter<<"\n";
   myfile <<"map_marker_counter\n";
-  myfile <<map_marker_counter<<"\n"; */
+  myfile <<map_marker_counter<<"\n"; 
 	map_markers_dist.col(2).setZero();
 matchWeight = 0;
 calc_match_initialized = false;
@@ -570,6 +609,7 @@ calc_match_initialized = false;
 					match_ids(markers_dist(calcWeight_iterator,1)) = map_markers_dist(diff_old(1),1);
 					// add the distance diff to the match weight
 					matchWeight += diff_old(0);
+          partial_cost(calcWeight_iterator) =diff_old(0);
 					// mark previous map_markers_dist as matched
 					map_markers_dist(diff_old(1),2) = 1;
 //          myfile << "BREAK" <<"\n";
@@ -580,9 +620,10 @@ calc_match_initialized = false;
 				{
 					match_ids(markers_dist(calcWeight_iterator,1)) = map_markers_dist(calcWeight_iterator_2,1);
 					matchWeight += diff;
+          partial_cost(calcWeight_iterator) = diff;
           myfile << "++++++LAST MARKER +++++" << "\n";
 					// mark map_markers_dist as matched
-					map_markers_dist(calcWeight_iterator_2,2) = 1;
+					map_markers_dist(calcWeight_iterator_2,2) = 1; 
 					break;
 				}					
 				diff_old << diff, calcWeight_iterator_2;				
@@ -593,10 +634,11 @@ calc_match_initialized = false;
 			{
 				match_ids(markers_dist(calcWeight_iterator,1)) = map_markers_dist(diff_old(1),1);
 				matchWeight += diff_old(0);
+        partial_cost(calcWeight_iterator) =diff_old(0);
 				// mark map_markers_dist as matched
           myfile << "***** LAST MARKER ******" << "\n";
 
-				map_markers_dist(diff_old(1),2) = 1;
+				map_markers_dist(diff_old(1),2) = 1; 
 				break;
 			}				
 		}
@@ -604,6 +646,8 @@ calc_match_initialized = false;
   
   myfile  << "matchWeight:" <<"\n";
   myfile  << matchWeight << "\n";
+  myfile  << "partial_cost:" <<"\n";
+  myfile  << partial_cost << "\n";
   
 //  myfile << "MATCHES:" <<"\n";
 //  myfile << match_ids << "\n";
@@ -654,9 +698,9 @@ for (calcMarkDist_iter = 0; calcMarkDist_iter < marker_size; ++calcMarkDist_iter
 		marker_transformed = transform_eigen_inverted * local_localization_markers_eigen.row(global_iterator).transpose() ;
 
   myfile << "marker_transformed:\n";
-  myfile << local_localization_markers_eigen.row(global_iterator).transpose();
+  myfile << transform_eigen_inverted <<"\n";
   myfile << "\n * \n";
-  myfile << transform_eigen_inverted <<"\n = \n"<< marker_transformed << "\n";
+  myfile << local_localization_markers_eigen.row(global_iterator).transpose()<<"\n = \n"<< marker_transformed << "\n";
   myfile << "transform_eigen:\n";
   myfile << transform_eigen;
 		// match closest map_marker to the transformed marker
@@ -680,14 +724,14 @@ for (calcMarkDist_iter = 0; calcMarkDist_iter < marker_size; ++calcMarkDist_iter
 		
 		if (diff_old(0) < local_cost_match_thresh)
     { 
-       myfile << "COST-OK\n";
+       myfile << "\nCOST-OK\n";
            low_cost_local_match += 1;
     }
     // if the cost is not low enough, delete found marker from the list
     // This marker was probably not included in the map
     else
     {
-       myfile << "Deleting found marker from memory. This marker was probably not included in the map\n";
+       myfile << "\nDeleting found marker from memory. This marker was probably not included in the map\n";
 
     	for (global_iterator_2 = global_iterator; global_iterator_2 < local_localization_marker_counter; global_iterator_2++)
 			{			
@@ -728,16 +772,46 @@ bool VelmobilGlobalLocalization::matchMarkersEIGEN()
   {
     myfile <<markers_eigen.row(global_iterator) <<"\n"; 
   }
-/*      myfile <<"map_markers:" <<"\n"; 
-      for (global_iterator_3 = 0; global_iterator_3 < map_marker_counter; ++global_iterator_3)
-      {
-        myfile <<map_markers_eigen.row(global_iterator_3) <<"\n"; 
-      }
-      */
   // 1) calculate distance between marker(0) and other markers 
+  matched_map_markers = 9000 * matched_map_markers.setOnes();
   for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
   {
-    calcMarkDistEIGEN(markers_eigen, marker_counter, global_iterator, markers_dist);
+    // limit for distance error for one dist to one dist is matched_cost_thresh_factor ( default 0,15 m). Thus threshold one marker_found match equals a nr of found markers "marker_counter" * matched_cost_thresh_factor
+    matched_cost_thresh = marker_counter * matched_cost_thresh_factor;
+    //restart when one of the found markers has high cost of the best match
+    if(!matchOneMarkerEIGEN(global_iterator))
+    { 
+    myfile <<"+++++ REMOVE MARKER +++++" <<"\n"; 
+      // replace this marker_found by the next one
+      for (global_iterator_2 = global_iterator; global_iterator_2 < marker_counter; global_iterator_2++)
+      {     
+        markers_eigen.row(global_iterator_2) = markers_eigen.row(global_iterator_2+1);
+      }
+      // markers list becomes shorter 
+      --marker_counter;
+      // restart matching
+      global_iterator = -1;
+      matched_map_markers = 9000 * matched_map_markers.setOnes();
+
+    }
+  }
+  myfile  <<"markers:" <<"\n"; 
+  for (global_iterator = 0; global_iterator < marker_counter; ++global_iterator)
+  {
+    myfile <<markers_eigen.row(global_iterator) <<"\n"; 
+  }
+  myfile  <<"MATCHED MARKERS:" <<"\n"; 
+     for (global_iterator_2 = 0; global_iterator_2 < marker_counter; ++global_iterator_2)
+    {
+       myfile  <<map_markers_matched_eigen.row(global_iterator_2) <<"\n"; 
+    }
+
+  return true;
+}
+
+bool VelmobilGlobalLocalization::matchOneMarkerEIGEN(size_t &marker_iterator)
+{
+    calcMarkDistEIGEN(markers_eigen, marker_counter, marker_iterator, markers_dist);
     myfile <<"--- NEXT MARKER MATCHING ----" <<"\n"; 
     myfile <<"markers_dist:" <<"\n"; 
     for (global_iterator_2 = 0; global_iterator_2 < marker_counter; ++global_iterator_2)
@@ -745,7 +819,7 @@ bool VelmobilGlobalLocalization::matchMarkersEIGEN()
       myfile <<markers_dist.row(global_iterator_2) <<"\n"; 
     }
 
-    // 2) calculate distances between map_markers with respect to map_marker(global_iterator)
+    // 2) calculate distances between map_markers with respect to map_marker(marker_iterator)
     pointBestWeight = 10000;
     pointBestMatches.setZero();
     pointCurrentWeight = 0;
@@ -755,51 +829,39 @@ bool VelmobilGlobalLocalization::matchMarkersEIGEN()
       myfile  <<"calcualte map_markers_dist" <<"\n"; 
       calcMarkDistEIGEN(map_markers_eigen, map_marker_counter, global_iterator_2, map_markers_dist);
 
-    	myfile <<"map_markers_dist:" <<"\n";
-    	for (global_iterator_3 = 0; global_iterator_3 < map_marker_counter; ++global_iterator_3)
-    	{
-    	  myfile <<map_markers_dist.row(global_iterator_3) <<"\n"; 
-    	}
-
-    	calcMatchWeight(pointCurrentWeight, pointCurrentMatches);
-    	if (pointCurrentWeight < pointBestWeight)
-    	{
-    		pointBestWeight = pointCurrentWeight;
-    		pointBestMatches = pointCurrentMatches;
-        myfile  <<"---- SET MATCHED ----" <<"\n";
-        map_markers_matched_eigen.row(global_iterator) << map_markers_eigen.row(pointBestMatches(global_iterator)), pointBestWeight;
-    	}
-      // 3) calculate difference between each map_marker and marker, if all markers_dist will be found in map_markers_dist,
-      //    then markers[0] corresponds to map_markers[global_iterator] (both are relative values), 
-      //    and map_markers_dist[global_iterator_4] corresponds markers_dist[global_iterator_3]
-      //    first "marker_counter" objects of map_markers_matched_eigen contains corresponding objects of markers_cv
-   /*   matched_count = 0;
-      for (global_iterator_3 = 0; global_iterator_3 < marker_counter; ++global_iterator_3)
+      myfile <<"map_markers_dist:" <<"\n";
+      for (global_iterator_3 = 0; global_iterator_3 < map_marker_counter; ++global_iterator_3)
       {
-        for (global_iterator_4 = 0; global_iterator_4 < map_marker_counter; ++global_iterator_4)
-        {
-          diff = sqrt(pow(map_markers_dist(global_iterator_4,0) - markers_dist(global_iterator_3,0),2) + pow(map_markers_dist(global_iterator_4,1) - markers_dist(global_iterator_3,1),2));
-
-          if(diff < matching_eps )
-          {
-            matched_count += 1;
-            map_markers_matched_eigen(global_iterator_3) = map_markers_eigen(global_iterator_4);
-            myfile <<"matched_count: " <<matched_count<<"\n"; 
-        //    myfile <<"fabs(map_marker_dist[" <<global_iterator_4<<"] "<<" - marker_dist["<<global_iterator_3<<"]) = "<< fabs(map_markers_dist(global_iterator_4) - markers_dist(global_iterator_3)) <<" \n"; 
-        //    myfile <<"fabs(map_marker_dist[" <<global_iterator_4<<"] "<<" - marker_dist["<<global_iterator_3<<"]) = "<< fabs(map_markers_dist(global_iterator_4) - markers_dist(global_iterator_3)) <<" \n";  
-            myfile <<"diff: " <<diff<<"\n";
-            
-            myfile << "map_marker_dist[" <<global_iterator_4<<"] == " << "marker_dist["<<global_iterator_3<<"]"<<"\n"; 
-            myfile << map_markers_dist(global_iterator_4)<<" == " << markers_dist(global_iterator_3)<<"\n"; 
-          }
-          if (matched_count == marker_counter)
-            return true;
-        }
+        myfile <<map_markers_dist.row(global_iterator_3) <<"\n"; 
       }
-  */
+
+      calcMatchWeight(pointCurrentWeight, pointCurrentMatches);
+      if (pointCurrentWeight < pointBestWeight)
+      {
+        pointBestWeight = pointCurrentWeight;
+        pointBestMatches = pointCurrentMatches;
+          myfile  <<"map_marker_cost: " <<matched_map_markers(global_iterator_2)<<"\n";
+          myfile  <<"my_cost: " <<pointBestWeight<<"\n";
+        if (pointBestWeight < matched_map_markers(global_iterator_2))
+        {
+          myfile  <<"---- SET MATCHED ----" <<"\n";
+          map_markers_matched_eigen.row(marker_iterator) << map_markers_eigen.row(global_iterator_2), pointBestWeight;
+          best_matched_map = global_iterator_2;
+          matched_partial_cost.row(marker_iterator) << partial_cost.transpose();
+        }
+        //map_markers_matched_eigen.row(marker_iterator) << map_markers_eigen.row(pointBestMatches(marker_iterator)), pointBestWeight;
+      }
     }
-  }
-  return true;
+    // sprawdz czy dopasowanie dla badanego marker_found spelnia kryterium kosztu 
+          myfile  <<"matched_cost_thresh: " <<matched_cost_thresh<<"\n";
+          myfile  <<"my_cost: " <<pointBestWeight<<"\n";
+    if (pointBestWeight > matched_cost_thresh)
+    {
+      return false;
+    }       
+    // jesli spelnia to ustaw nowa wartosc najlepszego kosztu dla danego markera mapy
+    matched_map_markers(best_matched_map) = pointBestWeight;
+    return true;
 }
 
 bool VelmobilGlobalLocalization::localizeCV()
@@ -1180,6 +1242,15 @@ calc_match_initialized = false;
   intense_marker.points.resize(current_set_markers_size);
   msg_localization_initialized = false;
   low_cost_local_match = 0;
+
+
+  marker_counter_check_matched_markers = 0;
+  best_matched_map = 0;
+  partial_cost.resize(current_set_markers_size, 1);
+  matched_partial_cost.resize(current_set_markers_size, current_set_markers_size);
+  matched_map_markers.resize(map_set_markers_size,1);
+  matched_cost_thresh = 0.75;
+
   return true;
 }
 

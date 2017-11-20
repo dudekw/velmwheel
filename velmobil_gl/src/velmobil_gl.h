@@ -52,7 +52,8 @@ class VelmobilGlobalLocalization : public RTT::TaskContext
 
 		bool getScanData();
 		bool findMarkers(Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic> &scan_data_matrix, size_t &scan_data_size);
-
+		bool matchOneMarkerEIGEN(size_t &marker_iterator);
+		
  		RTT::InputPort<tf2_msgs::TFMessage> in_odom_transform_;
  		RTT::InputPort<sensor_msgs::LaserScan> in_laser_front_;
  		RTT::InputPort<sensor_msgs::LaserScan> in_laser_rear_;

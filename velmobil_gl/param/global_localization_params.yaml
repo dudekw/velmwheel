@@ -1,2 +1,3 @@
 min_intensity: 1500
 marker_position_tresh: [0.1,0.1]
+local_cost_match_thresh: 0.25
