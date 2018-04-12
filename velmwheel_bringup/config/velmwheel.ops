@@ -63,6 +63,11 @@ while (VelmWheelInterface_EC.wheel_rl.state != 4 || VelmWheelInterface_EC.wheel_
 
 loadComponent("VelmWheel_Core","VelmWheelCore")
 setActivity("VelmWheel_Core", 0.001, 5, ORO_SCHED_RT)
+	VelmWheel_Core.loadService("rosparam")
+	VelmWheel_Core.rosparam.getAll() 
+	VelmWheel_Core.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_core/no_control_duration_threshold/sec")
+	VelmWheel_Core.rosparam.getAbsolute("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_core/no_control_duration_threshold/nsec")
+
 VelmWheel_Core.configure();
 
 connect("VelmWheel_Core.wrl_port","VelmWheelInterface_EC.wheel_rl.motor_velocity_command", ConnPolicy())
@@ -76,9 +81,13 @@ connect("VelmWheel_Core.in_wfr_enc_pos","VelmWheelInterface_EC.wheel_fr.motor_po
 connect("VelmWheel_Core.in_wrr_enc_pos","VelmWheelInterface_EC.wheel_rr.motor_position", ConnPolicy())
 
 connect("VelmWheel_Core.in_wrl_enc_vel","VelmWheelInterface_EC.wheel_rl.motor_velocity", ConnPolicy())
+stream("VelmWheelInterface_EC.wheel_rl.motor_velocity", ros.comm.topic("vel_rl"));
 connect("VelmWheel_Core.in_wfl_enc_vel","VelmWheelInterface_EC.wheel_fl.motor_velocity", ConnPolicy())
+stream("VelmWheelInterface_EC.wheel_fl.motor_velocity", ros.comm.topic("vel_fl"));
 connect("VelmWheel_Core.in_wfr_enc_vel","VelmWheelInterface_EC.wheel_fr.motor_velocity", ConnPolicy())
+stream("VelmWheelInterface_EC.wheel_fr.motor_velocity", ros.comm.topic("vel_fr"));
 connect("VelmWheel_Core.in_wrr_enc_vel","VelmWheelInterface_EC.wheel_rr.motor_velocity", ConnPolicy())
+stream("VelmWheelInterface_EC.wheel_rr.motor_velocity", ros.comm.topic("vel_rr"));
 
 stream("VelmWheel_Core.in_twist", ros.comm.topic("cmd_vel"));
 stream("VelmWheel_Core.out_odometry", ros.comm.topic("odom"));

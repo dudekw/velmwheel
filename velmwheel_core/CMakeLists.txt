@@ -18,3 +18,9 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_range_for)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
 orocos_generate_package()
+
+install(DIRECTORY param/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/param
+  FILES_MATCHING PATTERN "*.yaml"
+  PATTERN ".svn" EXCLUDE)
+  

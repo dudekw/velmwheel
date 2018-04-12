@@ -3,8 +3,13 @@
   
   <group ns="VELMWHEEL_OROCOS_ROBOT">
     <param name="VelmWheelInterface_EC/master_config" command="cat $(find velmwheel_bringup)/config/master_config.yaml"/>
-	  <group ns="VelmWheel_bias_estimator">
-    <rosparam command="load" file="$(find velmwheel_bias_estimator)/param/bias_estimator_params.yaml" />
+	  
+    <group ns="VelmWheel_core">
+        <rosparam command="load" file="$(find velmwheel_core)/param/core_driver_params.yaml" />
+    </group>
+
+    <group ns="VelmWheel_bias_estimator">
+        <rosparam command="load" file="$(find velmwheel_bias_estimator)/param/bias_estimator_params.yaml" />
 	  </group>
 	  <group ns="VelmWheel_laser_driver">
     <rosparam command="load" file="$(find velmwheel_laser_driver)/param/laser_driver_params.yaml" />

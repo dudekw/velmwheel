@@ -49,9 +49,10 @@ nav_msgs::Odometry msg_odometry;
 geometry_msgs::Twist msg_twist;
 std::chrono::nanoseconds nsec;
 std::chrono::nanoseconds nsec_rest;
-std::chrono::nanoseconds nsec_old;
+std::chrono::nanoseconds last_control_nsec;
 std::chrono::seconds sec;
 uint32_t sequence_enc;
+ros::Duration no_control_duration;
 
 const boost::array<double, 9> orientation_covariance = {0.001, 0, 0,
 								   0, 0.001, 0,
@@ -76,6 +77,10 @@ const boost::array<double, 36> odom_twist_covariace = {0.0001, 0, 0, 0, 0, 0,
 													 0, 0, 0, 0.0001, 0, 0,
 													 0, 0, 0, 0, 0.0001, 0,
 													 0, 0, 0, 0, 0, 0.0001};
+int get_no_control_duration_threshold_sec_= 1;
+int get_no_control_duration_threshold_nsec_= 0;
+ros::Duration no_control_duration_threshold_(0);
+
 VelmWheelCore::VelmWheelCore(const std::string& name) : TaskContext(name)
 {
 
@@ -95,6 +100,9 @@ VelmWheelCore::VelmWheelCore(const std::string& name) : TaskContext(name)
 	this->addPort("wfl_port",wfl_port_);
 
 	this->addPort("out_odometry",out_odometry_);
+
+	this->addProperty("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_core/no_control_duration_threshold/sec",get_no_control_duration_threshold_sec_);
+	this->addProperty("/VELMWHEEL_OROCOS_ROBOT/VelmWheel_core/no_control_duration_threshold/nsec",get_no_control_duration_threshold_nsec_);
 }
 
 VelmWheelCore::~VelmWheelCore() 
@@ -131,7 +139,7 @@ bool VelmWheelCore::configureHook()
 	double position_x_old;
 	std::chrono::nanoseconds nsec;
 	std::chrono::nanoseconds nsec_rest;
-	std::chrono::nanoseconds nsec_old;
+	std::chrono::nanoseconds last_control_nsec;
 	std::chrono::seconds sec;
 	uint32_t sequence_enc;
 
@@ -159,6 +167,8 @@ bool VelmWheelCore::configureHook()
 													 0, 0, 0, 0, 0.0001, 0,
 													 0, 0, 0, 0, 0, 0.0001};
 
+	no_control_duration_threshold_.sec = get_no_control_duration_threshold_sec_;
+	no_control_duration_threshold_.nsec = get_no_control_duration_threshold_nsec_;
 	return true;
 }
 
@@ -181,9 +191,11 @@ bool VelmWheelCore::startHook()
 
 	msg_odometry.child_frame_id = "base_link";
 	sequence_enc = 0;
-	nsec_old = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
+	last_control_nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
 	msg_odometry.pose.covariance = odom_pose_covariace;
 	msg_odometry.twist.covariance = odom_twist_covariace;
+	no_control_duration.fromSec(99999999);
+
 	return true;
 }
 
@@ -245,8 +257,8 @@ void getOdom()
 void VelmWheelCore::updateHook() 
 {
 
-	 if (RTT::NewData == in_twist_.read(msg_twist))
-	 {
+	if (RTT::NewData == in_twist_.read(msg_twist))
+	{
 		// rear left
 		wrl_speed = (-msg_twist.linear.y + msg_twist.linear.x + msg_twist.angular.z * (a + b)) / r;
 		// front left
@@ -266,6 +278,26 @@ void VelmWheelCore::updateHook()
 		wfl_port_.write(wfl_speed);
 		wfr_port_.write(wfr_speed);
 		wrr_port_.write(wrr_speed);
+		// reset time duration from last control msg till now
+		no_control_duration.fromSec(0);
+		last_control_nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
+
+	}
+	// Send the last control if there was no control for less then "no_control_duration_threshold_"
+	else if (no_control_duration < no_control_duration_threshold_)
+	{
+		wrl_port_.write(wrl_speed);
+		wfl_port_.write(wfl_speed);
+		wfr_port_.write(wfr_speed);
+		wrr_port_.write(wrr_speed);		
+	} 
+	// stop if there was no contact for more then "no_control_duration_threshold_"
+	else
+	{
+		wrl_port_.write(0);
+		wfl_port_.write(0);
+		wfr_port_.write(0);
+		wrr_port_.write(0);			
 	}
 
 	if (RTT::NewData == in_wfl_enc_pos_.read(msg_wfl_enc_pos_))
@@ -319,6 +351,8 @@ void VelmWheelCore::updateHook()
 }
 	// set odometry msg header
 	nsec = std::chrono::duration_cast<std::chrono::nanoseconds >(std::chrono::system_clock::now().time_since_epoch());
+	no_control_duration.fromNSec(nsec.count() - last_control_nsec.count());
+
 	setHeader(msg_odometry.header, "odom", sequence_enc);
 	// get base pose and twist from encoders data
 	getOdom();

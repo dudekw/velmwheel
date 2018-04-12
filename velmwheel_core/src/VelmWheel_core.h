@@ -37,5 +37,10 @@ class VelmWheelCore : public RTT::TaskContext
 		RTT::OutputPort<double> wfl_port_;
 		RTT::OutputPort<double> wfr_port_;
 
+		ros::Duration no_control_duration_threshold_;
+		ros::Duration no_control_duration;
+
+		int get_no_control_duration_threshold_sec_;
+		int get_no_control_duration_threshold_nsec_;
 };
 #endif  // VELMWHEELCORE_H_
