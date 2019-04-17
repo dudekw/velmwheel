@@ -75,7 +75,13 @@ if [ -z "$PKG_OK" ]; then
   echo "No libomniorb4-dev. Setting up omniorb."
   sudo apt-get --yes install libomniorb4-dev 
 fi
-
+# Check for ros-kinetic-lms1xx package
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' ros-kinetic-lms1xx|grep "install ok installed")
+echo Checking for ros-kinetic-lms1xx: $PKG_OK
+if [ -z "$PKG_OK" ]; then
+  echo "No ros-kinetic-lms1xx. Setting up omniorb."
+  sudo apt-get --yes install ros-kinetic-lms1xx
+fi
 
 cd $1
 wstool init
