@@ -82,6 +82,13 @@ if [ -z "$PKG_OK" ]; then
   echo "No ros-kinetic-lms1xx. Setting up omniorb."
   sudo apt-get --yes install ros-kinetic-lms1xx
 fi
+# Check for ros-kinetic-rtt-rosparam package
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' ros-kinetic-rtt-rosparam|grep "install ok installed")
+echo Checking for ros-kinetic-rtt-rosparam: $PKG_OK
+if [ -z "$PKG_OK" ]; then
+  echo "No ros-kinetic-rtt-rosparam. Setting up omniorb."
+  sudo apt-get --yes install ros-kinetic-rtt-rosparam
+fi
 
 cd $1
 wstool init
