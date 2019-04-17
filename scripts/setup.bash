@@ -68,7 +68,13 @@ if [ -z "$PKG_OK" ]; then
   echo "No omniorb. Setting up omniorb."
   sudo apt-get --yes install omniorb 
 fi
-
+# Check for libomniorb4-dev package
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' libomniorb4-dev|grep "install ok installed")
+echo Checking for libomniorb4-dev: $PKG_OK
+if [ -z "$PKG_OK" ]; then
+  echo "No libomniorb4-dev. Setting up omniorb."
+  sudo apt-get --yes install libomniorb4-dev 
+fi
 
 
 cd $1
