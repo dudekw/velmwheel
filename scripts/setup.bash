@@ -24,7 +24,7 @@ fi
 # Check for python-wstool package
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' python-wstool|grep "install ok installed")
 echo Checking for python-wstool: $PKG_OK
-if [ "" == "$PKG_OK" ]; then
+if [ -z "$PKG_OK" ]; then
   echo "No python-wstool. Setting up python-wstool."
   sudo apt-get --yes install python-wstool
 fi
@@ -32,7 +32,7 @@ fi
 # Check for python-catkin-tools package
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' python-catkin-tools|grep "install ok installed")
 echo Checking for python-catkin-tools: $PKG_OK
-if [ "" == "$PKG_OK" ]; then
+if [ -z "$PKG_OK" ]; then
   echo "No python-catkin-tools. Setting up python-catkin-tools."
   sudo apt-get --yes install python-catkin-tools
 fi
@@ -40,7 +40,7 @@ fi
 # Check for ruby-dev package
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' ruby-dev|grep "install ok installed")
 echo Checking for ruby-dev: $PKG_OK
-if [ "" == "$PKG_OK" ]; then
+if [ -z "$PKG_OK" ]; then
   echo "No ruby-dev. Setting up ruby-dev."
   sudo apt-get --yes install ruby-dev 
 fi
@@ -48,7 +48,7 @@ fi
 # Check for libreadline-dev package
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' libreadline-dev|grep "install ok installed")
 echo Checking for libreadline-dev: $PKG_OK
-if [ "" == "$PKG_OK" ]; then
+if [ -z "$PKG_OK" ]; then
   echo "No libreadline-dev. Setting up libreadline-dev."
   sudo apt-get --yes install libreadline-dev 
 fi
@@ -56,7 +56,7 @@ fi
 # Check for ros-kinetic-controller-manager package
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' ros-kinetic-controller-manager|grep "install ok installed")
 echo Checking for ros-kinetic-controller-manager: $PKG_OK
-if [ "" == "$PKG_OK" ]; then
+if [ -z "$PKG_OK" ]; then
   echo "No ros-kinetic-controller-manager. Setting up ros-kinetic-controller-manager."
   sudo apt-get --yes install ros-kinetic-controller-manager 
 fi
@@ -64,7 +64,7 @@ fi
 # Check for omniorb package
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' omniorb|grep "install ok installed")
 echo Checking for omniorb: $PKG_OK
-if [ "" == "$PKG_OK" ]; then
+if [ -z "$PKG_OK" ]; then
   echo "No omniorb. Setting up omniorb."
   sudo apt-get --yes install omniorb 
 fi
