@@ -15,4 +15,4 @@
 # temporary line below, because of the bug in kinetic 
 # - git: {local-name: underlay/src/rqt_robot_plugins, uri: 'https://github.com/twiniars/rqt_robot_plugins.git', version: 'master'}
 # Robot Workspace
-- git: {local-name: robot/src/velmwheel, uri: 'git@github.com:dudekw/velmwheel.git', version: 'stable'}
+- git: {local-name: robot/src/velmwheel, uri: 'git@github.com:dudekw/velmwheel.git', version: 'global-localization'}
