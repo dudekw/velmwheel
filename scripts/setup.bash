@@ -29,6 +29,14 @@ if [ "" == "$PKG_OK" ]; then
   sudo apt-get --yes install python-wstool
 fi
 
+# Check for python-catkin-tools package
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' python-catkin-tools|grep "install ok installed")
+echo Checking for python-catkin-tools: $PKG_OK
+if [ "" == "$PKG_OK" ]; then
+  echo "No python-catkin-tools. Setting up python-catkin-tools."
+  sudo apt-get --yes install python-catkin-tools
+fi
+
 # Check for ruby-dev package
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' ruby-dev|grep "install ok installed")
 echo Checking for ruby-dev: $PKG_OK
