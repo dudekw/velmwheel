@@ -15,9 +15,7 @@
 # temporary line below, because of the bug in kinetic 
 # - git: {local-name: underlay/src/rqt_robot_plugins, uri: 'https://github.com/twiniars/rqt_robot_plugins.git', version: 'master'}
 # Robot Workspace
-- git: {local-name: robot/src/velmwheel, uri: 'git@github.com:dudekw/velmwheel.git', version: 'global-localization'}
-- git: {local-name: robot/src/velmwheel, uri: 'git@github.com:dudekw/velmwheel.git', version: 'global-localization'}
-- git: {local-name: robot/src/velmwheel, uri: 'git@github.com:dudekw/intensity_map_builder.git', version: 'master'}
-- git: {local-name: robot/src/velmwheel, uri: 'git@github.com:dudekw/intensity_map_msgs.git', version: 'master'}
-- git: {local-name: robot/src/velmwheel, uri: 'git@github.com:dudekw/rtt_intensity_map_msgs.git', version: 'master'}
+- git: {local-name: robot/src/intensity_map_builder, uri: 'git@github.com:dudekw/intensity_map_builder.git', version: 'master'}
+- git: {local-name: robot/src/intensity_map_msgs, uri: 'git@github.com:dudekw/intensity_map_msgs.git', version: 'master'}
+- git: {local-name: robot/src/rtt_intensity_map_msgs, uri: 'git@github.com:dudekw/rtt_intensity_map_msgs.git', version: 'master'}
 - git: {local-name: robot/src/velmwheel, uri: 'git@github.com:dudekw/velmwheel.git', version: 'global-localization'}
