@@ -19,5 +19,5 @@
 - git: {local-name: robot/src/intensity_map_msgs, uri: 'https://github.com/dudekw/intensity_map_msgs.git', version: 'master'}
 - git: {local-name: robot/src/rtt_intensity_map_msgs, uri: 'https://github.com/dudekw/rtt_intensity_map_msgs.git', version: 'master'}
 - git: {local-name: robot/src/robot_localization, uri: 'https://github.com/dudekw/robot_localization.git', version: 'feature/rt_enabled'}
-- git: {local-name: robot/src/lms1xx, uri: 'https://github.com/clearpathrobotics/LMS1xx.git', version: 'master'}
+- git: {local-name: robot/src/lms1xx, uri: 'https://github.com/dudekw/lms1xx.git', version: 'master'}
 - git: {local-name: robot/src/velmwheel, uri: 'https://github.com/dudekw/velmwheel.git', version: 'global-localization'}
