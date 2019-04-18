@@ -72,23 +72,47 @@ fi
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' libomniorb4-dev|grep "install ok installed")
 echo Checking for libomniorb4-dev: $PKG_OK
 if [ -z "$PKG_OK" ]; then
-  echo "No libomniorb4-dev. Setting up omniorb."
+  echo "No libomniorb4-dev. Setting up libomniorb4-dev."
   sudo apt-get --yes install libomniorb4-dev 
 fi
 # Check for ros-kinetic-lms1xx package
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' ros-kinetic-lms1xx|grep "install ok installed")
 echo Checking for ros-kinetic-lms1xx: $PKG_OK
 if [ -z "$PKG_OK" ]; then
-  echo "No ros-kinetic-lms1xx. Setting up omniorb."
+  echo "No ros-kinetic-lms1xx. Setting up ros-kinetic-lms1xx."
   sudo apt-get --yes install ros-kinetic-lms1xx
 fi
 # Check for ros-kinetic-rtt-rosparam package
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' ros-kinetic-rtt-rosparam|grep "install ok installed")
 echo Checking for ros-kinetic-rtt-rosparam: $PKG_OK
 if [ -z "$PKG_OK" ]; then
-  echo "No ros-kinetic-rtt-rosparam. Setting up omniorb."
+  echo "No ros-kinetic-rtt-rosparam. Setting up ros-kinetic-rtt-rosparam."
   sudo apt-get --yes install ros-kinetic-rtt-rosparam
 fi
+# Check for ros-kinetic-geographic-msgs package
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' ros-kinetic-geographic-msgs|grep "install ok installed")
+echo Checking for ros-kinetic-geographic-msgs: $PKG_OK
+if [ -z "$PKG_OK" ]; then
+  echo "No ros-kinetic-geographic-msgs. Setting up ros-kinetic-geographic-msgs."
+  sudo apt-get --yes install ros-kinetic-geographic-msgs
+fi
+# Check for ros-kinetic-rtt package nad REMOVE IT
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' ros-kinetic-rtt|grep "install ok installed")
+echo Checking for ros-kinetic-rtt: $PKG_OK
+if [ -z "$PKG_OK" ]; then
+  echo "ros-kinetic-rtt installed. Uninstalling ros-kinetic-rtt."
+  sudo apt-get --yes remove ros-kinetic-rtt 
+fi
+
+# Check for ros-kinetic-tf2-geometry-msgs package nad REMOVE IT
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' ros-kinetic-tf2-geometry-msgs|grep "install ok installed")
+echo Checking for ros-kinetic-tf2-geometry-msgs: $PKG_OK
+if [ -z "$PKG_OK" ]; then
+  echo "No ros-kinetic-tf2-geometry-msgs. Setting up ros-kinetic-tf2-geometry-msgs."
+  sudo apt-get --yes install ros-kinetic-tf2-geometry-msgs
+fi
+
+
 
 cd $1
 wstool init
