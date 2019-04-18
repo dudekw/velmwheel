@@ -21,6 +21,11 @@ if ! [ -f "$2" ]; then
   exit 1
 fi
 
+if [ -z "$ROS_PACKAGE_PATH" ]; then
+    echo "SOURCE TO ROS IS REQUIRED!"
+    exit 1
+fi
+
 # Check for python-wstool package
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' python-wstool|grep "install ok installed")
 echo Checking for python-wstool: $PKG_OK
